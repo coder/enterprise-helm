@@ -1,0 +1,81 @@
+{{- if eq .Values.postgres.useDefault  true}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timescale
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: timescale
+spec:
+  ports:
+    - port: 5432
+      name: tcp-timescale
+  selector:
+    app: timescale
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescale
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: timescale
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescale
+  template:
+    metadata:
+      labels:
+        app: timescale
+    spec:
+      serviceAccountName: timescale
+      securityContext:
+        # User 70 is postgres.
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: timescale
+          image: {{ .Values.timescale.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - coder
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: timescale-data
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - su
+                  - postgres
+                  - -c
+                  - "pg_ctl stop"
+{{- include "coder.resources" .Values.timescale.resources | indent 10 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: timescale-data
+      spec:
+        {{- include "coder.storageClassName" . | indent 8 }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.timescale.resources.requests.storage | quote }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: timescale
+{{- end }}

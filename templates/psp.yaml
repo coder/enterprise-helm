@@ -1,0 +1,76 @@
+{{- if ne .Values.podSecurityPolicyName "" }}
+---
+# The coder-restricted role adds the pod security policy if one is specified.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: coder-restricted
+rules:
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ .Values.podSecurityPolicyName | quote }}
+    verbs:
+    - use
+---
+# Bind the coder-restricted role to the various Coder service accounts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: coder-restricted
+subjects:
+  - kind: ServiceAccount
+    name: timescale
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: cemanager
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: envproxy
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: environments
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: coder-restricted
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- if and (ne .Values.ingress.podSecurityPolicyName "") (eq .Values.ingress.useDefault true) }}
+---
+# The ingress-restricted role adds the pod security policy if one is specified
+# to the ingress service account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: ingress-restricted
+rules:
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ .Values.ingress.podSecurityPolicyName | quote }}
+    verbs:
+    - use
+---
+# Bind the ingress-restricted role to the environments service account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: ingress-restricted
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: ingress-restricted
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

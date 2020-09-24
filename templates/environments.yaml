@@ -1,0 +1,10 @@
+---
+# The service account used by environments. It has no permissions and is only 
+# used to bind a pod security policy (if one is provided).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }} 
+  name: environments
+{{- include "coder.namespaceWhitelist.envSA" . }}
+{{- include "coder.environments.configMap" . }}

@@ -1,0 +1,8 @@
+# This file should stay pretty static.
+# The 'version' is updated when the package is created.
+# See release.mk - build/helm target.
+apiVersion: v2
+name: coder
+description: Run Coder in Kubernetes
+type: application
+version: 1.0.0

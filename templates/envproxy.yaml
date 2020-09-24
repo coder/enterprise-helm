@@ -1,0 +1,135 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: envproxy
+  name: envproxy
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ .Values.envproxy.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      coder.deployment: envproxy
+  template:
+    metadata:
+      labels:
+        coder.deployment: envproxy
+    spec:
+      # coder:coder
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      restartPolicy: Always
+      # 4 hours
+      terminationGracePeriodSeconds: {{ .Values.envproxy.terminationGracePeriodSeconds }}
+      serviceAccountName: envproxy
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: envproxy
+          image: {{ .Values.envproxy.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-envproxy
+              containerPort: 8080
+{{- if eq .Values.ssh.enable true }}
+            - name: ssh-envproxy
+              containerPort: 2222
+{{- end}}
+          # envproxy is a daemon service, no need to allocate a tty for it.
+          tty: false
+          env:
+            - name: HUMAN_LOG
+              value: {{ .Values.logging.human | quote }}
+            - name: JSON_LOG
+              value: {{ .Values.logging.json | quote }}
+            - name: STACKDRIVER_LOG
+              value: {{ .Values.logging.stackdriver | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: VERBOSE
+              value: "true"
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: {{ .Values.clusterDomainSuffix | quote }}
+            - name: ENVBUILDER_IMAGE
+              value: {{ .Values.envbuilder.image | quote }}
+            - name: DOCKERD_IMAGE
+              value: {{ .Values.dockerd.image | quote}}
+            - name: ENVIRONMENT_SERVICE_ACCOUNT
+              value: "environments"
+{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.devurls.hostEnv" . | indent 12 }}
+{{- include "coder.postgres.env" . | indent 12 }}
+          command:
+            # Bash needs to be used for signals to be passed down correctly.
+            - /bin/bash
+            - -c
+            - |
+              echo Waiting on db;
+              /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
+              echo Starting envproxy;
+              # Pass signals down to the envproxy.
+              exec /entrypoint.sh envproxy
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 12
+            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
+            # the manager is most likely in a bad spot. It's possible for
+            # migrations to take extended periods of time, so we need to
+            # account for that.
+            periodSeconds: 20
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 14
+            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
+            # the manager is most likely in a bad spot. It's possible for
+            # migrations to take extended periods of time, so we need to
+            # account for that.
+            periodSeconds: 20
+{{- include "coder.resources" .Values.envproxy.resources | indent 10 }}
+{{- include "coder.volumeMounts" . | indent 10 }}
+{{- include "coder.volumes" . | indent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envproxy
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType | quote }}
+  selector:
+    coder.deployment: envproxy
+  ports:
+    - name: tcp-envproxy
+      port: 8080
+      protocol: TCP
+{{- if eq .Values.ssh.enable true}}
+    - name: tcp-ssh
+      port: 2222
+      protocol: TCP
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: envproxy
+{{- include "coder.envproxy.roles" . }}
+{{- include "coder.envproxy.rolebindings" . }}
