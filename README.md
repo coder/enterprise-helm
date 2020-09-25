@@ -1,6 +1,14 @@
-# coder
+# Coder Enterprise Helm
 
-Run Coder in Kubernetes
+WARNING: The master branch may contain updates for a yet unreleased version of
+Coder. The current state of the repo may not represent the latest release.
+
+The Helm package here is only a template for releases: version numbers and
+image URIs are injected and bundled into releases uploaded to the S3 bucket at
+[helm.coder.com](https://helm.coder.com/). Pull the official charts with `helm repo add coder https://helm.coder.com`.
+
+Feel free to open PRs for fixes and improvements you've found while deploying
+Coder!
 
 ## Values
 
@@ -26,7 +34,7 @@ Run Coder in Kubernetes
 | imagePullPolicy                        | string | Sets the policy for pulling a container image across all services.                                                                                                                                                                                                                                                                           | `"Always"`                                                                                                                    |
 | ingress.additionalAnnotations          | list   | Additional annotations to be used when creating the ingress. These can be used to specify certificate issuers or other cloud provider specific integrations. Annotations are provided as strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ]                                                                                                 | `[]`                                                                                                                          |
 | ingress.host                           | string | The hostname to use for accessing the platform. This can be left blank and the user can still access the platform from the external IP or a DNS name that resolves to the external IP address.                                                                                                                                               | `""`                                                                                                                          |
-| ingress.podSecurityPolicyName          | string | The name of the pod security policy the built in ingress controller should abide. It should be noted that the ingress controller requires the NET_BIND_SERVICE capability, privilege escalation, and access to privileged ports to successfully deploy.                                                                                      | `""`                                                                                                                          |
+| ingress.podSecurityPolicyName          | string | The name of the pod security policy the built in ingress controller should abide. It should be noted that the ingress controller requires the `NET_BIND_SERVICE` capability, privilege escalation, and access to privileged ports to successfully deploy.                                                                                    | `""`                                                                                                                          |
 | ingress.tls                            | object | TLS options for the ingress. The hosts used for the tls configuration come from the ingress.host and the devurls.host variables. If those don't exist, then the TLS configuration will be ignored.                                                                                                                                           | `{"devurlsHostSecretName":"","enable":false,"hostSecretName":""}`                                                             |
 | ingress.tls.devurlsHostSecretName      | string | The secret to use for the devurls.host hostname.                                                                                                                                                                                                                                                                                             | `""`                                                                                                                          |
 | ingress.tls.enable                     | bool   | Enables the tls configuration.                                                                                                                                                                                                                                                                                                               | `false`                                                                                                                       |
