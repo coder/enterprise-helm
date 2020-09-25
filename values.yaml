@@ -80,9 +80,8 @@ postgres:
   database: ""
   # postgres.passwordSecret -- The name of an existing secret in the current
   # namespace with the password to the Postgres instance. The password must be
-  # contained in the secret field `password`. This should be set to a secret
-  # with and empty `password` field if the user does not require a password to
-  # connect.
+  # contained in the secret field `password`. This should be set to an empty
+  # string if the database does not require a password to connect.
   passwordSecret: ""
   # postgres.sslMode -- Determines how the connection is made to the database.
   # The acceptable values are: `disable`, `allow`, `prefer`, `require`,
