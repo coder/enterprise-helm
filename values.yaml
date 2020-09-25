@@ -98,6 +98,7 @@ imagePullPolicy: Always
 cemanager:
   # cemanager.replicas -- The number of replicas to run of the manager.
   replicas: 1
+  # cemanager.image -- Injected during releases.
   image: ""
   # cemanager.resources -- Kubernetes resource request and limits for cemanager
   # pods.
@@ -122,6 +123,7 @@ cemanager:
 envproxy:
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
+  # envproxy.image -- Injected during releases.
   image: ""
   # envproxy.resources -- Kubernetes resource request and limits for envproxy
   # pods.
@@ -141,13 +143,15 @@ envproxy:
     limits:
       cpu: "250m"
       memory: "512Mi"
-  # The seconds to wait before shutting down the environment proxy
-  # This is set very long intentionally so developers do not deal with frequent
+  # envproxy.terminationGracePeriodSeconds -- Amount of seconds to wait before
+  # shutting down the environment proxy if there are still open connections.
+  # This is set very long intentionally so developers do not deal with
   # disconnects during deployments.
   terminationGracePeriodSeconds: 14400
 # envwatcher contains configuration for the service handling environment
 # stats.
 envwatcher:
+  # envwatcher.image -- Injected during releases.
   image: ""
   # envwatcher.resources -- Kubernetes resource request and limits for
   # envwatcher pod.
@@ -172,6 +176,7 @@ envwatcher:
 # recommended to run this service in production. See the `postgres` section for
 # connecting to an external Postgres database.
 timescale:
+  # timescale.image -- Injected during releases.
   image: ""
   # timescale.resources -- Kubernetes resource request and limits for the
   # timescale pod.
@@ -195,9 +200,11 @@ timescale:
       memory: "1Gi"
 
 dockerd:
+  # dockerd.image -- Injected during releases.
   image: ""
 
 envbuilder:
+  # envbuilder.image -- Injected during releases.
   image: ""
 
 # environments defines configuration that is applied to all
