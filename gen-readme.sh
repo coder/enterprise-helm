@@ -18,7 +18,7 @@ if ! which helm-docs &> /dev/null; then
 	fi
 
 	# Use gobin to install helm-docs since it is a modules enabled repo.
-	gobin github.com/norwoodj/helm-docs/cmd/helm-docs
+	gobin github.com/coadler/helm-docs/cmd/helm-docs
 fi
 
 helm-docs
