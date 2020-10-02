@@ -6,3 +6,7 @@ name: coder
 description: Run Coder in Kubernetes
 type: application
 version: 1.0.0
+home: https://coder.com
+sources:
+  - https://github.com/cdr/enterprise-helm
+icon: https://helm.coder.com/coder_logo_blue.png
