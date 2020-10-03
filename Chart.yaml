@@ -10,3 +10,6 @@ home: https://coder.com
 sources:
   - https://github.com/cdr/enterprise-helm
 icon: https://helm.coder.com/coder_logo_blue.png
+maintainers:
+  - name: Coder Engineering
+    email: helm@coder.com
