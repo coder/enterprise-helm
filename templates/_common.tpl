@@ -40,8 +40,11 @@ storageClassName: {{ .Values.storageClassName | quote }}
   value: {{ .Values.postgres.port | quote }}
 - name: DB_USER
   value: {{ .Values.postgres.user | quote }}
-- name: DB_SECRET
-  value: {{ .Values.postgres.passwordSecret | quote }}
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgres.passwordSecret | quote }}    
+      key: password
 - name: DB_SSL_MODE
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
