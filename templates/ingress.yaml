@@ -25,6 +25,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   proxy-set-headers: "{{ .Release.Namespace }}/custom-headers"
+  enable-underscores-in-headers: "true"
 ---
 kind: ConfigMap
 apiVersion: v1
