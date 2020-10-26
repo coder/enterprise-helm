@@ -81,6 +81,8 @@ spec:
               value: {{ .Values.storageClassName | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
               value: {{ .Values.clusterDomainSuffix | quote }}
+            - name: AUTOOFF_ENABLED
+              value: {{ .Values.autooff.enable | quote }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.namespaceWhitelist.env" . | indent 12 }}
 {{- include "coder.devurls.hostEnv" . | indent 12 }}
