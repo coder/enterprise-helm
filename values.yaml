@@ -148,6 +148,11 @@ envproxy:
   # disconnects during deployments.
   terminationGracePeriodSeconds: 14400
 
+autooff:
+  # enable=true will automatically turn off environments that have
+  # been idle for a configurable number of hours.
+  enable: true
+
 # timescale -- Contains configuration for the internal database. It is not
 # recommended to run this service in production. See the `postgres` section for
 # connecting to an external Postgres database.
