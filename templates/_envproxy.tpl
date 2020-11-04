@@ -25,6 +25,7 @@ rules:
       - secrets
       - deployments
       - configmaps
+      - persistentvolumeclaims
     verbs:
       - create
       - list
@@ -50,6 +51,17 @@ rules:
     verbs:
       - list
       - get
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+    # Necessary for preventing inter-environment communication.
+      - networkpolicies
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
 {{- end }}
 {{- end }}
 {{/*
