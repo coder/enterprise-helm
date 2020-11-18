@@ -60,6 +60,8 @@ spec:
               value: {{ .Values.clusterDomainSuffix | quote }}
             - name: ENVBUILDER_IMAGE
               value: {{ .Values.envbuilder.image | quote }}
+            - name: ENVBOX_IMAGE
+              value: {{ .Values.envbox.image | quote }}
             - name: DOCKERD_IMAGE
               value: {{ .Values.dockerd.image | quote}}
             - name: ENVIRONMENT_SERVICE_ACCOUNT

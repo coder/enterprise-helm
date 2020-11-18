@@ -179,6 +179,10 @@ dockerd:
   # dockerd.image -- Injected during releases.
   image: ""
 
+envbox:
+  # envbox.image -- Injected during releases.
+  image: ""
+
 envbuilder:
   # envbuilder.image -- Injected during releases.
   image: ""
