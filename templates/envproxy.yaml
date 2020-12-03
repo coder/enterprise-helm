@@ -71,7 +71,7 @@ spec:
 {{- include "coder.postgres.env" . | indent 12 }}
 {{- include "coder.envproxyCredsEnv" . | indent 12 }}
             - name: CEMANAGER_ACCESS_URL
-              value: "http://cemanager:8080"
+              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
           command:
             # Bash needs to be used for signals to be passed down correctly.
             - /bin/bash
