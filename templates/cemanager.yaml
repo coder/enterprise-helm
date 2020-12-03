@@ -86,6 +86,8 @@ spec:
               value: {{ .Values.storageClassName | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
               value: {{ .Values.clusterDomainSuffix | quote }}
+            - name: ENVIRONMENT_SSH_ENABLED
+              value: {{ .Values.ssh.enable | quote }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.namespaceWhitelist.env" . | indent 12 }}
 {{- include "coder.devurls.hostEnv" . | indent 12 }}
