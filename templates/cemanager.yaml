@@ -90,6 +90,7 @@ spec:
 {{- include "coder.namespaceWhitelist.env" . | indent 12 }}
 {{- include "coder.devurls.hostEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
+{{- include "coder.envproxyCredsEnv" . | indent 12 }}
           command:
             # Bash is needed to pass signals correctly.
             - /bin/bash
