@@ -98,3 +98,12 @@ tolerations:
 {{ toYaml .Values.serviceTolerations }}
 {{- end }}
 {{- end }}
+{{/*
+  coder.envproxyCredsEnv - temporary POC for intra-service auth
+*/}}
+{{- define "coder.envproxyCredsEnv" }}
+- name: "CODER_SERVER_USER"
+  value: {{ now | date "2006-01-02" | sha256sum }}
+- name: "CODER_SERVER_KEY"
+  value: {{ now | date "2006-01-02" | sha256sum }}
+{{- end }}
