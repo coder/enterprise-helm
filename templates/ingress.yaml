@@ -293,6 +293,10 @@ metadata:
   labels:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
+  annotations:
+  {{- range $key, $value := .Values.ingress.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer

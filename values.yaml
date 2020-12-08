@@ -38,7 +38,8 @@ ingress:
   # escalation, and access to privileged ports to successfully deploy.
   podSecurityPolicyName: ""
   # ingress.additionalAnnotations -- Additional annotations to be used when
-  # creating the ingress. These can be used to specify certificate issuers or
+  # creating the ingress. These only apply to the Ingress Kubernetes kind.
+  # The annotations can be used to specify certificate issuers or
   # other cloud provider specific integrations. Annotations are provided as
   # strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ] 
   additionalAnnotations: []
@@ -54,6 +55,13 @@ ingress:
     # ingress.tls.devurlsHostSecretName -- The secret to use for the
     # devurls.host hostname.
     devurlsHostSecretName: ""
+  # ingress.service -- Options related to the ingress Kubernetes Service object.
+  service:
+    # ingress.service.annotations -- Additional annotations to add to the Service
+    # object. For example to make the ingress spawn an internal load balancer:
+    # annotations:
+    #  cloud.google.com/load-balancer-type: "Internal" 
+    annotations: {}
 
 devurls:
   # devurls.host -- Should be a wildcard hostname to allow matching against
