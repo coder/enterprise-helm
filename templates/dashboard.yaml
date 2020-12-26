@@ -36,6 +36,9 @@ spec:
               containerPort: 3000
           # dashboard runs a node server. no tty is needed for it.
           tty: false
+          env:
+            - name: CEMANAGER_HOST
+              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
           readinessProbe:
             exec:
               command:
