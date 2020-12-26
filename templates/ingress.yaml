@@ -344,10 +344,18 @@ spec:
         backend:
           serviceName: envproxy
           servicePort: 8080
-      - path: /
+      - path: /api/
         backend:
           serviceName: cemanager
           servicePort: 8080
+      - path: /auth/
+        backend:
+          serviceName: cemanager
+          servicePort: 8080
+      - path: /
+        backend:
+          serviceName: dashboard
+          servicePort: 3000
 {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:

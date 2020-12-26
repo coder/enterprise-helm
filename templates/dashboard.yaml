@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: dashboard
+  name: dashboard
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ .Values.dashboard.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      coder.deployment: dashboard
+  template:
+    metadata:
+      labels:
+        coder.deployment: dashboard
+    spec:
+      restartPolicy: Always
+      serviceAccountName: dashboard
+      containers:
+        - name: dashboard
+          image: {{ .Values.dashboard.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-dashboard
+              containerPort: 3000
+          # dashboard runs a node server. no tty is needed for it.
+          tty: false
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:3000/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 12
+            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
+            # the manager is most likely in a bad spot. It's possible for
+            # migrations to take extended periods of time, so we need to
+            # account for that.
+            periodSeconds: 20
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 14
+            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
+            # the manager is most likely in a bad spot. It's possible for
+            # migrations to take extended periods of time, so we need to
+            # account for that.
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType | quote }}
+  selector:
+    coder.deployment: dashboard
+  ports:
+    - name: tcp-dashboard
+      port: 3000
+      protocol: TCP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: dashboard

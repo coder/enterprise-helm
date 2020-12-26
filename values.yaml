@@ -125,6 +125,14 @@ cemanager:
     limits:
       cpu: "250m"
       memory: "512Mi"
+
+# Contains the user interface of the platform.
+dashboard:
+  # dashboard.replicas -- The number of replicas to run of the dashboard.
+  replicas: 1
+  # dashboard.image -- Injected during releases.
+  image: ""
+
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
