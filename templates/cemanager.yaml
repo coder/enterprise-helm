@@ -69,8 +69,6 @@ spec:
               # such as dockerd and kubernetes.
             - name: ENVBOX_IMAGE
               value: {{ .Values.envbox.image | quote }}
-            - name: DOCKERD_IMAGE
-              value: {{ .Values.dockerd.image | quote}}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:

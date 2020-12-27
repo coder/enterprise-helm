@@ -62,8 +62,6 @@ spec:
               value: {{ .Values.envbuilder.image | quote }}
             - name: ENVBOX_IMAGE
               value: {{ .Values.envbox.image | quote }}
-            - name: DOCKERD_IMAGE
-              value: {{ .Values.dockerd.image | quote}}
             - name: ENVIRONMENT_SERVICE_ACCOUNT
               value: "environments"
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
