@@ -45,9 +45,9 @@ spec:
                 - curl
                 - -s
                 - localhost:3000/healthz
-            initialDelaySeconds: 30
+            initialDelaySeconds: 8
             failureThreshold: 12
-            periodSeconds: 20
+            periodSeconds: 4
           livenessProbe:
             exec:
               command:
