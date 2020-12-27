@@ -125,6 +125,32 @@ cemanager:
     limits:
       cpu: "250m"
       memory: "512Mi"
+
+# Contains the user interface of the platform.
+dashboard:
+  # dashboard.replicas -- The number of replicas to run of the dashboard.
+  replicas: 1
+  # dashboard.image -- Injected during releases.
+  image: ""
+  # dashboard.resources -- Kubernetes resource request and limits for dasboard
+  # pods.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. See values.yaml for an example.
+  #
+  # e.g:
+  # dashboard:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   replica: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
