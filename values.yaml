@@ -209,10 +209,6 @@ timescale:
       cpu: "250m"
       memory: "1Gi"
 
-dockerd:
-  # dockerd.image -- Injected during releases.
-  image: ""
-
 envbox:
   # envbox.image -- Injected during releases.
   image: ""
