@@ -63,7 +63,7 @@ rules:
       - list
       - patch
   - apiGroups:
-      - storage.k8s.io/v1
+      - storage.k8s.io
     resources:
       - storageclasses
     verbs:
