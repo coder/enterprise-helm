@@ -84,13 +84,10 @@ spec:
               value: {{ .Values.storageClassName | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
               value: {{ .Values.clusterDomainSuffix | quote }}
-            - name: ENVIRONMENT_SSH_ENABLED
-              value: {{ .Values.ssh.enable | quote }}
+            - name: LOCAL_ENVPROXY_TOKEN
+              value: {{ include "coder.envproxy.token" . | quote }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
-{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
-{{- include "coder.devurls.hostEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
-{{- include "coder.envproxyCredsEnv" . | indent 12 }}
           command:
             # Bash is needed to pass signals correctly.
             - /bin/bash
@@ -151,50 +148,10 @@ spec:
       port: 8080
       protocol: TCP
 ---
-# The service account for the manager.
+# The service account for the manager. It has no permissions, because cemanager
+# uses the `coder` role to touch the cluster.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cemanager
   namespace: {{ .Release.Namespace | quote }}
----
-# The roles the manager needs cluster wide for
-# checking available resources.
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: cemanager-{{ .Release.Namespace }}-cluster
-rules:
-  - apiGroups:
-      - "" # indicates the core API group
-    resources:
-        # Lets us determine the cores/RAM available on a node
-        # to avoid letting a user select an unschedulable number.
-      - nodes
-      - pods
-        # Lets us determine what namespaces are available for
-        # scheduling. The permissions for a namespace are handled
-        # via regular namespaced Roles.
-      - namespaces
-    # We request read-only permissions at the cluster level to prevent
-    # the product from making any suprising mutations.
-    verbs:
-      - get
-      - list
----
-# Bind the cluster role to the cemanager.
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  namespace: {{ .Release.Namespace | quote }}
-  name: cemanager-{{ .Release.Namespace }}-clusterbinding
-subjects:
-  - kind: ServiceAccount
-    name: cemanager
-    namespace: {{ .Release.Namespace | quote }}
-roleRef:
-  kind: ClusterRole
-  name: cemanager-{{ .Release.Namespace }}-cluster
-  apiGroup: rbac.authorization.k8s.io
-{{- include "coder.cemanager.roles" . }}
-{{- include "coder.cemanager.rolebindings" . }}

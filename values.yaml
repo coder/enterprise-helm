@@ -103,6 +103,13 @@ imagePullPolicy: Always
 # Contains configuration the REST API handling CRUD operations to
 # the platform.
 cemanager:
+  # cemangaer.accessURL -- The cemanager access URL that the envproxy will use
+  # to communicate with the cemanager. This must be the public cemanager URL
+  # because it's also used for redirecting unauthenticated users to the
+  # cemanager. This should be a full URL complete with protocol and no trailing
+  # slash. Derived from ingress configuration if not set.
+  # e.g. https://manager.coder.com
+  accessURL: ""
   # cemanager.replicas -- The number of replicas to run of the manager.
   replicas: 1
   # cemanager.image -- Injected during releases.
@@ -154,6 +161,12 @@ dashboard:
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
+  # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
+  # cemanager and all users who can use this workspace provider. Derived from
+  # ingress.host if not set. This should be a full URL, complete with protocol
+  # and trailing "/proxy" (no trailing slash).
+  # e.g. "https://proxy.coder.com/proxy"
+  accessURL: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
   # envproxy.image -- Injected during releases.

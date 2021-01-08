@@ -1,8 +1,50 @@
-{{/*
-  coder.cemanager.roles creates a role for every valid namespace to provide
-  cemanager the necessary permissionse to administer environments.
-*/}}
-{{- define "coder.cemanager.roles" }}
+---
+# The service account that the envproxy passes to cemanager on startup.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coder
+  namespace: {{ .Release.Namespace | quote }}
+---
+# The roles the cemanager needs cluster wide for
+# checking available resources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: coder-{{ .Release.Namespace }}-cluster
+rules:
+  - apiGroups:
+      - "" # indicates the core API group
+    resources:
+      # Lets us determine the cores/RAM available on a node
+      # to avoid letting a user select an unschedulable number.
+      - nodes
+      - pods
+      # Lets us determine what namespaces are available for
+      # scheduling. The permissions for a namespace are handled
+      # via regular namespaced Roles.
+      - namespaces
+    # We request read-only permissions at the cluster level to prevent
+    # the product from making any surprising mutations.
+    verbs:
+      - get
+      - list
+---
+# Bind the cluster role to the coder serviceaccount.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: coder-{{ .Release.Namespace }}-clusterbinding
+subjects:
+  - kind: ServiceAccount
+    name: coder
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: ClusterRole
+  name: coder-{{ .Release.Namespace }}-cluster
+  apiGroup: rbac.authorization.k8s.io
+
 {{- $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
 {{- range $namespaces }}
 ---
@@ -11,23 +53,23 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: cemanager
+  name: coder
   namespace: {{ . | quote }}
 rules:
   - apiGroups:
       - "" # indicates the core API group
       - "apps"
     resources:
-        # Every environment deployment has a service.
+      # Every environment deployment has a service.
       - services
       - pods
-        # Required for creating registry pull secrets.
+      # Required for creating registry pull secrets.
       - secrets
-        # Required for the code-server volume and the environments' home volumes.
+      # Required for the code-server volume and the environments' home volumes.
       - persistentvolumeclaims
-        # Required for legacy reasons.
+      # Required for legacy reasons.
       - statefulsets
-        # Every environment is a deployment.
+      # Every environment is a deployment.
       - deployments
     verbs:
       - create
@@ -71,7 +113,7 @@ rules:
   - apiGroups:
       - networking.k8s.io
     resources:
-        # Necessary for preventing inter-environment communication.
+      # Necessary for preventing inter-environment communication.
       - networkpolicies
     verbs:
       - create
@@ -87,30 +129,18 @@ rules:
       - get
       - list
       - watch
-{{- end }}
-{{- end }}
-{{/*
-  coder.cemanager.rolebindings creates a
-  role binding for every namespace in the list
-  to allow cemanager permissions to create environments
-  in the additional namespaces
-*/}}
-{{- define "coder.cemanager.rolebindings" }}
-{{ $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
-{{- range $namespaces }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   namespace: {{ . | quote }}
-  name: cemanager
+  name: coder
 subjects:
   - kind: ServiceAccount
-    name: cemanager
+    name: coder
     namespace: {{ $.Release.Namespace | quote }}
 roleRef:
   kind: Role
-  name: cemanager
+  name: coder
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
 {{- end }}

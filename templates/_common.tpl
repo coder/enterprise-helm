@@ -99,11 +99,43 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.envproxyCredsEnv - temporary POC for intra-service auth
+  coder.cemanager.accessURL is a URL for accessing the cemanager.
 */}}
-{{- define "coder.envproxyCredsEnv" }}
-- name: "CODER_SERVER_USER"
-  value: {{ now | date "2006-01-02" | sha256sum }}
-- name: "CODER_SERVER_KEY"
-  value: {{ now | date "2006-01-02" | sha256sum }}
+{{- define "coder.cemanager.accessURL" }}
+{{- if ne .Values.cemanager.accessURL "" }}
+{{- .Values.cemanager.accessURL -}}
+{{- else if ne .Values.ingress.host "" }}
+    {{- if .Values.ingress.tls.enable -}}
+    https://
+    {{- else -}}
+    http://
+    {{- end -}}
+    {{- .Values.ingress.host }}
+{{- else }}
+{{- fail "cemanager.accessURL or ingress.host must be set" }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.envproxy.accessURL is a URL for accessing the envproxy.
+*/}}
+{{- define "coder.envproxy.accessURL" }}
+{{- if ne .Values.envproxy.accessURL "" }}
+{{- .Values.envproxy.accessURL -}}
+{{- else if ne .Values.ingress.host "" }}
+    {{- if .Values.ingress.tls.enable -}}
+    https://
+    {{- else -}}
+    http://
+    {{- end -}}
+    {{- .Values.ingress.host }}/proxy
+{{- else }}
+{{- fail "envproxy.accessURL or ingress.host must be set" }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.envproxy.token is the token used for the local envproxy to talk to the
+  cemanager. It's OK that this changes every deploy.
+*/}}
+{{- define "coder.envproxy.token" }}
+{{- randAlphaNum 32 -}}
 {{- end }}
