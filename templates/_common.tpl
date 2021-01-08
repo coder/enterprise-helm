@@ -62,7 +62,12 @@ tolerations:
 {{- if ne .Values.envproxy.accessURL "" }}
 {{- .Values.envproxy.accessURL -}}
 {{- else if ne .Values.ingress.host "" }}
-{{- .Values.ingress.host -}}
+    {{- if .Values.ingress.tls.enable -}}
+    https://
+    {{- else -}}
+    http://
+    {{- end -}}
+    {{- .Values.ingress.host }}/ingress
 {{- else }}
 {{- fail "envproxy.access.URL or ingress.host must be set" }}
 {{- end }}

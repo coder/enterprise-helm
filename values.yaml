@@ -71,8 +71,9 @@ devurls:
 # connections to environments such as IDE or shell sessions.
 envproxy:
   # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
-  # cemanager and all users who can use this workspace provider. ingress.host
-  # will be used if this is not set.
+  # cemanager and all users who can use this workspace provider. Derived from
+  # ingress.host if not set. This should be a full URL, complete with protocol
+  # and trailing "/ingress" (no trailing slash).
   accessURL: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
