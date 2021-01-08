@@ -107,7 +107,10 @@ envproxy:
 # cemanager -- Details for connecting to the cemanager instance.
 cemanager:
   # cemangaer.accessURL -- The cemanager access URL that the envproxy will use
-  # to communicate with the cemanager.
+  # to communicate with the cemanager. This must be the public cemanager URL
+  # because it's also used for redirecting unauthenticated users to the
+  # cemanager. This should be a full URL complete with protocol and no trailing
+  # slash.
   accessURL: ""
   # cemanager.token -- Set by coder-cli during the initial installation. Don't
   # set this manually (even to empty string) unless you know what you're doing.
