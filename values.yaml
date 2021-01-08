@@ -73,7 +73,8 @@ envproxy:
   # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
   # cemanager and all users who can use this workspace provider. Derived from
   # ingress.host if not set. This should be a full URL, complete with protocol
-  # and trailing "/ingress" (no trailing slash).
+  # and trailing "/proxy" (no trailing slash).
+  # e.g. "https://proxy.coder.com/proxy"
   accessURL: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
@@ -104,13 +105,13 @@ envproxy:
   terminationGracePeriodSeconds: 14400
 
 # cemanager -- Details for connecting to the cemanager instance.
-# NOTE: the envproxy must be accessible by envproxy.accessURL from the
-# cemanager.
 cemanager:
-  # cemangaer.accessURL -- The access URL from envproxy to cemanager.
+  # cemangaer.accessURL -- The cemanager access URL that the envproxy will use
+  # to communicate with the cemanager.
   accessURL: ""
-  # cemanager.token -- Set by coder-cli during the initial installation.
-  token: ""
+  # cemanager.token -- Set by coder-cli during the initial installation. Don't
+  # set this manually (even to empty string) unless you know what you're doing.
+  # token: ""
 
 # certs -- Describes CAs that should be added to Coder services. These certs
 # are NOT added to environments.
