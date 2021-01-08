@@ -24,12 +24,6 @@ metadata:
   name: coder-restricted
 subjects:
   - kind: ServiceAccount
-    name: timescale
-    namespace: {{ .Release.Namespace | quote }}
-  - kind: ServiceAccount
-    name: cemanager
-    namespace: {{ .Release.Namespace | quote }}
-  - kind: ServiceAccount
     name: envproxy
     namespace: {{ .Release.Namespace | quote }}
   - kind: ServiceAccount

@@ -58,28 +58,19 @@ spec:
               value: "true"
             - name: CLUSTER_DOMAIN_SUFFIX
               value: {{ .Values.clusterDomainSuffix | quote }}
-            - name: ENVBUILDER_IMAGE
-              value: {{ .Values.envbuilder.image | quote }}
-            - name: ENVBOX_IMAGE
-              value: {{ .Values.envbox.image | quote }}
-            - name: ENVIRONMENT_SERVICE_ACCOUNT
-              value: "environments"
-{{- include "coder.environments.configMapEnv" . | indent 12 }}
-{{- include "coder.devurls.hostEnv" . | indent 12 }}
-{{- include "coder.postgres.env" . | indent 12 }}
-{{- include "coder.envproxyCredsEnv" . | indent 12 }}
+            - name: ENVPROXY_ACCESS_URL
+              value: {{ include "coder.envproxy.accessURL" . | quote }}
+            - name: SSH_ENABLED
+              value: {{ .Values.ssh.enable | quote }}
             - name: CEMANAGER_ACCESS_URL
-              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+              value: {{ .Values.cemanager.accessURL | quote }}
+            - name: CEMANAGER_TOKEN
+              value: {{ .Values.cemanager.token | quote }}
+{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
+{{- include "coder.devurls.hostEnv" . | indent 12 }}
           command:
-            # Bash needs to be used for signals to be passed down correctly.
-            - /bin/bash
-            - -c
-            - |
-              echo Waiting on db;
-              /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
-              echo Starting envproxy;
-              # Pass signals down to the envproxy.
-              exec /entrypoint.sh envproxy
+            - /entrypoint.sh
+            - envproxy
           readinessProbe:
             exec:
               command:
@@ -128,11 +119,94 @@ spec:
       port: 2222
       protocol: TCP
 {{- end }}
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }}
   name: envproxy
-{{- include "coder.envproxy.roles" . }}
-{{- include "coder.envproxy.rolebindings" . }}
+
+# Create roles in each whitelisted namespace.
+{{ $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
+{{- range $namespaces }}
+---
+# The envproxy role lists the permissions the envproxy requires.
+# It conditionally sets the pod security policy based on the
+# helm value.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: envproxy
+  namespace: {{ . | quote }}
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - services
+      - pods
+      - pods/exec
+      - secrets
+      - deployments
+      - configmaps
+      - persistentvolumeclaims
+    verbs:
+      - create
+      - list
+      - get
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - create
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - pods
+    # Necessary for gathering stats about an environment.
+    verbs:
+      - list
+      - get
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      # Necessary for preventing inter-environment communication.
+      - networkpolicies
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ . | quote }}
+  name: envproxy
+subjects:
+  - kind: ServiceAccount
+    name: envproxy
+    namespace: {{ $.Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: envproxy
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

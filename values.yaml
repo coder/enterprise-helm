@@ -1,10 +1,3 @@
-# storageClassName -- Sets the storage class for all Coder services and user
-# environments. By default the storageClassName is not specified and thus the
-# default StorageClass is used. If storageClassName is not specified and a
-# default StorageClass does not exist, then the deployment will fail. The
-# storageClass MUST support the ReadWriteOnce access mode.
-storageClassName: ""
-
 # serviceType -- See the following for the different serviceType options and
 # their use:
 # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
@@ -19,6 +12,10 @@ podSecurityPolicyName: ""
 # cluster, you may need to remove or change this DNS suffix for service
 # resolution to work correctly.
 clusterDomainSuffix: ".svc.cluster.local"
+
+# imagePullPolicy -- Sets the policy for pulling a container image across all
+# services.
+imagePullPolicy: Always
 
 # contains configuration for the bundled ingress controller.
 ingress:
@@ -68,92 +65,15 @@ devurls:
   # custom-created dev URLs. Leaving as an empty string results in devurls
   # being disabled. Example: "*.devurls.coder.com".
   host: ""
-
-# Contains fields related to the Postgres backend. If providing your own
-# instance, a minimum version of Postgres 11 is required with the contrib
-# package installed.
-postgres:
-  # postgres.useDefault -- Deploys an internal Postgres instance alongside the platform.
-  # It is not recommended to run the internal Postgres instance in production.
-  # If true, all other values are ignored.
-  useDefault: true
-  # postgres.host -- The host of the external postgres instance.
-  host: ""
-  # postgres.port -- The port of the external postgres instance.
-  port: ""
-  # postgres.user -- the user of the external postgres instance.
-  user: ""
-  # postgres.database -- The name of the database that coder will use. It must
-  # exist before Coder is installed.
-  database: ""
-  # postgres.passwordSecret -- The name of an existing secret in the current
-  # namespace with the password to the Postgres instance. The password must be
-  # contained in the secret field `password`. This should be set to an empty
-  # string if the database does not require a password to connect.
-  passwordSecret: ""
-  # postgres.sslMode -- Determines how the connection is made to the database.
-  # The acceptable values are: `disable`, `allow`, `prefer`, `require`,
-  # `verify-ca`, and `verify-full`.
   sslMode: "require"
-
-# imagePullPolicy -- Sets the policy for pulling a container image across all
-# services.
-imagePullPolicy: Always
-
-# Contains configuration the REST API handling CRUD operations to
-# the platform.
-cemanager:
-  # cemanager.replicas -- The number of replicas to run of the manager.
-  replicas: 1
-  # cemanager.image -- Injected during releases.
-  image: ""
-  # cemanager.resources -- Kubernetes resource request and limits for cemanager
-  # pods.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # cemanager:
-  #   # This will cause all values to be unset.
-  #   resources:
-  #   replica: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "250m"
-      memory: "512Mi"
-
-# Contains the user interface of the platform.
-dashboard:
-  # dashboard.replicas -- The number of replicas to run of the dashboard.
-  replicas: 1
-  # dashboard.image -- Injected during releases.
-  image: ""
-  # dashboard.resources -- Kubernetes resource request and limits for dasboard
-  # pods.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # dashboard:
-  #   # This will cause all values to be unset.
-  #   resources:
-  #   replica: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "250m"
-      memory: "512Mi"
 
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
+  # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
+  # cemanager and all users who can use this workspace provider. ingress.host
+  # will be used if this is not set.
+  accessURL: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
   # envproxy.image -- Injected during releases.
@@ -182,55 +102,14 @@ envproxy:
   # disconnects during deployments.
   terminationGracePeriodSeconds: 14400
 
-# timescale -- Contains configuration for the internal database. It is not
-# recommended to run this service in production. See the `postgres` section for
-# connecting to an external Postgres database.
-timescale:
-  # timescale.image -- Injected during releases.
-  image: ""
-  # timescale.resources -- Kubernetes resource request and limits for the
-  # timescale pod.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # timescale:
-  #   # This will cause all values to be unset.
-  #   resources:
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "1Gi"
-      # timescale.resources.requests.storage -- Specifies the size of the
-      # volume claim for persisting the database.
-      storage: "10Gi"
-    limits:
-      cpu: "250m"
-      memory: "1Gi"
-
-envbox:
-  # envbox.image -- Injected during releases.
-  image: ""
-
-envbuilder:
-  # envbuilder.image -- Injected during releases.
-  image: ""
-
-# environments defines configuration that is applied to all
-# user environments. 
-environments:
-  # environments.tolerations -- Tolerations are applied to all user
-  # environments. Each element is a regular pod toleration object. To set
-  # service tolerations see serviceTolerations. See values.yaml for an example.
-  #
-  # e.g.
-  # tolerations:
-  # - key: "my key"
-  #   operator: "Exists"
-  #   effect: "NoExecute"
-  #   tolerationSeconds: 6000
-  tolerations: []
+# cemanager -- Details for connecting to the cemanager instance.
+# NOTE: the envproxy must be accessible by envproxy.accessURL from the
+# cemanager.
+cemanager:
+  # cemangaer.accessURL -- The access URL from envproxy to cemanager.
+  accessURL: ""
+  # cemanager.token -- Set by coder-cli during the initial installation.
+  token: ""
 
 # certs -- Describes CAs that should be added to Coder services. These certs
 # are NOT added to environments.
@@ -244,10 +123,12 @@ certs:
 
 # namespaceWhitelist -- A list of additional namespaces that environments may
 # be deploy to.
+# NOTE: this only applies to environments managed by this workspace provider.
 namespaceWhitelist: []
 
 ssh:
   # ssh.enable -- Enables accessing environments via SSH.
+  # NOTE: this only applies to environments managed by this workspace provider.
   enable: true
 
 # serviceTolerations -- Tolerations are applied to all Coder managed services.
