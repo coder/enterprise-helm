@@ -7,7 +7,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cemanager
+  name: coder
   namespace: {{ .Release.Namespace | quote }}
 ---
 # The roles the manager needs cluster wide for
@@ -15,7 +15,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: cemanager-{{ .Release.Namespace }}-cluster
+  name: coder-{{ .Release.Namespace }}-cluster
 rules:
   - apiGroups:
       - "" # indicates the core API group
@@ -39,14 +39,14 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   namespace: {{ .Release.Namespace | quote }}
-  name: cemanager-{{ .Release.Namespace }}-clusterbinding
+  name: coder-{{ .Release.Namespace }}-clusterbinding
 subjects:
   - kind: ServiceAccount
-    name: cemanager
+    name: coder
     namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: ClusterRole
-  name: cemanager-{{ .Release.Namespace }}-cluster
+  name: coder-{{ .Release.Namespace }}-cluster
   apiGroup: rbac.authorization.k8s.io
 
 # Create roles in each whitelisted namespace.
@@ -58,7 +58,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: cemanager
+  name: coder
   namespace: {{ . | quote }}
 rules:
   - apiGroups:
@@ -139,13 +139,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   namespace: {{ . | quote }}
-  name: cemanager
+  name: coder
 subjects:
   - kind: ServiceAccount
-    name: cemanager
+    name: coder
     namespace: {{ $.Release.Namespace | quote }}
 roleRef:
   kind: Role
-  name: cemanager
+  name: coder
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
