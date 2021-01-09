@@ -28,7 +28,9 @@ spec:
       restartPolicy: Always
       # 4 hours
       terminationGracePeriodSeconds: {{ .Values.envproxy.terminationGracePeriodSeconds }}
-      serviceAccountName: envproxy
+      # envproxy itself doesn't use this service account, but instead forwards
+      # the account token to the cemanager.
+      serviceAccountName: coder
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: envproxy
@@ -120,10 +122,3 @@ spec:
       port: 2222
       protocol: TCP
 {{- end }}
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ .Release.Namespace | quote }}
-  name: envproxy
