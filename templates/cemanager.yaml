@@ -75,6 +75,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: VERBOSE
               value: "true"
+            - name: LOCAL_ENVPROXY_TOKEN
+              value: {{ include "coder.envproxy.token" . | quote }}
               # ENVIRONMENT_SERVICE_ACCOUNT is the service account to assign
               # to all user environments. It's primarily used to ensure
               # environments abide a pod security policy if one is set.
@@ -82,10 +84,7 @@ spec:
               value: "environments"
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
-            - name: CLUSTER_DOMAIN_SUFFIX
-              value: {{ .Values.clusterDomainSuffix | quote }}
-            - name: LOCAL_ENVPROXY_TOKEN
-              value: {{ include "coder.envproxy.token" . | quote }}
+{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:

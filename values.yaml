@@ -167,6 +167,10 @@ envproxy:
   # and trailing "/proxy" (no trailing slash).
   # e.g. "https://proxy.coder.com/proxy"
   accessURL: ""
+  # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
+  # from the cemanager. Defaults to
+  # "https://kubernetes.default.$clusterDomainSuffix:443" if not set.
+  clusterAddress: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
   # envproxy.image -- Injected during releases.

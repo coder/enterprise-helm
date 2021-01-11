@@ -54,6 +54,8 @@ spec:
               value: {{ .Values.logging.stackdriver | quote }}
             - name: VERBOSE
               value: "true"
+            - name: CLUSTER_ADDRESS
+              value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
               value: {{ .Values.clusterDomainSuffix | quote }}
             - name: NAMESPACE
@@ -68,8 +70,11 @@ spec:
               value: {{ include "coder.cemanager.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
               value: {{ include "coder.envproxy.token" . | quote }}
+            - name: STORAGE_CLASS
+              value: {{ .Values.storageClassName | quote }}
+            - name: DEVURL_HOST
+              value: {{ .Values.devurls.host | quote }}
 {{- include "coder.namespaceWhitelist.env" . | indent 12 }}
-{{- include "coder.devurls.hostEnv" . | indent 12 }}
           command:
             - /entrypoint.sh
             - envproxy

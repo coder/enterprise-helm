@@ -8,16 +8,6 @@ storageClassName: {{ .Values.storageClassName | quote }}
 {{- end }}
 {{- end }}
 {{/*
-  coder.devurls.hostEnv adds an environment variable indicating
-  the dev URL host.
-*/}}
-{{- define "coder.devurls.hostEnv" }}
-{{- if ne .Values.devurls.host "" }}
-- name: "DEVURL_DOMAIN"
-  value: {{ .Values.devurls.host | quote }}
-{{- end }}
-{{- end }}
-{{/*
   coder.postgres.env adds environment variables that
   specify how to connect to a Postgres instance.
 */}}
@@ -138,4 +128,14 @@ tolerations:
 */}}
 {{- define "coder.envproxy.token" }}
 {{- randAlphaNum 32 -}}
+{{- end }}
+{{/*
+  coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
+*/}}
+{{- define "coder.cluster.accessURL" }}
+{{- if ne .Values.envproxy.clusterAddress "" }}
+{{- .Values.envproxy.clusterAddress -}}
+{{- else -}}
+  https://kubernetes.default.{{ .Values.clusterDomainSuffix }}:443
+{{- end }}
 {{- end }}
