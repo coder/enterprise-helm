@@ -121,6 +121,6 @@ tolerations:
 {{- if ne .Values.envproxy.clusterAddress "" }}
 {{- .Values.envproxy.clusterAddress -}}
 {{- else -}}
-    https://kubernetes.default.{{ .Values.clusterDomainSuffix }}:443
+    https://kubernetes.default{{ .Values.clusterDomainSuffix }}:443
 {{- end }}
 {{- end }}
