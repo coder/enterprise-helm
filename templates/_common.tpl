@@ -94,7 +94,7 @@ tolerations:
 {{- define "coder.cemanager.accessURL" }}
 {{- if ne .Values.cemanager.accessURL "" }}
 {{- .Values.cemanager.accessURL -}}
-{{- else }}
+{{- else -}}
     http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
 {{- end }}
 {{- end }}
