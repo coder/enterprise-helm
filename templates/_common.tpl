@@ -94,15 +94,8 @@ tolerations:
 {{- define "coder.cemanager.accessURL" }}
 {{- if ne .Values.cemanager.accessURL "" }}
 {{- .Values.cemanager.accessURL -}}
-{{- else if ne .Values.ingress.host "" }}
-    {{- if .Values.ingress.tls.enable -}}
-    https://
-    {{- else -}}
-    http://
-    {{- end -}}
-    {{- .Values.ingress.host }}
 {{- else }}
-{{- fail "cemanager.accessURL or ingress.host must be set" }}
+    http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
 {{- end }}
 {{- end }}
 {{/*
@@ -119,7 +112,6 @@ tolerations:
     {{- end -}}
     {{- .Values.ingress.host }}/proxy
 {{- else }}
-{{- fail "envproxy.accessURL or ingress.host must be set" }}
 {{- end }}
 {{- end }}
 {{/*
@@ -136,6 +128,6 @@ tolerations:
 {{- if ne .Values.envproxy.clusterAddress "" }}
 {{- .Values.envproxy.clusterAddress -}}
 {{- else -}}
-  https://kubernetes.default.{{ .Values.clusterDomainSuffix }}:443
+    https://kubernetes.default.{{ .Values.clusterDomainSuffix }}:443
 {{- end }}
 {{- end }}
