@@ -115,13 +115,6 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.envproxy.token is the token used for the local envproxy to talk to the
-  cemanager. It's OK that this changes every deploy.
-*/}}
-{{- define "coder.envproxy.token" }}
-{{- randAlphaNum 32 -}}
-{{- end }}
-{{/*
   coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
 */}}
 {{- define "coder.cluster.accessURL" }}

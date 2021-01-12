@@ -76,7 +76,10 @@ spec:
             - name: VERBOSE
               value: "true"
             - name: LOCAL_ENVPROXY_TOKEN
-              value: {{ include "coder.envproxy.token" . | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: local-envproxy-token
+                  key: token
               # ENVIRONMENT_SERVICE_ACCOUNT is the service account to assign
               # to all user environments. It's primarily used to ensure
               # environments abide a pod security policy if one is set.
