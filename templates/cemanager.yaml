@@ -37,10 +37,7 @@ spec:
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
       terminationGracePeriodSeconds: 300
-      # Start the manager with a specific service account with no permissions.
-      # The envproxy forwards a service account token to the cemanager on
-      # startup called "coder" with all the permissions it needs.
-      serviceAccountName: cemanager
+      serviceAccountName: coder
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: cemanager
@@ -149,11 +146,3 @@ spec:
     - name: tcp-cemanager
       port: 8080
       protocol: TCP
----
-# The service account for the manager. It has no permissions, because cemanager
-# uses the `coder` role to touch the cluster.
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: cemanager
-  namespace: {{ .Release.Namespace | quote }}
