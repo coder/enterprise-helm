@@ -7,10 +7,10 @@ metadata:
 type: Opaque
 # Adapted from https://stackoverflow.com/a/64325744
 data:
-  {{- if .Release.IsInstall }}
-  token: {{ randAlphaNum 32 | b64enc }}
-  {{- else }}
+  {{- if (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token") }}
   token: {{ (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token").data.token }}
+  {{- else }}
+  token: {{ randAlphaNum 32 | b64enc }}
   {{- end }}
 
 ---
