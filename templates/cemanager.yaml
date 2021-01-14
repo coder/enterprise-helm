@@ -42,6 +42,24 @@ spec:
       # administer pods.
       serviceAccountName: cemanager
 {{- include "coder.serviceTolerations" . | indent 6 }}
+      initContainers:
+        - name: migrations
+          image: {{ .Values.cemanager.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          env:
+            - name: HUMAN_LOG
+              value: {{ .Values.logging.human | quote }}
+            - name: JSON_LOG
+              value: {{ .Values.logging.json | quote }}
+            - name: STACKDRIVER_LOG
+              value: {{ .Values.logging.stackdriver | quote }}
+{{- include "coder.postgres.env" . | indent 12 }}
+          command:
+            # Bash is needed to pass signals correctly.
+            - /bin/bash
+            - -c
+            - |
+              exec /entrypoint.sh cemanager migrate up
       containers:
         - name: cemanager
           image: {{ .Values.cemanager.image | quote }}
@@ -52,6 +70,8 @@ spec:
           # cemanager is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
+            - name: SKIP_MIGRATIONS
+              value: "true"
             - name: ASSETS_URL
             - name: HUMAN_LOG
               value: {{ .Values.logging.human | quote }}
@@ -100,7 +120,7 @@ spec:
               /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               # Pass signals down to the envmanager.
-              exec /entrypoint.sh cemanager
+              exec /entrypoint.sh cemanager run
           readinessProbe:
             exec:
               # The traditional /healthz endpoint is not used since

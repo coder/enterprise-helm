@@ -79,7 +79,7 @@ spec:
               /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
               echo Starting envproxy;
               # Pass signals down to the envproxy.
-              exec /entrypoint.sh envproxy
+              exec /entrypoint.sh envproxy run
           readinessProbe:
             exec:
               command:
