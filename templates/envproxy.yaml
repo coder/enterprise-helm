@@ -1,19 +1,4 @@
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: local-envproxy-token
-  namespace: {{ .Release.Namespace | quote }}
-type: Opaque
-# Adapted from https://stackoverflow.com/a/64325744
-data:
-  {{- if .Release.IsInstall }}
-  token: {{ randAlphaNum 32 | b64enc }}
-  {{- else }}
-  token: {{ (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token").data.token }}
-  {{- end }}
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -84,10 +69,7 @@ spec:
             - name: CEMANAGER_ACCESS_URL
               value: {{ include "coder.cemanager.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: local-envproxy-token
-                  key: token
+              value: {{ .Values.envproxy.token | quote }}
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
