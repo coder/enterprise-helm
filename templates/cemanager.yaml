@@ -50,12 +50,21 @@ spec:
               value: {{ .Values.logging.json | quote }}
             - name: STACKDRIVER_LOG
               value: {{ .Values.logging.stackdriver | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: VERBOSE
+              value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
             # Bash is needed to pass signals correctly.
             - /bin/bash
             - -c
             - |
+              echo Waiting on db;
+              /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
+              echo Starting entrypoint.sh;
               exec /entrypoint.sh cemanager migrate up
       containers:
         - name: cemanager
