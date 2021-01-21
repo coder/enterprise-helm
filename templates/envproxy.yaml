@@ -96,6 +96,7 @@ spec:
           command:
             - /entrypoint.sh
             - envproxy
+            - run
           readinessProbe:
             exec:
               command:
