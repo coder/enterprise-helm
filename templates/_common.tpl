@@ -8,16 +8,6 @@ storageClassName: {{ .Values.storageClassName | quote }}
 {{- end }}
 {{- end }}
 {{/*
-  coder.devurls.hostEnv adds an environment variable indicating
-  the dev URL host.
-*/}}
-{{- define "coder.devurls.hostEnv" }}
-{{- if ne .Values.devurls.host "" }}
-- name: "DEVURL_DOMAIN"
-  value: {{ .Values.devurls.host | quote }}
-{{- end }}
-{{- end }}
-{{/*
   coder.postgres.env adds environment variables that
   specify how to connect to a Postgres instance.
 */}}
@@ -99,11 +89,38 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.envproxyCredsEnv - temporary POC for intra-service auth
+  coder.cemanager.accessURL is a URL for accessing the cemanager.
 */}}
-{{- define "coder.envproxyCredsEnv" }}
-- name: "CODER_SERVER_USER"
-  value: {{ now | date "2006-01-02" | sha256sum }}
-- name: "CODER_SERVER_KEY"
-  value: {{ now | date "2006-01-02" | sha256sum }}
+{{- define "coder.cemanager.accessURL" }}
+{{- if ne .Values.cemanager.accessURL "" }}
+{{- .Values.cemanager.accessURL -}}
+{{- else -}}
+    http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+{{- end }}
+{{- end }}
+{{/*
+  coder.envproxy.accessURL is a URL for accessing the envproxy.
+*/}}
+{{- define "coder.envproxy.accessURL" }}
+{{- if ne .Values.envproxy.accessURL "" }}
+{{- .Values.envproxy.accessURL -}}
+{{- else if ne .Values.ingress.host "" }}
+    {{- if .Values.ingress.tls.enable -}}
+    https://
+    {{- else -}}
+    http://
+    {{- end -}}
+    {{- .Values.ingress.host }}/proxy
+{{- else }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
+*/}}
+{{- define "coder.cluster.accessURL" }}
+{{- if ne .Values.envproxy.clusterAddress "" }}
+{{- .Values.envproxy.clusterAddress -}}
+{{- else -}}
+    https://kubernetes.default{{ .Values.clusterDomainSuffix }}:443
+{{- end }}
 {{- end }}

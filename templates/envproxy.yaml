@@ -1,4 +1,19 @@
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: local-envproxy-token
+  namespace: {{ .Release.Namespace | quote }}
+type: Opaque
+# Adapted from https://stackoverflow.com/a/64325744
+data:
+  {{- if (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token") }}
+  token: {{ (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token").data.token }}
+  {{- else }}
+  token: {{ randAlphaNum 32 | b64enc }}
+  {{- end }}
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,7 +43,9 @@ spec:
       restartPolicy: Always
       # 4 hours
       terminationGracePeriodSeconds: {{ .Values.envproxy.terminationGracePeriodSeconds }}
-      serviceAccountName: envproxy
+      # envproxy itself doesn't use this service account, but instead forwards
+      # the account token to the cemanager.
+      serviceAccountName: coder
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: envproxy
@@ -50,36 +67,36 @@ spec:
               value: {{ .Values.logging.json | quote }}
             - name: STACKDRIVER_LOG
               value: {{ .Values.logging.stackdriver | quote }}
+            - name: VERBOSE
+              value: "true"
+            - name: CLUSTER_ADDRESS
+              value: {{ include "coder.cluster.accessURL" . | quote }}
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: {{ .Values.clusterDomainSuffix | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: VERBOSE
-              value: "true"
-            - name: CLUSTER_DOMAIN_SUFFIX
-              value: {{ .Values.clusterDomainSuffix | quote }}
-            - name: ENVBUILDER_IMAGE
-              value: {{ .Values.envbuilder.image | quote }}
-            - name: ENVBOX_IMAGE
-              value: {{ .Values.envbox.image | quote }}
-            - name: ENVIRONMENT_SERVICE_ACCOUNT
-              value: "environments"
-{{- include "coder.environments.configMapEnv" . | indent 12 }}
-{{- include "coder.devurls.hostEnv" . | indent 12 }}
-{{- include "coder.postgres.env" . | indent 12 }}
-{{- include "coder.envproxyCredsEnv" . | indent 12 }}
+            - name: ENVPROXY_ACCESS_URL
+              value: {{ include "coder.envproxy.accessURL" . | quote }}
+            - name: SSH_ENABLED
+              value: {{ .Values.ssh.enable | quote }}
             - name: CEMANAGER_ACCESS_URL
-              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+              value: {{ include "coder.cemanager.accessURL" . | quote }}
+            - name: CEMANAGER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: local-envproxy-token
+                  key: token
+            - name: STORAGE_CLASS
+              value: {{ .Values.storageClassName | quote }}
+            - name: DEVURL_HOST
+              value: {{ .Values.devurls.host | quote }}
+{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
           command:
-            # Bash needs to be used for signals to be passed down correctly.
-            - /bin/bash
-            - -c
-            - |
-              echo Waiting on db;
-              /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
-              echo Starting envproxy;
-              # Pass signals down to the envproxy.
-              exec /entrypoint.sh envproxy run
+            - /entrypoint.sh
+            - envproxy
+            - run
           readinessProbe:
             exec:
               command:
@@ -109,6 +126,7 @@ spec:
 {{- include "coder.resources" .Values.envproxy.resources | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
+
 ---
 apiVersion: v1
 kind: Service
@@ -128,11 +146,3 @@ spec:
       port: 2222
       protocol: TCP
 {{- end }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ .Release.Namespace | quote }}
-  name: envproxy
-{{- include "coder.envproxy.roles" . }}
-{{- include "coder.envproxy.rolebindings" . }}
