@@ -27,6 +27,7 @@ spec:
         fsGroup: 1000
       restartPolicy: Always
       serviceAccountName: dashboard
+{{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: dashboard
           image: {{ .Values.dashboard.image | quote }}
