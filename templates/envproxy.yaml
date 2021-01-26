@@ -102,27 +102,19 @@ spec:
               command:
                 - curl
                 - -s
-                - localhost:8080/healthz
-            initialDelaySeconds: 30
-            failureThreshold: 12
-            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
-            # the manager is most likely in a bad spot. It's possible for
-            # migrations to take extended periods of time, so we need to
-            # account for that.
-            periodSeconds: 20
+                - localhost:8080/healthzz
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
           livenessProbe:
             exec:
               command:
                 - curl
                 - -s
                 - localhost:8080/healthz
-            initialDelaySeconds: 30
-            failureThreshold: 14
-            # Poll envproxy every 20 seconds. If we fail 12 times (4 minutes)
-            # the manager is most likely in a bad spot. It's possible for
-            # migrations to take extended periods of time, so we need to
-            # account for that.
-            periodSeconds: 20
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
 {{- include "coder.resources" .Values.envproxy.resources | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}

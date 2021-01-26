@@ -136,26 +136,18 @@ spec:
                 - curl
                 - -s
                 - localhost:8080/cem-healthz
-            initialDelaySeconds: 30
-            failureThreshold: 12
-            # Poll the manager every 20 seconds. If we fail 12 times (4
-            # minutes) the manager is most likely in a bad spot. It's possible
-            # for migrations to take extended periods of time, so we need to
-            # account for that.
-            periodSeconds: 20
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
           livenessProbe:
             exec:
               command:
                 - curl
                 - -s
                 - localhost:8080/cem-healthz
-            initialDelaySeconds: 30
-            failureThreshold: 12
-            # Poll the manager every 20 seconds. If we fail 12 times (4
-            # minutes) the manager is most likely in a bad spot. It's possible
-            # for migrations to take extended periods of time, so we need to
-            # account for that.
-            periodSeconds: 20
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}

@@ -46,18 +46,18 @@ spec:
                 - curl
                 - -s
                 - localhost:3000/healthz
-            initialDelaySeconds: 8
-            failureThreshold: 12
-            periodSeconds: 4
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
           livenessProbe:
             exec:
               command:
                 - curl
                 - -s
                 - localhost:3000/healthz
-            initialDelaySeconds: 30
-            failureThreshold: 14
-            periodSeconds: 20
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
 {{- include "coder.resources" .Values.dashboard.resources | indent 10 }}
 ---
 apiVersion: v1
