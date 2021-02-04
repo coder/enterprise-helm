@@ -280,7 +280,11 @@ serviceTolerations: []
 
 # logging configures the logging format of Coder services
 logging:
-  # logging.human -- Where to send logs that are formatted for readability by a
+  ## File based output -- coder can send output to one or more
+  # file-like objects (e.g. /dev/stderr, /dev/stdout, or a file. You
+  # may specify multiple file based output targets.
+  #
+  # logging.human -- pWhere to send logs that are formatted for readability by a
   # human. Set to an empty string to disable.
   human: /dev/stderr
   # logging.stackdriver -- Where to send logs that are formatted for Google
@@ -289,3 +293,11 @@ logging:
   # logging.json -- Where to send logs that are formatted as JSON. Set to an
   # empty string to disable.
   json: ""
+
+  ## Splunk logging configuration -- Coder can send logs directly to
+  # Splunk, in addition to file-based output, if these values are
+  # configured. The channel is optional, and this logging is disabled
+  # if either the URL and Token are set to the empty string.
+  splunk_url: ""
+  splunk_token: ""
+  splunk_channel: ""
