@@ -41,7 +41,7 @@ ingress:
   # creating the ingress. These only apply to the Ingress Kubernetes kind.
   # The annotations can be used to specify certificate issuers or
   # other cloud provider specific integrations. Annotations are provided as
-  # strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ] 
+  # strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ]
   additionalAnnotations: []
   # ingress.tls -- TLS options for the ingress. The hosts used for the tls
   # configuration come from the ingress.host and the devurls.host variables. If
@@ -60,7 +60,7 @@ ingress:
     # ingress.service.annotations -- Additional annotations to add to the Service
     # object. For example to make the ingress spawn an internal load balancer:
     # annotations:
-    #  cloud.google.com/load-balancer-type: "Internal" 
+    #  cloud.google.com/load-balancer-type: "Internal"
     annotations: {}
 
 devurls:
@@ -234,7 +234,7 @@ envbuilder:
   image: ""
 
 # environments defines configuration that is applied to all
-# user environments. 
+# user environments.
 environments:
   # environments.tolerations -- Tolerations are applied to all user
   # environments. Each element is a regular pod toleration object. To set
@@ -278,13 +278,11 @@ ssh:
 #   tolerationSeconds: 6000
 serviceTolerations: []
 
-# logging configures the logging format of Coder services
+# logging configures the logging format of Coder services. Specify one
+# or more targets for logging output. If you have multiple output
+# targets configured, coder will write output to multiple targets.
 logging:
-  ## File based output -- coder can send output to one or more
-  # file-like objects (e.g. /dev/stderr, /dev/stdout, or a file. You
-  # may specify multiple file based output targets.
-  #
-  # logging.human -- pWhere to send logs that are formatted for readability by a
+  # logging.human -- Where to send logs that are formatted for readability by a
   # human. Set to an empty string to disable.
   human: /dev/stderr
   # logging.stackdriver -- Where to send logs that are formatted for Google
@@ -294,10 +292,15 @@ logging:
   # empty string to disable.
   json: ""
 
-  ## Splunk logging configuration -- Coder can send logs directly to
-  # Splunk, in addition to file-based output, if these values are
-  # configured. The channel is optional, and this logging is disabled
-  # if either the URL and Token are set to the empty string.
-  splunk_url: ""
-  splunk_token: ""
-  splunk_channel: ""
+  # logging.splunk -- Coder can send logs directly to Splunk, in
+  # addition to file-based output, if these values are configured. The
+  # channel is optional, and this logging is disabled if either the
+  # URL and Token are set to the empty string.
+  splunk:
+    # logging.splunk.url -- The Splunk HEC collector endpoint.
+    url: ""
+    # logging.splunk.token -- The Splunk HEC collector token.
+    token: ""
+    # logging.splunk_channel -- Optional. Specify the channel that you'd
+    # like to associate with all messages.
+    channel: ""
