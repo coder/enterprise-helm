@@ -50,6 +50,12 @@ spec:
               value: {{ .Values.logging.json | quote }}
             - name: STACKDRIVER_LOG
               value: {{ .Values.logging.stackdriver | quote }}
+            - name: SPLUNK_URL
+              value: {{ .Values.logging.splunk.url | quote }}
+            - name: SPLUNK_TOKEN
+              value: {{ .Values.logging.splunk.token | quote }}
+            - name: SPLUNK_CHANNEL
+              value: {{ .Values.logging.splunk.channel | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
