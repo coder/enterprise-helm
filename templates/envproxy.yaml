@@ -108,7 +108,7 @@ spec:
               command:
                 - curl
                 - -s
-                - localhost:8080/healthzz
+                - localhost:8080/healthz
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
