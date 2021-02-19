@@ -112,20 +112,16 @@ spec:
             - envproxy
             - run
           readinessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:8080/healthz
+            httpGet:
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:8080/healthz
+            httpGet:
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
