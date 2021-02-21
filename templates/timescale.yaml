@@ -19,6 +19,10 @@ kind: StatefulSet
 metadata:
   name: timescale
   namespace: {{ .Release.Namespace }}
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   serviceName: timescale
   replicas: 1
@@ -29,6 +33,10 @@ spec:
     metadata:
       labels:
         app: timescale
+      annotations:
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: timescale
       securityContext:

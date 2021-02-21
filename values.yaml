@@ -304,3 +304,5 @@ logging:
     # logging.splunk_channel -- Optional. Specify the channel that you'd
     # like to associate with all messages.
     channel: ""
+
+deploymentAnnotations: {}

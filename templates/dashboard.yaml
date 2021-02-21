@@ -6,6 +6,10 @@ metadata:
     coder.deployment: dashboard
   name: dashboard
   namespace: {{ .Release.Namespace | quote }}
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.dashboard.replicas }}
   strategy:
@@ -19,6 +23,10 @@ spec:
     metadata:
       labels:
         coder.deployment: dashboard
+      annotations:
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       # coder:coder
       securityContext:
