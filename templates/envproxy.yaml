@@ -21,6 +21,10 @@ metadata:
     coder.deployment: envproxy
   name: envproxy
   namespace: {{ .Release.Namespace | quote }}
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: {{ .Values.envproxy.replicas }}
   strategy:
@@ -34,6 +38,10 @@ spec:
     metadata:
       labels:
         coder.deployment: envproxy
+      annotations:
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       # coder:coder
       securityContext:

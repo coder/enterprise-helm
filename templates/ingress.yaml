@@ -209,6 +209,10 @@ metadata:
   labels:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   replicas: 1
   selector:
@@ -223,6 +227,9 @@ spec:
       annotations:
         prometheus.io/port: "10254"
         prometheus.io/scrape: "true"
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       # wait up to five minutes for the drain of connections
       terminationGracePeriodSeconds: 300
