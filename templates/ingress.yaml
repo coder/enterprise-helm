@@ -1,6 +1,6 @@
 # This configuration file is ported from the nginx repo:
 # See https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-{{- if eq .Values.ingress.useDefault  true}}
+{{- if .Values.ingress.useDefault }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -326,12 +326,14 @@ spec:
     - name: https
       port: 443
       targetPort: https
-{{- if eq .Values.ssh.enable true }}
+{{- if .Values.ssh.enable }}
     - name: ssh
       port: 22
       targetPort: 22
       protocol: TCP
 {{- end }}
+{{- end }}
+{{- if or .Values.ingress.useDefault .Values.ingress.enable }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -339,23 +341,33 @@ metadata:
   name: web-ingress
   namespace: {{ .Release.Namespace | quote }}
   annotations:
+  {{- if .Values.ingress.useDefault }}
     # This class definition connects the nginx ingress controller
     # to the web-ingress.
-    kubernetes.io/ingress.class: {{ .Release.Namespace }}
+    kubernetes.io/ingress.class: {{ .Release.Namespace | quote }}
     # A body size of 0 prevents 413 status codes when trying to
     # push an image.
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    {{- if .Values.ingress.additionalAnnotations }}
+  {{- end }}
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+    # Deprecated
+  {{- if .Values.ingress.additionalAnnotations }}
     {{- range .Values.ingress.additionalAnnotations }}
     {{ . }}
     {{- end }}
-    {{- end }}
+  {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
+  backend:
+    serviceName: dashboard
+    servicePort: 3000
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
+    {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
       - path: /proxy/
         backend:
           serviceName: envproxy
@@ -372,7 +384,7 @@ spec:
         backend:
           serviceName: dashboard
           servicePort: 3000
-{{- if ne .Values.devurls.host "" }}
+    {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
@@ -380,6 +392,33 @@ spec:
         backend:
           serviceName: envproxy
           servicePort: 8080
+    {{- end }}
+    {{- else }}
+      - path: /proxy/*
+        backend:
+          serviceName: envproxy
+          servicePort: 8080
+      - path: /api/*
+        backend:
+          serviceName: cemanager
+          servicePort: 8080
+      - path: /auth/*
+        backend:
+          serviceName: cemanager
+          servicePort: 8080
+      - path: /*
+        backend:
+          serviceName: dashboard
+          servicePort: 3000
+    {{- if ne .Values.devurls.host "" }}
+  - host: {{ .Values.devurls.host | quote }}
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: envproxy
+          servicePort: 8080
+    {{- end }}
+    {{- end }}
 {{- end }}
 ---
-{{- end }}
