@@ -316,3 +316,7 @@ logging:
     channel: ""
 
 deploymentAnnotations: {}
+
+ingress-nginx:
+  controller:
+    ingressClass: "$(POD_NAMESPACE)"

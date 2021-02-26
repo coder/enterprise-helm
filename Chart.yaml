@@ -13,3 +13,9 @@ icon: https://helm.coder.com/coder_logo_blue.png
 maintainers:
   - name: Coder Engineering
     email: helm@coder.com
+
+dependencies:
+- name: ingress-nginx
+  version: "~3.23.0"
+  repository: "https://kubernetes.github.io/ingress-nginx"
+  condition: ingress.useDefault
