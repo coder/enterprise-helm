@@ -1,0 +1,102 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-wsp-hook"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: wsp-hook
+          image: "curlimages/curl"
+          env:
+            - name: CLUSTER_ADDRESS
+              value: { { include "coder.cluster.accessURL" . | quote } }
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: { { .Values.clusterDomainSuffix | quote } }
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: ENVPROXY_ACCESS_URL
+              value: { { include "coder.envproxy.accessURL" . | quote } }
+            - name: SSH_ENABLED
+              value: { { .Values.ssh.enable | quote } }
+            - name: CEMANAGER_ACCESS_URL
+              value: { { include "coder.cemanager.accessURL" . | quote } }
+            - name: CEMANAGER_TOKEN
+              value: { { .Values.envproxy.token | quote } }
+            - name: STORAGE_CLASS
+              value: { { .Values.storageClassName | quote } }
+            - name: DEVURL_HOST
+              value: { { .Values.devurls.host | quote } }
+          { { - include "coder.namespaceWhitelist.env" . | indent 12 } }
+          type ResourcePoolSpec struct {
+          Name                string                      `json:"name"`
+          Status              database.ResourcePoolStatus `json:"status"`
+          Local               bool                        `json:"local"`
+          ClusterCA           string                      `json:"cluster_ca"`
+          ClusterAddress      string                      `json:"cluster_address"`
+          SAToken             string                      `json:"sa_token"`
+          DefaultNamespace    string                      `json:"default_namespace"`
+          StorageClass        string                      `json:"storage_class"`
+          ClusterDomainSuffix string                      `json:"cluster_domain_suffix"`
+          EnvproxyAccessURL   string                      `json:"envproxy_access_url"`
+          EnvproxyToken       string                      `json:"envproxy_token"`
+          DevurlHost          string                      `json:"devurl_host"`
+          SSHEnabled          bool                        `json:"ssh_enabled"`
+          NamespaceWhitelist  string                      `json:"namespace_whitelist"`
+          OrgWhitelist        []string                    `json:"org_whitelist"`
+      }
+      Name: "",
+      ClusterCA: string(app.conf.StartupEnvironment.ClusterCA),
+      ClusterAddress: app.conf.StartupEnvironment.ClusterAddress,
+      SAToken: app.conf.StartupEnvironment.SAToken,
+      DefaultNamespace: app.conf.StartupEnvironment.DefaultNamespace,
+      StorageClass: app.conf.StartupEnvironment.StorageClass,
+      ClusterDomainSuffix: app.conf.StartupEnvironment.ClusterDomainSuffix,
+      EnvproxyAccessURL: app.conf.StartupEnvironment.EnvproxyAccessURL,
+      DevurlHost: app.conf.StartupEnvironment.DevURLHost,
+      SSHEnabled: app.conf.StartupEnvironment.SSHEnabled,
+      NamespaceWhitelist: app.conf.StartupEnvironment.NamespaceWhitelist,
+          command: [ "sh" ]
+          args:
+            - "-c"
+            - |
+              CLUSTER_CA=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt)
+              SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+              curl \
+                -X POST \
+                -H 'Content-Type: application/json' \
+                -H "Authorization: Service $CEMANAGER_TOKEN"
+                -d '{
+                      "cluster_ca": "'"$CLUSTER_CA"'",
+                      "cluster_address": "'"$CLUSTER_ADDRESS"'",
+                      "sa_token": "'"$SA_TOKEN"'",
+                      "cluster_address": "'"$CLUSTER_ADDRESS"'",
+                      "default_namespace": "'"$NAMESPACE"'",
+                      "storage_class": "'"$STORAGE_CLASS"'",
+                      "cluster_domain_suffix": "'"$CLUSTER_DOMAIN_SUFFIX"'",
+                      "envproxy_access_url": "'"$ENVPROXY_ACCESS_URL"'",
+                      "devurl_host": "'"$DEVURL_HOST"'",
+                      "ssh_enabled": "'"$SSH_ENABLED"'",
+                   }' \
+                "$CEMANAGER_ACCESS_URL"
+          ]
