@@ -2,74 +2,70 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "{{ .Release.Name }}-wsp-hook"
-  labels:
-    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
+  backoffLimit: 1
   template:
     metadata:
-      name: "{{ .Release.Name }}"
-      labels:
-        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-        app.kubernetes.io/instance: {{ .Release.Name | quote }}
-        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      name: "{{ .Release.Name }}-wsp-hook"
+      annotations:
+        "sidecar.istio.io/inject": "false"
     spec:
       restartPolicy: Never
       containers:
-        - name: wsp-hook
+        - name: curl
           image: "curlimages/curl"
           env:
             - name: CEMANAGER_ACCESS_URL
-              value: { { include "coder.cemanager.accessURL" . | quote } }
+              value: {{ include "coder.cemanager.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: local-envproxy-token
                   key: token
             - name: CLUSTER_ADDRESS
-              value: { { include "coder.cluster.accessURL" . | quote } }
+              value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
-              value: { { .Values.clusterDomainSuffix | quote } }
+              value: {{ .Values.clusterDomainSuffix | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: ENVPROXY_ACCESS_URL
-              value: { { include "coder.envproxy.accessURL" . | quote } }
+              value: {{ include "coder.envproxy.accessURL" . | quote }}
             - name: SSH_ENABLED
-              value: { { .Values.ssh.enable | quote } }
+              value: {{ .Values.ssh.enable | quote }}
             - name: STORAGE_CLASS
-              value: { { .Values.storageClassName | quote } }
+              value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
-              value: { { .Values.devurls.host | quote } }
-          { { - include "coder.namespaceWhitelist.env" . | indent 12 } }
+              value: {{ .Values.devurls.host | quote }}
+          {{ include "coder.namespaceWhitelist.env" . | indent 12 }}
           command: [ "sh" ]
           args:
             - "-c"
             - |
-              CLUSTER_CA=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt)
-              SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-              curl \
-                -X POST \
+              code=$(curl \
+                -s -o /dev/null -w "%{http_code}" \
+                -L -X PUT "$CEMANAGER_ACCESS_URL/api/private/resource-pools" \
                 -H 'Content-Type: application/json' \
-                -H "Authorization: Service $CEMANAGER_TOKEN"
+                -H "Authorization: Service $CEMANAGER_TOKEN" \
                 -d '{
-                      "cluster_ca": "'"$CLUSTER_CA"'",
-                      "cluster_address": "'"$CLUSTER_ADDRESS"'",
-                      "sa_token": "'"$SA_TOKEN"'",
-                      "cluster_address": "'"$CLUSTER_ADDRESS"'",
-                      "default_namespace": "'"$NAMESPACE"'",
-                      "storage_class": "'"$STORAGE_CLASS"'",
-                      "cluster_domain_suffix": "'"$CLUSTER_DOMAIN_SUFFIX"'",
-                      "envproxy_access_url": "'"$ENVPROXY_ACCESS_URL"'",
-                      "devurl_host": "'"$DEVURL_HOST"'",
-                      "ssh_enabled": "'"$SSH_ENABLED"'",
-                      "namespace_whitelist": "'"$NAMESPACE_WHITELIST"'",
-                   }' \
-                "$CEMANAGER_ACCESS_URL"
+                     "cluster_ca": "'"$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt)"'",
+                     "cluster_address": "'"$CLUSTER_ADDRESS"'",
+                     "sa_token": "'"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"'",
+                     "cluster_address": "'"$CLUSTER_ADDRESS"'",
+                     "default_namespace": "'"$NAMESPACE"'",
+                     "storage_class": "'"$STORAGE_CLASS"'",
+                     "cluster_domain_suffix": "'"$CLUSTER_DOMAIN_SUFFIX"'",
+                     "envproxy_access_url": "'"$ENVPROXY_ACCESS_URL"'",
+                     "devurl_host": "'"$DEVURL_HOST"'",
+                     "ssh_enabled": "'"$SSH_ENABLED"'",
+                     "namespace_whitelist": "'"$NAMESPACE_WHITELIST"'",
+                   }')
+              if [[ "$code" -ne 200 ]]; then
+                exit 1
+              fi
