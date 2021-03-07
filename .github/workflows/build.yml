@@ -1,0 +1,16 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-20.10
+    steps:
+      - uses: actions/checkout@v2
