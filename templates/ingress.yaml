@@ -316,6 +316,7 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   type: LoadBalancer
+  loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
