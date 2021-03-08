@@ -13,22 +13,28 @@ help:
 all: lint fmt
 .PHONY: all
 
+clean:
+	rm -vrf build
+.PHONY: clean
+
 docs:
 .PHONY: docs
 
-lint: lint/markdown lint/helm lint/shellcheck
+lint: lint/helm lint/shellcheck
 .PHONY: lint
 
-lint/markdown:
-	@echo "--- Running markdownlint"
-.PHONY: lint/markdown
-
 lint/helm:
+	@echo "--- Running helm lint"
+	helm lint .
 .PHONY: lint/helm
 
 lint/shellcheck: $(shell scripts/depfind/sh.sh)
+	@echo "--- Running shellcheck"
 	shellcheck $^
 .PHONY: lint/shellcheck
+
+lint/kube:
+.PHONY: lint/kube
 
 fmt:
 	@echo "abc"
@@ -41,4 +47,4 @@ fmt/docs: $(shell scripts/depfind/markdown.sh)
 
 README.md: README.md.gotmpl
 	@echo "--- Generating documentation"
-	helm-docs
+	helm-docs --template-files=$<
