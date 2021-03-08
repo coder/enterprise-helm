@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: built-in-envproxy-token
+  name: local-envproxy-token
   namespace: {{ .Release.Namespace | quote }}
 type: Opaque
 # Adapted from https://stackoverflow.com/a/64325744
 data:
-  {{- if (lookup "v1" "Secret" .Release.Namespace "built-in-envproxy-token") }}
-  token: {{ (lookup "v1" "Secret" .Release.Namespace "built-in-envproxy-token").data.token }}
+  {{- if (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token") }}
+  token: {{ (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token").data.token }}
   {{- else }}
   token: {{ randAlphaNum 32 | b64enc }}
   {{- end }}
@@ -100,7 +100,7 @@ spec:
             - name: CEMANAGER_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: built-in-envproxy-token
+                  name: local-envproxy-token
                   key: token
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
