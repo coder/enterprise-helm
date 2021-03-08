@@ -24,7 +24,12 @@ jobs:
         run: ./scripts/install_deps.sh
 
       - name: Helm Lint Chart
-        run: helm lint .
+        run: helm lint --strict .
+        continue-on-error: true
 
       - name: Helm Render Example Templates
         run: ./scripts/test_helm.sh
+
+      - name: Kubernetes Linter
+        run: kube-linter lint build
+        continue-on-error: true
