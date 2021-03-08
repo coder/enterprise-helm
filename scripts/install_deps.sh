@@ -28,17 +28,24 @@ run_trace false \
   tar -C "$TMPDIR" -zxf - kube-linter
 
 run_trace false \
+  curl "${curl_flags[@]}" "https://github.com/zegl/kube-score/releases/download/v1.10.1/kube-score_1.10.1_linux_amd64.tar.gz" \| \
+  tar -C "$TMPDIR" -zxf - kube-score
+
+run_trace false \
   sudo install --mode=0755 "$TMPDIR/*" "$BINDIR"
 
 run_trace false \
   which \
     helm \
     helm-docs \
-    kube-linter
+    kube-linter \
+    kube-score
 
 run_trace false helm version --short
 
 run_trace false kube-linter version
+
+run_trace false kube-score version
 
 run_trace false \
   rm -vrf "$TMPDIR"
