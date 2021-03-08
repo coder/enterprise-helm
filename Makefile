@@ -38,8 +38,12 @@ lint/kube:
 	kube-linter lint build
 .PHONY: lint/kube
 
-fmt: fmt/docs
+fmt: fmt/docs fmt/yaml
 .PHONY: fmt
+
+fmt/yaml: $(shell scripts/depfind/yaml.sh)
+	@echo "--- Formatting YAML"
+	prettier --write $^
 
 fmt/docs: $(shell scripts/depfind/markdown.sh)
 	@echo "--- Formatting documentation"
