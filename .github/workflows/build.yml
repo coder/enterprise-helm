@@ -25,11 +25,11 @@ jobs:
 
       - name: Helm Lint Chart
         run: helm lint --strict .
-        continue-on-error: true
 
       - name: Helm Render Example Templates
+        if: always()
         run: ./scripts/test_helm.sh
 
       - name: Kubernetes Linter
+        if: always()
         run: kube-linter lint build
-        continue-on-error: true
