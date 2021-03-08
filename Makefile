@@ -25,7 +25,7 @@ lint: lint/helm lint/shellcheck
 
 lint/helm:
 	@echo "--- Running helm lint"
-	helm lint .
+	helm lint --strict .
 .PHONY: lint/helm
 
 lint/shellcheck: $(shell scripts/depfind/sh.sh)
@@ -34,10 +34,11 @@ lint/shellcheck: $(shell scripts/depfind/sh.sh)
 .PHONY: lint/shellcheck
 
 lint/kube:
+	@echo "--- Linting rendered templates"
+	kube-linter lint build
 .PHONY: lint/kube
 
-fmt:
-	@echo "abc"
+fmt: fmt/docs
 .PHONY: fmt
 
 fmt/docs: $(shell scripts/depfind/markdown.sh)

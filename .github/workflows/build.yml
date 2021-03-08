@@ -24,7 +24,7 @@ jobs:
         run: ./scripts/install_deps.sh
 
       - name: Helm Lint Chart
-        run: helm lint --strict .
+        run: make lint/helm
 
       - name: Helm Render Example Templates
         if: always()
@@ -33,3 +33,7 @@ jobs:
       - name: Kubernetes Linter
         if: always()
         run: kube-linter lint build
+
+      - name: Check formatting and docs
+        if: always()
+        run: ./scripts/fmt.sh
