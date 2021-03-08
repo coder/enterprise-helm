@@ -40,6 +40,9 @@ ingress:
   # be left blank and the user can still access the platform from the external
   # IP or a DNS name that resolves to the external IP address.
   host: ""
+  # ingress.loadBalancerIP sets the external IP address of the ingress to the
+  # provided value.
+  loadBalancerIP: ""
   # ingress.podSecurityPolicyName -- The name of the pod security policy the
   # built in ingress controller should abide. It should be noted that the
   # ingress controller requires the `NET_BIND_SERVICE` capability, privilege
