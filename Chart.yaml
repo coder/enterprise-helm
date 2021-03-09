@@ -2,7 +2,7 @@
 # The 'version' is updated when the package is created.
 # See release.mk - build/helm target.
 apiVersion: v2
-name: coder-provider
+name: workspace-provider
 description: Run a Coder Workspace Provider in Kubernetes
 type: application
 version: 1.0.0

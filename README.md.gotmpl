@@ -1,0 +1,52 @@
+# Coder Enterprise Workspace Providers Helm [BETA]
+
+WARNING: This branch may contain updates for a yet unreleased version of Coder.
+The current state of the repo may not represent the latest release.
+
+This chart provides all of the things necessary to run a beta workspace provider
+on a second cluster. This chart is only needed for the beta. Envproxy will
+become a subchart of the main Helm chart in the GA release of this feature.
+
+The Helm package here is only a template for releases: version numbers and
+image URIs are injected and bundled into releases uploaded to
+[helm.coder.com][helm-repo].
+
+You can pull the official charts with `helm repo add coder
+https://helm.coder.com`.
+
+## Changes From Main Chart
+
+Almost all values are identical in usage to the main chart, but a lot of values
+have been removed as they are unnecessary for an envproxy-only deployment. It
+should still be safe to provide unused values anyways.
+
+- `envproxy.accessURL` (required if `ingress.host` is not set)
+- `envproxy.clusterAddress` (required)
+- `cemanager.accessURL` (required)
+- `cemanager.token` (required)
+
+You can find documentation for these values below. Settings such as dev URLs and
+SSH access only apply to environments created within this Workspace Provider.
+
+{{ template "chart.valuesSection" . }}
+
+## Contributing
+
+All of the Helm charts for Coder services are contained in the
+[`templates`][template-folder] folder.
+
+Template values and documentation are in the [`values.yaml`][values-file] file.
+The values table in the README is parsed from that file.
+
+This README file is generated from [`README.md.gotmpl`][readme-template-file].
+When adding content to the README make sure to update that file.
+
+When adding a value or updating the README template make sure to document it
+and run [`gen-readme.sh`][gen-readme-file]. This will update and format the
+values table and additional docs.
+
+[helm-repo]: https://helm.coder.com/
+[template-folder]: https://github.com/cdr/enterprise-helm/tree/workspace-providers-envproxy-only/templates
+[values-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/values.yaml
+[readme-template-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/README.md.gotmpl
+[gen-readme-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/gen-readme.sh

@@ -1,20 +1,87 @@
-# Workspace providers [BETA]
+# Coder Enterprise Workspace Providers Helm [BETA]
 
-This chart provides all of the things necessary to run an alpha workspace
-provider on a second cluster.
+WARNING: This branch may contain updates for a yet unreleased version of Coder.
+The current state of the repo may not represent the latest release.
 
-This is only needed for the alpha. Envproxy will become a subchart of the main
-Enterprise chart in the beta release of this feature. You probably don't need
-this.
+This chart provides all of the things necessary to run a beta workspace provider
+on a second cluster. This chart is only needed for the beta. Envproxy will
+become a subchart of the main Helm chart in the GA release of this feature.
+
+The Helm package here is only a template for releases: version numbers and
+image URIs are injected and bundled into releases uploaded to
+[helm.coder.com][helm-repo].
+
+You can pull the official charts with `helm repo add coder https://helm.coder.com`.
+
+## Changes From Main Chart
+
+Almost all values are identical in usage to the main chart, but a lot of values
+have been removed as they are unnecessary for an envproxy-only deployment. It
+should still be safe to provide unused values anyways.
+
+- `envproxy.accessURL` (required if `ingress.host` is not set)
+- `envproxy.clusterAddress` (required)
+- `cemanager.accessURL` (required)
+- `cemanager.token` (required)
+
+You can find documentation for these values below. Settings such as dev URLs and
+SSH access only apply to environments created within this Workspace Provider.
 
 ## Values
 
-Almost all values are identical to the main chart, but there some changes. A
-lot of values that are unneeded were removed, but it should still be safe to
-provide them anyways.
+| Key                                    | Type   | Description                                                                                                                                                                                                                                                                                             | Default                                                                                 |
+| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| cemanager                              | object | Details for connecting to the cemanager instance.                                                                                                                                                                                                                                                       | `{"accessURL":""}`                                                                      |
+| certs                                  | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments.                                                                                                                                                                                                        | `{"secret":{"key":"","name":""}}`                                                       |
+| certs.secret.key                       | string | The key in the secret pointing to the certificate bundle.                                                                                                                                                                                                                                               | `""`                                                                                    |
+| certs.secret.name                      | string | The name of the secret.                                                                                                                                                                                                                                                                                 | `""`                                                                                    |
+| clusterDomainSuffix                    | string | If you've set a custom default domain for your cluster, you may need to remove or change this DNS suffix for service resolution to work correctly.                                                                                                                                                      | `".svc.cluster.local"`                                                                  |
+| devurls.host                           | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "\*.devurls.coder.com".                                                                                                                         | `""`                                                                                    |
+| devurls.sslMode                        | string |                                                                                                                                                                                                                                                                                                         | `"require"`                                                                             |
+| environments.tolerations               | list   | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example.                                                                                                                   | `[]`                                                                                    |
+| envproxy.accessURL                     | string | The URL reported to cemanager. Must be accessible by cemanager and all users who can use this workspace provider. Derived from ingress.host if not set. This should be a full URL, complete with protocol and trailing "/proxy" (no trailing slash). e.g. "https://proxy.coder.com/proxy"               | `""`                                                                                    |
+| envproxy.clusterAddress                | string | The address of the K8s cluster, must be reachable from the cemanager.                                                                                                                                                                                                                                   | `""`                                                                                    |
+| envproxy.image                         | string | Injected during releases.                                                                                                                                                                                                                                                                               | `""`                                                                                    |
+| envproxy.replicas                      | int    | The number of replicas to run of the envproxy.                                                                                                                                                                                                                                                          | `1`                                                                                     |
+| envproxy.resources                     | object | Kubernetes resource request and limits for envproxy pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example.                                                                                          | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| envproxy.terminationGracePeriodSeconds | int    | Amount of seconds to wait before shutting down the environment proxy if there are still open connections. This is set very long intentionally so developers do not deal with disconnects during deployments.                                                                                            | `14400`                                                                                 |
+| imagePullPolicy                        | string | Sets the policy for pulling a container image across all services.                                                                                                                                                                                                                                      | `"Always"`                                                                              |
+| ingress.additionalAnnotations          | list   | Additional annotations to be used when creating the ingress. These only apply to the Ingress Kubernetes kind. The annotations can be used to specify certificate issuers or other cloud provider specific integrations. Annotations are provided as strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ] | `[]`                                                                                    |
+| ingress.host                           | string | The hostname to use for accessing the platform. This can be left blank and the user can still access the platform from the external IP or a DNS name that resolves to the external IP address.                                                                                                          | `""`                                                                                    |
+| ingress.podSecurityPolicyName          | string | The name of the pod security policy the built in ingress controller should abide. It should be noted that the ingress controller requires the `NET_BIND_SERVICE` capability, privilege escalation, and access to privileged ports to successfully deploy.                                               | `""`                                                                                    |
+| ingress.service                        | object | Options related to the ingress Kubernetes Service object.                                                                                                                                                                                                                                               | `{"annotations":{}}`                                                                    |
+| ingress.service.annotations            | object | Additional annotations to add to the Service object. For example to make the ingress spawn an internal load balancer: annotations: cloud.google.com/load-balancer-type: "Internal"                                                                                                                      | `{}`                                                                                    |
+| ingress.tls                            | object | TLS options for the ingress. The hosts used for the tls configuration come from the ingress.host and the devurls.host variables. If those don't exist, then the TLS configuration will be ignored.                                                                                                      | `{"devurlsHostSecretName":"","enable":false,"hostSecretName":""}`                       |
+| ingress.tls.devurlsHostSecretName      | string | The secret to use for the devurls.host hostname.                                                                                                                                                                                                                                                        | `""`                                                                                    |
+| ingress.tls.enable                     | bool   | Enables the tls configuration.                                                                                                                                                                                                                                                                          | `false`                                                                                 |
+| ingress.tls.hostSecretName             | string | The secret to use for the ingress.host hostname.                                                                                                                                                                                                                                                        | `""`                                                                                    |
+| ingress.useDefault                     | bool   | If set to true will deploy an nginx ingress that will allow you to access Coder from an external IP address, but if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false.    | `true`                                                                                  |
+| logging.human                          | string | Where to send logs that are formatted for readability by a human. Set to an empty string to disable.                                                                                                                                                                                                    | `"/dev/stderr"`                                                                         |
+| logging.json                           | string | Where to send logs that are formatted as JSON. Set to an empty string to disable.                                                                                                                                                                                                                       | `""`                                                                                    |
+| logging.stackdriver                    | string | Where to send logs that are formatted for Google Stackdriver. Set to an empty string to disable.                                                                                                                                                                                                        | `""`                                                                                    |
+| namespaceWhitelist                     | list   | A list of additional namespaces that environments may be deploy to. NOTE: this only applies to environments managed by this workspace provider.                                                                                                                                                         | `[]`                                                                                    |
+| podSecurityPolicyName                  | string | The name of the pod security policy to apply to all Coder services and user environments. The optional ingress has its own field for pod security policy as well.                                                                                                                                       | `""`                                                                                    |
+| serviceTolerations                     | list   | Tolerations are applied to all Coder managed services. Each element is a toleration object. To set user environment tolerations see environments.tolerations. See values.yaml for an example.                                                                                                           | `[]`                                                                                    |
+| serviceType                            | string | See the following for the different serviceType options and their use: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types                                                                                                                               | `"ClusterIP"`                                                                           |
+| ssh.enable                             | bool   | Enables accessing environments via SSH. NOTE: this only applies to environments managed by this workspace provider.                                                                                                                                                                                     | `true`                                                                                  |
 
-#### Added values:
-- `envproxy.accessURL` (required if `ingress.host` not set)
-- `envproxy.clusterAddress` (required)
-- `cemanager.accessURL` (required)
-- `cemanager.token` (required, set by coder-cli)
+## Contributing
+
+All of the Helm charts for Coder services are contained in the
+[`templates`][template-folder] folder.
+
+Template values and documentation are in the [`values.yaml`][values-file] file.
+The values table in the README is parsed from that file.
+
+This README file is generated from [`README.md.gotmpl`][readme-template-file].
+When adding content to the README make sure to update that file.
+
+When adding a value or updating the README template make sure to document it
+and run [`gen-readme.sh`][gen-readme-file]. This will update and format the
+values table and additional docs.
+
+[helm-repo]: https://helm.coder.com/
+[template-folder]: https://github.com/cdr/enterprise-helm/tree/workspace-providers-envproxy-only/templates
+[values-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/values.yaml
+[readme-template-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/README.md.gotmpl
+[gen-readme-file]: https://github.com/cdr/enterprise-helm/blob/workspace-providers-envproxy-only/gen-readme.sh
