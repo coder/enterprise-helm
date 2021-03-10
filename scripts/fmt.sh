@@ -16,19 +16,11 @@ PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 
 pushd "$PROJECT_ROOT" >/dev/null
   run_trace false make --always-make fmt
+
+  FILES="$(git ls-files --other --modified --exclude-standard)"
+  if [ -n "$FILES" ]; then
+    echo "Unstaged files after running 'make fmt':"
+    echo "$FILES"
+    exit 1
+  fi
 popd >/dev/null
-
-FILES=$(git ls-files --other --modified --exclude-standard)
-if [ -n "$FILES" ]; then
-  echo "Unstaged files after running 'make fmt':"
-  echo "$FILES"
-  exit 1
-fi
-
-pushd "$PROJECT_ROOT"
-  echo "File list:"
-  git ls-files --other --modified --exclude-standard
-
-  echo "README.md:"
-  cat README.md
-popd
