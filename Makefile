@@ -5,11 +5,11 @@ help:
 	@echo "Usage: $(MAKE) <target>"
 	@echo
 	@echo " * 'all' - Run everything"
-	@echo " * 'docs' - Generate documentation"
+	@echo " * 'fmt' - Run formatters"
 	@echo " * 'lint' - Run linters"
 .PHONY: help
 
-all: lint docs
+all: lint fmt
 .PHONY: all
 
 lint: lint/helm
@@ -21,8 +21,9 @@ lint/helm:
 	helm lint .
 .PHONY: lint/helm
 
-docs: README.md
-.PHONY: docs
+# TODO(jawnsy): this will be modified to format using Prettier
+fmt: README.md
+.PHONY: fmt
 
 README.md: README.md.gotmpl
 	@echo "--- Generating documentation"
