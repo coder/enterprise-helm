@@ -7,12 +7,13 @@ help:
 	@echo " * 'all' - Run everything"
 	@echo " * 'fmt' - Run formatters"
 	@echo " * 'lint' - Run linters"
+	@echo " * 'clean' - Remove generated build files"
 .PHONY: help
 
 all: lint fmt
 .PHONY: all
 
-lint: lint/helm lint/shellcheck
+lint: lint/helm lint/kubernetes lint/shellcheck
 .PHONY: lint
 
 lint/helm:
@@ -40,3 +41,7 @@ fmt: README.md
 README.md: README.md.gotmpl
 	@echo "--- Generating documentation"
 	helm-docs --template-files=$<
+
+clean:
+	rm -vrf build/
+.PHONY: clean
