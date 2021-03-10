@@ -1,5 +1,4 @@
 # Dummy image tags
-# Image tags from the latest release
 cemanager:
   image: gcr.io/coder/coder-service:2.0.0
 dashboard:
