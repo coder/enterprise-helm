@@ -1,0 +1,26 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  # Fast checks (e.g. static code analysis)
+  quick:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: ./scripts/install_deps.sh
+
+      - name: Helm Lint Chart
+        run: make lint/helm
