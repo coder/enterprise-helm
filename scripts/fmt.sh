@@ -24,3 +24,11 @@ if [ -n "$FILES" ]; then
   echo "$FILES"
   exit 1
 fi
+
+pushd "$PROJECT_ROOT"
+  echo "File list:"
+  git ls-files --other --modified --exclude-standard
+
+  echo "README.md:"
+  cat README.md
+popd
