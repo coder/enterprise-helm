@@ -5,10 +5,11 @@ help:
 	@echo "Usage: $(MAKE) <target>"
 	@echo
 	@echo " * 'all' - Run everything"
+	@echo " * 'fmt' - Run formatters"
 	@echo " * 'lint' - Run linters"
 .PHONY: help
 
-all: lint
+all: lint fmt
 .PHONY: all
 
 lint: lint/helm
@@ -19,3 +20,11 @@ lint/helm:
 	# TODO(jawnsy): enable --strict once we fix the warnings
 	helm lint .
 .PHONY: lint/helm
+
+# TODO(jawnsy): this will be modified to format using Prettier
+fmt: README.md
+.PHONY: fmt
+
+README.md: README.md.gotmpl
+	@echo "--- Generating documentation"
+	helm-docs --template-files=$<

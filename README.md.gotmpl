@@ -13,7 +13,13 @@ https://helm.coder.com`.
 Feel free to open PRs for fixes and improvements you've found while deploying
 Coder!
 
-{{ template "chart.valuesSection" . }}
+## Values
+
+| Key                 | Type | Description | Default                         |
+| ------------------- | ---- | ----------- | ------------------------------- |
+{{- range .Values }}
+| {{ .Key }} | {{ .Type }} | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+{{- end }}
 
 ## Contributing
 

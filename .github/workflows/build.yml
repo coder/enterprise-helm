@@ -24,3 +24,7 @@ jobs:
 
       - name: Helm Lint Chart
         run: make lint/helm
+
+      - name: Check formatting and docs
+        if: always()
+        run: ./scripts/fmt.sh
