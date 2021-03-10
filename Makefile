@@ -16,5 +16,6 @@ lint: lint/helm
 
 lint/helm:
 	@echo "--- Running helm lint"
+	# TODO(jawnsy): enable --strict once we fix the warnings
 	helm lint .
 .PHONY: lint/helm
