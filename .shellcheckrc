@@ -1,0 +1,25 @@
+# By default, ShellCheck attempts to follow scripts included in
+# source directives, which fails for relative paths, and they are
+# nonetheless scanned since they are found by depfind/sh.sh anyway.
+disable=SC1091
+
+# Suggest explicitly using -n in `[ $var ]`
+enable=avoid-nullary-conditions
+
+# Suggest quoting variables without metacharacters
+enable=quote-safe-variables
+
+# Warn when uppercase variables are unassigned
+enable=check-unassigned-uppercase
+
+# Suggest 'command -v' instead of 'which'
+enable=deprecate-which
+
+# Suggest adding a default case in `case` statements
+enable=add-default-case
+
+# Suggest putting braces around all variable references
+#
+# We're not using this, because the braces are not always required
+# and make variables less readable.
+#enable=require-variable-braces

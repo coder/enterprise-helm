@@ -12,7 +12,7 @@ help:
 all: lint fmt
 .PHONY: all
 
-lint: lint/helm
+lint: lint/helm lint/shellcheck
 .PHONY: lint
 
 lint/helm:
@@ -20,6 +20,11 @@ lint/helm:
 	# TODO(jawnsy): enable --strict once we fix the warnings
 	helm lint .
 .PHONY: lint/helm
+
+lint/shellcheck: $(shell scripts/depfind/sh.sh)
+	@echo "--- Running shellcheck"
+	shellcheck $^
+.PHONY: lint/shellcheck
 
 # TODO(jawnsy): this will be modified to format using Prettier
 fmt: README.md
