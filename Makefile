@@ -17,8 +17,7 @@ lint: lint/helm lint/shellcheck
 
 lint/helm:
 	@echo "--- Running helm lint"
-	# TODO(jawnsy): enable --strict once we fix the warnings
-	helm lint .
+	helm lint --strict .
 .PHONY: lint/helm
 
 lint/kubernetes:
