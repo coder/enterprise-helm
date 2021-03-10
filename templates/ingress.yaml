@@ -353,7 +353,7 @@ metadata:
   {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-    # Deprecated
+  {{/* ingress.additionalAnnotations is deprecated. Use ingress.annotations instead */}}
   {{- if .Values.ingress.additionalAnnotations }}
     {{- range .Values.ingress.additionalAnnotations }}
     {{ . }}
