@@ -22,7 +22,7 @@ jobs:
       - name: Install Dependencies
         run: ./scripts/install_deps.sh
 
-      - name: Helm Lint Chart
+      - name: Lint Helm Chart
         run: make lint/helm
 
       - name: Check formatting and docs
@@ -32,3 +32,7 @@ jobs:
       - name: Lint Shell Scripts
         if: always()
         run: make lint/shellcheck
+
+      - name: Lint Kubernetes Templates
+        if: always()
+        run: make lint/kubernetes

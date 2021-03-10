@@ -1,0 +1,13 @@
+# Image tags from the latest release
+cemanager:
+  image: docker.io/coderenvs/coder-service:1.16.1
+dashboard:
+  image: docker.io/coderenvs/dashboard:1.16.1
+envproxy:
+  image: docker.io/coderenvs/coder-service:1.16.1
+timescale:
+  image: docker.io/coderenvs/timescale:1.16.1
+envbox:
+  image: docker.io/coderenvs/envbox:1.16.1
+envbuilder:
+  image: docker.io/coderenvs/envbuilder:1.16.1
