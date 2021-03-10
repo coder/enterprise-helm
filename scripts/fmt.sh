@@ -14,7 +14,9 @@ check_dependencies \
 
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 
-make fmt
+pushd "$PROJECT_ROOT" >/dev/null
+  make fmt
+popd >/dev/null
 
 FILES=$(git ls-files --other --modified --exclude-standard)
 if [ -n "$FILES" ]; then
