@@ -28,3 +28,7 @@ jobs:
       - name: Check formatting and docs
         if: always()
         run: ./scripts/fmt.sh
+
+      - name: Lint Shell Scripts
+        if: always()
+        run: make lint/shellcheck
