@@ -28,3 +28,5 @@ for example in $EXAMPLES; do
     --values="$PROJECT_ROOT/examples/$example/$example.values.yaml" \
     --output-dir="$BUILD" \| indent
 done
+
+run_trace false kube-linter lint "$BUILD"

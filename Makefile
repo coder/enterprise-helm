@@ -22,11 +22,8 @@ lint/helm:
 .PHONY: lint/helm
 
 lint/kubernetes:
-	@echo "--- Rendering example Values to Kubernetes files"
-	./scripts/test_helm.sh
-
 	@echo "--- Linting rendered templates"
-	kube-linter lint build
+	./scripts/test_helm.sh
 .PHONY: lint/kubernetes
 
 lint/shellcheck: $(shell scripts/depfind/sh.sh)
