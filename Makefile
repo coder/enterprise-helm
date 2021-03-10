@@ -5,10 +5,11 @@ help:
 	@echo "Usage: $(MAKE) <target>"
 	@echo
 	@echo " * 'all' - Run everything"
+	@echo " * 'docs' - Generate documentation"
 	@echo " * 'lint' - Run linters"
 .PHONY: help
 
-all: lint
+all: lint docs
 .PHONY: all
 
 lint: lint/helm
@@ -19,3 +20,10 @@ lint/helm:
 	# TODO(jawnsy): enable --strict once we fix the warnings
 	helm lint .
 .PHONY: lint/helm
+
+docs: README.md
+.PHONY: docs
+
+README.md: README.md.gotmpl
+	@echo "--- Generating documentation"
+	helm-docs --template-files=$<
