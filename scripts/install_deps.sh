@@ -24,11 +24,15 @@ run_trace false curl "${curl_flags[@]}" "https://get.helm.sh/helm-v3.5.2-linux-a
 run_trace false curl "${curl_flags[@]}" "https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_Linux_x86_64.tar.gz" \| \
   tar -C "$TMPDIR" -zxf - helm-docs
 
-run_trace false sudo install --mode=0755 "$TMPDIR/*" "$BINDIR"
+run_trace false curl "${curl_flags[@]}" "https://github.com/stackrox/kube-linter/releases/download/0.1.6/kube-linter-linux.tar.gz" \| \
+  tar -C "$TMPDIR" -zxf - kube-linter
+
+run_trace false sudo install --mode=0755 --target-directory="$BINDIR" "$TMPDIR/*"
 
 run_trace false which \
   helm \
-  helm-docs
+  helm-docs \
+  kube-linter
 
 run_trace false helm version --short
 

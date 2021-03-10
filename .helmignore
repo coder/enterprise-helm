@@ -1,2 +1,9 @@
+.git
+.github
+.gitignore
+.shellcheckrc
+build
+examples
+scripts
+Makefile
 README.md.gotmpl
-gen-readme.sh
