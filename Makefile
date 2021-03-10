@@ -16,5 +16,5 @@ lint: lint/helm
 
 lint/helm:
 	@echo "--- Running helm lint"
-	helm lint --strict .
+	helm lint .
 .PHONY: lint/helm

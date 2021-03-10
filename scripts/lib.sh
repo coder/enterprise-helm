@@ -73,10 +73,11 @@ function run_trace() {
   # to start/end a group for each traced command
   if [[ -n "${GITHUB_ACTIONS:-}" && "$dry_run" = false ]]; then
     echo "::group::Run ${args[*]}" >&2
+  else
+    echo "+ ${args[*]}" >&2
   fi
 
   local exit_status=0
-  echo "+ ${args[*]}" >&2
   if [ "$dry_run" = false ]; then
     eval "${args[@]}"
 
