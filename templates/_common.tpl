@@ -67,7 +67,7 @@ tolerations:
     {{- else -}}
     http://
     {{- end -}}
-    {{- .Values.ingress.host }}/proxy
+    {{- .Values.ingress.host }}
 {{- else }}
 {{- fail "envproxy.accessURL or ingress.host must be set" }}
 {{- end }}

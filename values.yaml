@@ -71,10 +71,9 @@ devurls:
 # connections to environments such as IDE or shell sessions.
 envproxy:
   # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
-  # cemanager and all users who can use this workspace provider. Derived from
-  # ingress.host if not set. This should be a full URL, complete with protocol
-  # and trailing "/proxy" (no trailing slash).
-  # e.g. "https://proxy.coder.com/proxy"
+  # cemanager and all users who can use this workspace provider. Must be a
+  # subdomain of the cemanager access URL. Derived from ingress.host if not set.
+  # e.g. "https://proxy.coder.com"
   accessURL: ""
   # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
   # from the cemanager.
