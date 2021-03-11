@@ -261,6 +261,15 @@ environments:
   #   tolerationSeconds: 6000
   tolerations: []
 
+  # environments.nodeSelector -- nodeSelector is applied to all user
+  # environments to specify eligible nodes for environments to run on.
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  # 
+  # eg.
+  # nodeSelector:
+  #   disktype: ssd
+  nodeSelector: {}
+
 # certs -- Describes CAs that should be added to Coder services. These certs
 # are NOT added to environments.
 certs:
