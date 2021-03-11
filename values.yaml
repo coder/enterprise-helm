@@ -73,7 +73,7 @@ envproxy:
   # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
   # cemanager and all users who can use this workspace provider. Must be a
   # subdomain of the cemanager access URL. Derived from ingress.host if not set.
-  # e.g. "https://proxy.coder.com"
+  # e.g. "https://wsp.coder.com"
   accessURL: ""
   # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
   # from the cemanager.
