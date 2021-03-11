@@ -280,8 +280,14 @@ certs:
     # bundle.
     key: ""
 
-# namespaceWhitelist -- A list of additional namespaces that environments may
-# be deploy to.
+# namespaceWhitelist -- DEPRECATED: A list of additional namespaces that
+# environments may be deploy to. Use multiple workspace providers instead.
+# Existing environments within these namespaces will continue to function, but
+# new environments cannot be created within these namespaces.
+#
+# If you used this value before 1.17, you must keep it set to the same value
+# until all environments within these namespaces are deleted, then you can set
+# it back to [].
 namespaceWhitelist: []
 
 ssh:
