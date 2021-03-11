@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+    time: "11:00"
+  ignore:
+    # GitHub always delivers the latest versions for each major
+    # release tag, so ignore minor version tags
+    - dependency-name: "actions/cache"
+      versions:
+        - 2.x
+    - dependency-name: "actions/checkout"
+      versions:
+        - 2.x

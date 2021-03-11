@@ -49,20 +49,16 @@ spec:
             - name: CEMANAGER_HOST
               value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
           readinessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:3000/healthz
+            httpGet:
+              path: /healthz
+              port: 3000
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:3000/healthz
+            httpGet:
+              path: /healthz
+              port: 3000
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10

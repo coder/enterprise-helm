@@ -22,27 +22,40 @@ clusterDomainSuffix: ".svc.cluster.local"
 
 # contains configuration for the bundled ingress controller.
 ingress:
+  # ingress.enable -- If set to true a Coder compatable ingress kind will be
+  # created. You can configure it with `ingress.annotations` below.
+  enable: true
   # ingress.useDefault -- If set to true will deploy an nginx ingress that will
   # allow you to access Coder from an external IP address, but if your
   # kubernetes cluster is configured to provision external IP addresses. If you
   # would like to bring your own ingress and hook Coder into that instead, set
   # this value to false.
   useDefault: true
+  # ingress.usePathWildcards -- Whether or not the ingress object should use
+  # path wildcards, i.e. ending with "/*". Some ingresses require this
+  # while others do not. You should check which path style your ingress
+  # requires. For ingress-nginx this should be set to false.
+  usePathWildcards: false
   # ingress.host -- The hostname to use for accessing the platform. This can
   # be left blank and the user can still access the platform from the external
   # IP or a DNS name that resolves to the external IP address.
   host: ""
+  # ingress.loadBalancerIP sets the external IP address of the ingress to the
+  # provided value.
+  loadBalancerIP: ""
   # ingress.podSecurityPolicyName -- The name of the pod security policy the
   # built in ingress controller should abide. It should be noted that the
   # ingress controller requires the `NET_BIND_SERVICE` capability, privilege
-  # escalation, and access to privileged ports to successfully deploy.
+  # escalation, and access to privileged ports to successfully deploy. Ignored
+  # if `ingress.useDefault` is false.
   podSecurityPolicyName: ""
-  # ingress.additionalAnnotations -- Additional annotations to be used when
-  # creating the ingress. These only apply to the Ingress Kubernetes kind.
-  # The annotations can be used to specify certificate issuers or
-  # other cloud provider specific integrations. Annotations are provided as
-  # strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ]
+  # ingress.additionalAnnotations -- Deprecated. Please use `ingress.annotations`.
   additionalAnnotations: []
+  # ingress.annotations -- Additional annotations to be used when creating the
+  # ingress. These only apply to the Ingress Kubernetes kind. The annotations
+  # can be used to specify certificate issuers or other cloud provider specific
+  # integrations.
+  annotations: {}
   # ingress.tls -- TLS options for the ingress. The hosts used for the tls
   # configuration come from the ingress.host and the devurls.host variables. If
   # those don't exist, then the TLS configuration will be ignored.

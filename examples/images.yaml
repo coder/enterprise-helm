@@ -1,0 +1,13 @@
+# Dummy image tags
+cemanager:
+  image: gcr.io/coder/coder-service:2.0.0
+dashboard:
+  image: gcr.io/coder/dashboard:2.0.0
+envproxy:
+  image: gcr.io/coder/envproxy:2.0.0
+timescale:
+  image: gcr.io/coder/timescale:2.0.0
+envbox:
+  image: gcr.io/coder/envbox:2.0.0
+envbuilder:
+  image: gcr.io/coder/envbuilder:2.0.0

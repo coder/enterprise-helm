@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: local-envproxy-token
+  name: built-in-envproxy-token
   namespace: {{ .Release.Namespace | quote }}
 type: Opaque
 # Adapted from https://stackoverflow.com/a/64325744
 data:
-  {{- if (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token") }}
-  token: {{ (lookup "v1" "Secret" .Release.Namespace "local-envproxy-token").data.token }}
+  {{- if (lookup "v1" "Secret" .Release.Namespace "built-in-envproxy-token") }}
+  token: {{ (lookup "v1" "Secret" .Release.Namespace "built-in-envproxy-token").data.token }}
   {{- else }}
   token: {{ randAlphaNum 32 | b64enc }}
   {{- end }}
@@ -100,7 +100,7 @@ spec:
             - name: CEMANAGER_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: local-envproxy-token
+                  name: built-in-envproxy-token
                   key: token
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
@@ -112,20 +112,16 @@ spec:
             - envproxy
             - run
           readinessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:8080/healthz
+            httpGet:
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:8080/healthz
+            httpGet:
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10

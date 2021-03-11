@@ -1,0 +1,46 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  # Fast checks (e.g. static code analysis)
+  quick:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: ./scripts/install_deps.sh
+
+      - name: Lint Helm Chart
+        run: make lint/helm
+        # TODO(jawnsy): fix linter warnings and remove this
+        continue-on-error: true
+
+      - name: Check formatting and docs
+        if: always()
+        run: ./scripts/fmt.sh
+
+      - name: Lint Shell Scripts
+        if: always()
+        run: make lint/shellcheck
+
+      - name: Lint Kubernetes Templates
+        if: always()
+        run: make lint/kubernetes
+        # TODO(jawnsy): fix linter warnings and remove this
+        continue-on-error: true
+
+      - name: Package Helm Chart
+        if: always()
+        run: ./scripts/package.sh

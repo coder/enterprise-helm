@@ -115,10 +115,10 @@ spec:
                   fieldPath: metadata.namespace
             - name: VERBOSE
               value: "true"
-            - name: LOCAL_ENVPROXY_TOKEN
+            - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: local-envproxy-token
+                  name: built-in-envproxy-token
                   key: token
               # ENVIRONMENT_SERVICE_ACCOUNT is the service account to assign
               # to all user environments. It's primarily used to ensure
@@ -141,24 +141,16 @@ spec:
               # Pass signals down to the envmanager.
               exec /entrypoint.sh cemanager run
           readinessProbe:
-            exec:
-              # The traditional /healthz endpoint is not used since
-              # nginx runs its own health check for the ingress controller
-              # and serving the api from '/' causes the manager's healthcheck
-              # to be masked.
-              command:
-                - curl
-                - -s
-                - localhost:8080/cem-healthz
+            httpGet:
+              path: /cem-healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command:
-                - curl
-                - -s
-                - localhost:8080/cem-healthz
+            httpGet:
+              path: /cem-healthz
+              port: 8080
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
@@ -171,8 +163,6 @@ kind: Service
 metadata:
   name: cemanager
   namespace: {{ .Release.Namespace | quote }}
-  annotations:
-    beta.cloud.google.com/backend-config: '{"ports": {"8080":"proxy-config"}}'
 spec:
   type: {{ .Values.serviceType | quote}}
   selector:
