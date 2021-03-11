@@ -6,5 +6,4 @@ kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }} 
   name: environments
-{{- include "coder.namespaceWhitelist.envSA" . }}
 {{- include "coder.environments.configMap" . }}

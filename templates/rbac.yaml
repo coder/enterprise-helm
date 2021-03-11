@@ -44,9 +44,6 @@ roleRef:
   kind: ClusterRole
   name: coder-{{ .Release.Namespace }}-cluster
   apiGroup: rbac.authorization.k8s.io
-
-{{- $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
-{{- range $namespaces }}
 ---
 # The roles the manager needs in the environments
 # namespace in order to administer pods.
@@ -54,7 +51,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: coder
-  namespace: {{ . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
 rules:
   - apiGroups:
       - "" # indicates the core API group
@@ -133,14 +130,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: {{ . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
   name: coder
 subjects:
   - kind: ServiceAccount
     name: coder
-    namespace: {{ $.Release.Namespace | quote }}
+    namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: coder
   apiGroup: rbac.authorization.k8s.io
-{{- end }}

@@ -106,17 +106,18 @@ envproxy:
   # disconnects during deployments.
   terminationGracePeriodSeconds: 14400
 
-# cemanager -- Details for connecting to the cemanager instance.
+# cemanager contains details for connecting to the cemanager instance.
 cemanager:
-  # cemangaer.accessURL -- The cemanager access URL that the envproxy will use
+  # cemanager.accessURL -- The cemanager access URL that the envproxy will use
   # to communicate with the cemanager. This must be the public cemanager URL
   # because it's also used for redirecting unauthenticated users to the
   # cemanager. This should be a full URL complete with protocol and no trailing
   # slash.
   accessURL: ""
-  # cemanager.token -- Set by coder-cli during the initial installation. Don't
-  # set this manually (even to empty string) unless you know what you're doing.
-  # token: ""
+  # cemanager.token -- Set by coder-cli during the initial installation. Be
+  # careful to not overwrite this with an empty string by setting it to empty
+  # string in your custom values file.
+  token: ""
 
 # environments defines configuration that is applied to all
 # user environments. 
@@ -142,11 +143,6 @@ certs:
     # certs.secret.key -- The key in the secret pointing to the certificate
     # bundle.
     key: ""
-
-# namespaceWhitelist -- A list of additional namespaces that environments may
-# be deploy to.
-# NOTE: this only applies to environments managed by this workspace provider.
-namespaceWhitelist: []
 
 ssh:
   # ssh.enable -- Enables accessing environments via SSH.

@@ -1,14 +1,4 @@
 {{/*
-  coder.namespaceWhitelist provides an environment variable
-  that lists available namespaces for environment creation.
-*/}}
-{{- define "coder.namespaceWhitelist.env" }}
-{{- if .Values.namespaceWhitelist }}
-- name: NAMESPACE_WHITELIST
-  value: {{ join "," .Values.namespaceWhitelist | quote }}
-{{- end }}
-{{- end }}
-{{/* 
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}

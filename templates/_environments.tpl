@@ -1,16 +1,4 @@
-{{- define "coder.namespaceWhitelist.envSA" }}
-{{- if .Values.namespaceWhitelist }}
-{{- range .Values.namespaceWhitelist }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ . | quote }}
-  name: environments
-{{- end }}
-{{- end }}
-{{- end }}
-{{/* 
+{{/*
   coder.environments.configMap defines configuration that is applied
   to user environments.
 */}}
