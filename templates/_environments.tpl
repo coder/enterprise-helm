@@ -1,4 +1,11 @@
 {{/*
+  coder.environments.saName defines the environments service account name.
+*/}}
+{{- define "coder.environments.saName" -}}
+{{ .Release.Name }}-environments
+{{- end}}
+
+{{/*
   coder.environments.configMap defines configuration that is applied
   to user environments.
 */}}

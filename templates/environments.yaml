@@ -4,6 +4,9 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: {{ .Release.Namespace | quote }} 
-  name: environments
+  namespace: {{ .Release.Namespace | quote }}
+  # This name is includes the release name to avoid overlapping with deprecated
+  # namespaceWhitelist-era service accounts from the built-in workspace
+  # provider.
+  name: {{ include "coder.environments.saName" . | quote }}
 {{- include "coder.environments.configMap" . }}
