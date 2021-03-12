@@ -120,9 +120,6 @@ spec:
                 secretKeyRef:
                   name: built-in-envproxy-token
                   key: token
-              # ENVIRONMENT_SERVICE_ACCOUNT is the service account to assign
-              # to all user environments. It's primarily used to ensure
-              # environments abide a pod security policy if one is set.
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
 {{- include "coder.namespaceWhitelist.env" . | indent 12 }}
