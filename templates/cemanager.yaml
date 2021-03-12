@@ -122,7 +122,6 @@ spec:
                   key: token
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
-{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:

@@ -108,7 +108,6 @@ spec:
               value: {{ .Values.devurls.host | quote }}
             - name: ENVIRONMENT_SA_NAME
               value: "environments"
-{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
           command:
             - /entrypoint.sh
             - envproxy
