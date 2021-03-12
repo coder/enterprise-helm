@@ -35,7 +35,7 @@ lint/shellcheck: $(shell scripts/depfind/sh.sh)
 fmt: README.md
 .PHONY: fmt
 
-README.md: README.md.gotmpl
+README.md: README.md.gotmpl values.yaml
 	@echo "--- Generating documentation"
 	helm-docs --template-files=$<
 
