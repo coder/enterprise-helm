@@ -106,6 +106,8 @@ spec:
               value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
               value: {{ .Values.devurls.host | quote }}
+            - name: ENVIRONMENT_SA_NAME
+              value: "environments"
           command:
             - /entrypoint.sh
             - envproxy
