@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: timescale
-    coder.deployment: postgresql
+    coder.deployment: timescale
 spec:
   ports:
     - port: 5432
@@ -34,7 +34,7 @@ spec:
     metadata:
       labels:
         app: timescale
-        coder.deployment: postgresql
+        coder.deployment: timescale
       annotations:
       {{- range $key, $value := .Values.deploymentAnnotations }}
         {{ $key }}: {{ $value | quote }}
@@ -89,5 +89,5 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   name: timescale
   labels:
-    coder.deployment: postgresql
+    coder.deployment: timescale
 {{- end }}
