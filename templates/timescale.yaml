@@ -7,6 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: timescale
+    coder.deployment: postgresql
 spec:
   ports:
     - port: 5432
@@ -33,10 +34,11 @@ spec:
     metadata:
       labels:
         app: timescale
-      annotations:
-      {{- range $key, $value := .Values.deploymentAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+        coder.deployment: postgresql
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
     spec:
       serviceAccountName: timescale
       securityContext:
@@ -86,4 +88,6 @@ kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }}
   name: timescale
+  labels:
+    coder.deployment: postgresql
 {{- end }}
