@@ -29,4 +29,4 @@ for example in "${EXAMPLES[@]}"; do
     --output-dir="$BUILD" \| indent
 done
 
-run_trace false kube-linter lint "$BUILD"
+run_trace false kube-linter lint --config="$PROJECT_ROOT/kube-linter.yaml" "$BUILD"

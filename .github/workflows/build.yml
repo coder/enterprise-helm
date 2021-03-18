@@ -24,8 +24,6 @@ jobs:
 
       - name: Lint Helm Chart
         run: make lint/helm
-        # TODO(jawnsy): fix linter warnings and remove this
-        continue-on-error: true
 
       - name: Check formatting and docs
         if: always()
@@ -38,8 +36,6 @@ jobs:
       - name: Lint Kubernetes Templates
         if: always()
         run: make lint/kubernetes
-        # TODO(jawnsy): fix linter warnings and remove this
-        continue-on-error: true
 
       - name: Package Helm Chart
         if: always()

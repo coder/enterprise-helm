@@ -1,0 +1,23 @@
+checks:
+  include:
+    - dangling-service
+    - default-service-account
+    - deprecated-service-account-field
+    - drop-net-raw-capability
+    - env-var-secret
+    - mismatching-selector
+    - no-anti-affinity
+    - no-liveness-probe
+    - non-existent-service-account
+    - privileged-container
+    - run-as-non-root
+    - ssh-port
+    - writable-host-mount
+  exclude:
+    - no-extensions-v1beta
+    - no-read-only-root-fs
+    - no-readiness-probe
+    - required-annotation-email
+    - required-label-owner
+    - unset-cpu-requirements
+    - unset-memory-requirements
