@@ -4,7 +4,7 @@
 .shellcheckrc
 build
 examples
-kube-linter
+kube-linter.yaml
 Makefile
 README.md.gotmpl
 scripts
