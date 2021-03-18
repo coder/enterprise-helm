@@ -35,10 +35,10 @@ spec:
       labels:
         app: timescale
         coder.deployment: postgresql
-  annotations:
-  {{- range $key, $value := .Values.deploymentAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+      annotations:
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
     spec:
       serviceAccountName: timescale
       securityContext:
