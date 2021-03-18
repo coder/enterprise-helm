@@ -44,6 +44,7 @@ spec:
         runAsUser: 70
         runAsGroup: 70
         fsGroup: 70
+      terminationGracePeriodSeconds: 120
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
@@ -64,12 +65,10 @@ spec:
             preStop:
               exec:
                 command:
-                  - /bin/sh
-                  - -c
-                  - su
-                  - postgres
-                  - -c
-                  - "pg_ctl stop"
+                  - pg_ctl
+                  - stop
+                  - --mode=fast
+                  - --timeout=60
 {{- include "coder.resources" .Values.timescale.resources | indent 10 }}
   volumeClaimTemplates:
     - metadata:
