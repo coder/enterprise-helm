@@ -78,6 +78,10 @@ envproxy:
   # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
   # from the cemanager.
   clusterAddress: ""
+  # envproxy.token -- Set by coder-cli during the initial installation. Be
+  # careful to not overwrite this with an empty string by setting it to empty
+  # string in your custom values file.
+  token: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.
   replicas: 1
   # envproxy.image -- Injected during releases.
@@ -114,10 +118,6 @@ cemanager:
   # cemanager. This should be a full URL complete with protocol and no trailing
   # slash.
   accessURL: ""
-  # cemanager.token -- Set by coder-cli during the initial installation. Be
-  # careful to not overwrite this with an empty string by setting it to empty
-  # string in your custom values file.
-  token: ""
 
 # environments defines configuration that is applied to all
 # user environments. 
