@@ -67,10 +67,13 @@ spec:
           volumeMounts:
             - name: timescale-data
               mountPath: /var/lib/postgresql/data
+              readOnly: false
             - name: tmp
               mountPath: /tmp
+              readOnly: false
             - name: run
               mountPath: /var/run/postgresql
+              readOnly: false
 {{- include "coder.resources" .Values.timescale.resources | indent 10 }}
           lifecycle:
             preStop:
