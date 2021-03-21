@@ -53,12 +53,28 @@ spec:
         - name: timescale
           image: {{ .Values.timescale.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - coder
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
           livenessProbe:
             exec:
               command:
                 - pg_isready
                 - -U
                 - coder
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
           ports:
             - containerPort: 5432
           securityContext:
