@@ -45,6 +45,7 @@ spec:
     spec:
       # coder:coder
       securityContext:
+        runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
@@ -66,6 +67,9 @@ spec:
             - name: ssh-envproxy
               containerPort: 2222
 {{- end}}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
           # envproxy is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
