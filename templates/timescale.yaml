@@ -42,6 +42,7 @@ spec:
     spec:
       serviceAccountName: timescale
       securityContext:
+        runAsNonRoot: true
         # User 70 is postgres.
         runAsUser: 70
         runAsGroup: 70
@@ -60,9 +61,20 @@ spec:
                 - coder
           ports:
             - containerPort: 5432
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: timescale-data
+            - name: timescale-data
+              mountPath: /var/lib/postgresql/data
+              readOnly: false
+            - name: tmp
+              mountPath: /tmp
+              readOnly: false
+            - name: run
+              mountPath: /var/run/postgresql
+              readOnly: false
+{{- include "coder.resources" .Values.timescale.resources | indent 10 }}
           lifecycle:
             preStop:
               exec:
@@ -71,7 +83,11 @@ spec:
                   - stop
                   - --mode=fast
                   - --timeout=60
-{{- include "coder.resources" .Values.timescale.resources | indent 10 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: timescale-data
