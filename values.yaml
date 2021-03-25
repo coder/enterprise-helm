@@ -22,11 +22,11 @@ clusterDomainSuffix: ".svc.cluster.local"
 
 # contains configuration for the bundled ingress controller.
 ingress:
-  # ingress.enable -- If set to true a Coder compatable ingress kind will be
+  # ingress.enable -- If set to true a Coder compatible ingress kind will be
   # created. You can configure it with `ingress.annotations` below.
   enable: true
   # ingress.useDefault -- If set to true will deploy an nginx ingress that will
-  # allow you to access Coder from an external IP address, but if your
+  # allow you to access Coder from an external IP address, but only if your
   # kubernetes cluster is configured to provision external IP addresses. If you
   # would like to bring your own ingress and hook Coder into that instead, set
   # this value to false.
@@ -150,7 +150,7 @@ dashboard:
   replicas: 1
   # dashboard.image -- Injected during releases.
   image: ""
-  # dashboard.resources -- Kubernetes resource request and limits for dasboard
+  # dashboard.resources -- Kubernetes resource request and limits for dashboard
   # pods.
   # To unset a value, set it to "".
   # To unset all values, you can provide a values.yaml file which sets resources

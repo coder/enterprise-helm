@@ -27,7 +27,7 @@ Coder!
 | clusterDomainSuffix | string | If you've set a custom default domain for your cluster, you may need to remove or change this DNS suffix for service resolution to work correctly. | `".svc.cluster.local"` |
 | dashboard.image | string | Injected during releases. | `""` |
 | dashboard.replicas | int | The number of replicas to run of the dashboard. | `1` |
-| dashboard.resources | object | Kubernetes resource request and limits for dasboard pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| dashboard.resources | object | Kubernetes resource request and limits for dashboard pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |
@@ -43,7 +43,7 @@ Coder!
 | imagePullPolicy | string | Sets the policy for pulling a container image across all services. | `"Always"` |
 | ingress.additionalAnnotations | list | Deprecated. Please use `ingress.annotations`. | `[]` |
 | ingress.annotations | object | Additional annotations to be used when creating the ingress. These only apply to the Ingress Kubernetes kind. The annotations can be used to specify certificate issuers or other cloud provider specific integrations. | `{}` |
-| ingress.enable | bool | If set to true a Coder compatable ingress kind will be created. You can configure it with `ingress.annotations` below. | `true` |
+| ingress.enable | bool | If set to true a Coder compatible ingress kind will be created. You can configure it with `ingress.annotations` below. | `true` |
 | ingress.host | string | The hostname to use for accessing the platform. This can be left blank and the user can still access the platform from the external IP or a DNS name that resolves to the external IP address. | `""` |
 | ingress.loadBalancerIP | string |  | `""` |
 | ingress.podSecurityPolicyName | string | The name of the pod security policy the built in ingress controller should abide. It should be noted that the ingress controller requires the `NET_BIND_SERVICE` capability, privilege escalation, and access to privileged ports to successfully deploy. Ignored if `ingress.useDefault` is false. | `""` |
@@ -53,7 +53,7 @@ Coder!
 | ingress.tls.devurlsHostSecretName | string | The secret to use for the devurls.host hostname. | `""` |
 | ingress.tls.enable | bool | Enables the tls configuration. | `false` |
 | ingress.tls.hostSecretName | string | The secret to use for the ingress.host hostname. | `""` |
-| ingress.useDefault | bool | If set to true will deploy an nginx ingress that will allow you to access Coder from an external IP address, but if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `true` |
+| ingress.useDefault | bool | If set to true will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `true` |
 | ingress.usePathWildcards | bool | Whether or not the ingress object should use path wildcards, i.e. ending with "/*". Some ingresses require this while others do not. You should check which path style your ingress requires. For ingress-nginx this should be set to false. | `false` |
 | logging.human | string | Where to send logs that are formatted for readability by a human. Set to an empty string to disable. | `"/dev/stderr"` |
 | logging.json | string | Where to send logs that are formatted as JSON. Set to an empty string to disable. | `""` |
