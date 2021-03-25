@@ -150,7 +150,7 @@ dashboard:
   replicas: 1
   # dashboard.image -- Injected during releases.
   image: ""
-  # dashboard.resources -- Kubernetes resource request and limits for dasboard
+  # dashboard.resources -- Kubernetes resource request and limits for dashboard
   # pods.
   # To unset a value, set it to "".
   # To unset all values, you can provide a values.yaml file which sets resources
