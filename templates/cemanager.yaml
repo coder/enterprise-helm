@@ -1,6 +1,6 @@
-# The following describes the Kubernetes deployment of the Coder Enterprise
-# manager. The general setup is as follows:
-#   - A namespace contains all the relevant resources for Coder Enterprise.
+# The following describes the Kubernetes deployment of the Coder service.
+# The general setup is as follows:
+#   - A namespace contains all the relevant resources for Coder.
 #   - A deployment describes the configuration of the manager container.
 #   - A service is created to route requests to the manager pod.
 #   - A service account (along with a Role and Role binding) is created to grant

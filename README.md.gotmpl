@@ -1,4 +1,4 @@
-# Coder Enterprise Helm
+# Coder Helm
 
 WARNING: The master branch may contain updates for a yet unreleased version of
 Coder. The current state of the repo may not represent the latest release.
