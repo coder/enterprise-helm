@@ -100,7 +100,7 @@ tolerations:
     {{- else -}}
     http://
     {{- end -}}
-    {{- .Values.ingress.host }}/proxy
+    {{- .Values.ingress.host }}
 {{- else }}
 {{- end }}
 {{- end }}
