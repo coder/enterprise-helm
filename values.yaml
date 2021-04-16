@@ -294,6 +294,10 @@ ssh:
   # ssh.enable -- Enables accessing environments via SSH.
   enable: true
 
+stun:
+  # stun.enable -- Enables STUN server for p2p connections.
+  enable: true
+
 # serviceTolerations -- Tolerations are applied to all Coder managed services.
 # Each element is a toleration object. To set user environment tolerations see
 # environments.tolerations. See values.yaml for an example.

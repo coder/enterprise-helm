@@ -151,6 +151,15 @@ spec:
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
+{{- if eq .Values.stun.enable true }}
+        - name: stun
+          image: "akiroz/stunserver:1.2.16"
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-stun
+              containerPort: 3478
+          args: ["--protocol", "tcp"]
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -165,3 +174,8 @@ spec:
     - name: tcp-cemanager
       port: 8080
       protocol: TCP
+{{- if eq .Values.stun.enable true}}
+    - name: tcp-stun
+      port: 3478
+      protocol: TCP
+{{- end }}

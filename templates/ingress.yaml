@@ -37,6 +37,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   22: "{{ .Release.Namespace }}/envproxy:2222"
+  3478: "{{ .Release.Namespace }}/cemanager:3478"
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -331,6 +332,12 @@ spec:
     - name: ssh
       port: 22
       targetPort: 22
+      protocol: TCP
+{{- end }}
+{{- if .Values.stun.enable }}
+    - name: stun
+      port: 3478
+      targetPort: 3478
       protocol: TCP
 {{- end }}
 {{- end }}
