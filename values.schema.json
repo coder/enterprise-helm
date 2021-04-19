@@ -388,17 +388,29 @@
     },
     "definitions": {
         "kube_resource": {
-            "$comment": "Can this also be a number? Add regex to the strings to be valid resource strings",
-            "type": "string"
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "storage": {
+                    "$comment": "Can this also be a number? Add regex to the strings to be valid resource strings",
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "string"
+                }
+            }
         },
         "kube_resources": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "cpu": {
+                "requests": {
                     "$ref": "#/definitions/kube_resource"
                 },
-                "memory": {
+                "limits": {
                     "$ref": "#/definitions/kube_resource"
                 }
             }
