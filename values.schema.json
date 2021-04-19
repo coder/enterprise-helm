@@ -5,12 +5,8 @@
     "description": "TODO",
     "type": "object",
     "additionalProperties": false,
-    "required": [
-        "storageClassName",
-        "serviceType",
-        "podSecurityPolicyName",
-        "clusterDomainSuffix"
-    ],
+    "$comment": "Set all the required fields",
+    "required": [],
     "properties": {
         "storageClassName": {
             "type": "string",
@@ -38,10 +34,7 @@
         },
         "ingress": {
             "type": "object",
-            "required": [
-                "enable",
-                "useDefault"
-            ],
+            "required": [],
             "properties": {
                 "additionalProperties": false,
                 "enabled": {
@@ -75,9 +68,7 @@
                     "type": "object"
                 },
                 "tls": {
-                    "required": [
-                        "enable"
-                    ],
+                    "required": [],
                     "additionalProperties": false,
                     "properties": {
                         "enable": {
