@@ -1,0 +1,466 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://coder.com/coderhelm.schema.json",
+    "title": "Coder Enterprise Helm Files",
+    "description": "TODO",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "storageClassName",
+        "serviceType",
+        "podSecurityPolicyName",
+        "clusterDomainSuffix"
+    ],
+    "properties": {
+        "storageClassName": {
+            "type": "string",
+            "$comment": "TODO: Is this always a string? Is null an ok field? Can it be omitted?",
+            "default": ""
+        },
+        "serviceType": {
+            "type": "string",
+            "default": "ClusterIP",
+            "$comment": "TODO: Check the enum list is complete",
+            "enum": [
+                "ClusterIP",
+                "NodePort",
+                "LoadBalancer",
+                "ExternalName"
+            ]
+        },
+        "podSecurityPolicyName": {
+            "type": "string",
+            "default": ""
+        },
+        "clusterDomainSuffix": {
+            "$comment": "TODO: Should we apply any regex here?",
+            "type": "string"
+        },
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "additionalProperties": false,
+                "required": [
+                    "enable",
+                    "useDefault"
+                ],
+                "enabled": {
+                    "$comment": "TODO: Check default",
+                    "type": "boolean",
+                    "default": true
+                },
+                "useDefault": {
+                    "$comment": "TODO: Check default",
+                    "type": "boolean",
+                    "default": true
+                },
+                "usePathWildcards": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "host": {
+                    "type": "string"
+                },
+                "loadBalancerIP": {
+                    "type": "string"
+                },
+                "podSecurityPolicyName": {
+                    "type": "string"
+                },
+                "additionalAnnotations": {
+                    "type": "array",
+                    "description": "Deprecated. Please use `ingress.annotations`."
+                },
+                "annotations": {
+                    "type": "object"
+                },
+                "tls": {
+                    "required": [
+                        "enable"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                        "enable": {
+                            "type": "boolean",
+                            "default": "false"
+                        },
+                        "hostSecretName": {
+                            "type": "string"
+                        },
+                        "devurlsHostSecretName": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "service": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "devurls": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "host": {
+                    "type": "string"
+                }
+            }
+        },
+        "postgres": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "useDefault": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "host": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "user": {
+                    "type": "string"
+                },
+                "database": {
+                    "type": "string"
+                },
+                "passwordSecret": {
+                    "type": "string"
+                },
+                "sslMode": {
+                    "type": "string",
+                    "enum": [
+                        "disable",
+                        "allow",
+                        "prefer",
+                        "require"
+                    ],
+                    "default": "require"
+                }
+            }
+        },
+        "imagePullPolicy": {
+            "type": "string",
+            "default": "Always"
+        },
+        "cemanager": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "accessURL": {
+                    "type": "string"
+                },
+                "replicas": {
+                    "type": "number"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "resources": {
+                    "$ref": "#definitions/kube_resources"
+                }
+            }
+        },
+        "dashboard": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "replicas": {
+                    "type": "number"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "resources": {
+                    "$ref": "#definitions/kube_resources"
+                }
+            }
+        },
+        "envproxy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "accessURL": {
+                    "type": "string"
+                },
+                "clusterAddress": {
+                    "type": "string"
+                },
+                "replicas": {
+                    "type": "number"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "resources": {
+                    "$ref": "#definitions/kube_resources"
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "number",
+                    "miniumum": 0
+                }
+            }
+        },
+        "timescale": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "resources": {
+                    "$ref": "#definitions/kube_resources"
+                }
+            }
+        },
+        "envbox": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "envbuilder": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "environments": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "tolerations": {
+                    "type": "array",
+                    "items": {
+                        "additionalProperties": false,
+                        "default": {
+                            "key": "null",
+                            "operator": "null",
+                            "value": "null",
+                            "effect": "null"
+                        },
+                        "properties": {
+                            "key": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "default": null
+                            },
+                            "operator": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "enum": [
+                                    "Exists",
+                                    "Equal",
+                                    null
+                                ],
+                                "default": null
+                            },
+                            "value": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "default": null
+                            },
+                            "effect": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "enum": [
+                                    "NoSchedule",
+                                    "PreferNoSchedule",
+                                    "NoExecute",
+                                    null
+                                ],
+                                "default": null
+                            },
+                            "tolerationsSeconds": {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        }
+                    }
+                },
+                "nodeSelector": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^.": {
+                            "$comment": "All values should be strings",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "certs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "secret": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "namespaceWhitelist": {
+            "type": "array",
+            "description": "DEPRECATED: Use multiple workspace providers instead"
+        },
+        "ssh": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "enable": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        },
+        "serviceTolerations": {
+            "$ref": "#definitions/kube_tolerations"
+        },
+        "logging": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "human": {
+                    "type": "string",
+                    "default": "/dev/stderr"
+                },
+                "stackdriver": {
+                    "type": "string",
+                    "default": ""
+                },
+                "json": {
+                    "type": "string",
+                    "default": ""
+                },
+                "splunk": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "url": {
+                            "type": "string"
+                        },
+                        "token": {
+                            "type": "string"
+                        },
+                        "channel": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "deploymentAnnotations": {
+            "type": "object"
+        }
+    },
+    "definitions": {
+        "kube_resource": {
+            "$comment": "Can this also be a number? Add regex to the strings to be valid resource strings",
+            "type": "string"
+        },
+        "kube_resources": {
+            "properties": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "cpu": {
+                        "$ref": "#definitions/kube_resource"
+                    },
+                    "memory": {
+                        "$ref": "#definitions/kube_resource"
+                    }
+                }
+            }
+        },
+        "kube_tolerations": {
+            "type": "array",
+            "items": {
+                "additionalProperties": false,
+                "default": {
+                    "key": "null",
+                    "operator": "null",
+                    "value": "null",
+                    "effect": "null"
+                },
+                "properties": {
+                    "key": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "default": null
+                    },
+                    "operator": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Exists",
+                            "Equal",
+                            null
+                        ],
+                        "default": null
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "default": null
+                    },
+                    "effect": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "NoSchedule",
+                            "PreferNoSchedule",
+                            "NoExecute",
+                            null
+                        ],
+                        "default": null
+                    },
+                    "tolerationsSeconds": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            }
+        }
+    }
+}
