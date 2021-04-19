@@ -108,22 +108,27 @@
             "additionalProperties": false,
             "properties": {
                 "useDefault": {
+                    "description": "Deploys an internal Postgres instance alongside the platform. It is not recommended to run the internal Postgres instance in production. If true, all other values are ignored.",
                     "type": "boolean",
                     "default": true
                 },
                 "host": {
+                    "description": "The host of the external postgres instance.",
                     "type": "string"
                 },
                 "port": {
+                    "description": "The port of the external postgres instance.",
                     "type": [
                         "string",
                         "number"
                     ]
                 },
                 "user": {
+                    "description": "The user of the external postgres instance.",
                     "type": "string"
                 },
                 "database": {
+                    "description": "The name of the database that coder will use. It must exist before Coder is installed.",
                     "type": "string"
                 },
                 "passwordSecret": {
@@ -335,6 +340,7 @@
             "properties": {
                 "enable": {
                     "type": "boolean",
+                    "description": "Enables accessing environments via SSH.",
                     "default": true
                 }
             }
@@ -347,20 +353,24 @@
             "additionalProperties": false,
             "properties": {
                 "human": {
+                    "description": "Where to send logs that are formatted for readability by a human. Set to an empty string to disable.",
                     "type": "string",
                     "default": "/dev/stderr"
                 },
                 "stackdriver": {
+                    "description": "Where to send logs that are formatted for Google Stackdriver. Set to an empty string to disable.",
                     "type": "string",
                     "default": ""
                 },
                 "json": {
+                    "description": "Where to send logs that are formatted as JSON. Set to an empty string to disable.",
                     "type": "string",
                     "default": ""
                 },
                 "splunk": {
                     "type": "object",
                     "additionalProperties": false,
+                    "description": "Coder can send logs directly to Splunk, in addition to file-based output, if these values are configured. The channel is optional, and this logging is disabled if either the URL and Token are set to the empty string.",
                     "properties": {
                         "url": {
                             "type": "string"
