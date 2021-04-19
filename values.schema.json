@@ -135,7 +135,9 @@
                         "disable",
                         "allow",
                         "prefer",
-                        "require"
+                        "require",
+                        "verify-ca",
+                        "verify-full"
                     ],
                     "default": "require"
                 }
