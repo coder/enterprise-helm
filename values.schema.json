@@ -38,12 +38,12 @@
         },
         "ingress": {
             "type": "object",
+            "required": [
+                "enable",
+                "useDefault"
+            ],
             "properties": {
                 "additionalProperties": false,
-                "required": [
-                    "enable",
-                    "useDefault"
-                ],
                 "enabled": {
                     "$comment": "TODO: Check default",
                     "type": "boolean",
@@ -168,7 +168,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "$ref": "#definitions/kube_resources"
+                    "$ref": "#/definitions/kube_resources"
                 }
             }
         },
@@ -183,7 +183,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "$ref": "#definitions/kube_resources"
+                    "$ref": "#/definitions/kube_resources"
                 }
             }
         },
@@ -204,7 +204,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "$ref": "#definitions/kube_resources"
+                    "$ref": "#/definitions/kube_resources"
                 },
                 "terminationGracePeriodSeconds": {
                     "type": "number",
@@ -220,7 +220,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "$ref": "#definitions/kube_resources"
+                    "$ref": "#/definitions/kube_resources"
                 }
             }
         },
@@ -347,7 +347,7 @@
             }
         },
         "serviceTolerations": {
-            "$ref": "#definitions/kube_tolerations"
+            "$ref": "#/definitions/kube_tolerations"
         },
         "logging": {
             "type": "object",
@@ -392,16 +392,14 @@
             "type": "string"
         },
         "kube_resources": {
+            "type": "object",
+            "additionalProperties": false,
             "properties": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "cpu": {
-                        "$ref": "#definitions/kube_resource"
-                    },
-                    "memory": {
-                        "$ref": "#definitions/kube_resource"
-                    }
+                "cpu": {
+                    "$ref": "#/definitions/kube_resource"
+                },
+                "memory": {
+                    "$ref": "#/definitions/kube_resource"
                 }
             }
         },
