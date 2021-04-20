@@ -45,4 +45,12 @@ data:
 - name: POD_NODESELECTOR
   value: {{ toJson .Values.environments.nodeSelector | b64enc | quote }}
 {{- end }}
+{{- if .Values.environments.networkPolicy.egress }}
+- name: POD_EGRESS_RULES
+  value: {{ toJson .Values.environments.networkPolicy.egress | b64enc | quote }}
+{{- end }}
+{{- if .Values.environments.networkPolicy.ingress }}
+- name: POD_INGRESS_RULES
+  value: {{ toJson .Values.environments.networkPolicy.ingress | b64enc | quote }}
+{{- end }}
 {{- end }}

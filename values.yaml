@@ -261,40 +261,47 @@ environments:
   #   tolerationSeconds: 6000
   tolerations: []
   # environments.networkPolicy -- networkPolicy is applied to all user
-  # environments.
-  # NOTE: in order for the network policy to be
-  # applied to an existing environment, the environment _must_ be rebuilt.
-  # Existing environment are not immediatefly affected.
+  # environments. Policy rules are effective immediately.
   # See: https://kubernetes.io/docs/concepts/services-networking/network-policies
   networkPolicy:
     # environments.networkPolicy.egress -- egress is a list of egress rules
     # to be applied to environment.
-    # NOTE: podSelector and namespaceSelector fields will be ignored.
-    # The network policy will be automatically configured to apply to the
-    # environment.
     #
     # e.g.
     #   egress:
     #   - to:
     #     - ipBlock:
-    #       cidr: 10.0.0.0/24
-    #     ports:
-    #     - protocol: TCP
-    #       port: 32000
+    #         # Allow egress all traffic.
+    #         cidr: 0.0.0.0/0
+    #         # Block the GCP metadata server.
+    #         except:
+    #         - 169.254.169.254/32
     egress: []
     # environments.networkPolicy.ingress -- ingress is a list of ingress rules
     # to be applied to an environment.
-    # NOTE: podSelector and namespaceSelector fields will be ignored.
-    # The network policy will be automatically configured to apply to the
-    # environment.
+    #
+    # NOTE: A default ingress rule is automatically applied to allow ingress 
+    # traffic from the cemanager and envproxy deployments.
+    # ingress:
+    # - from:
+    #   # Allow ingress from a cemanager pod existing in any namespace.
+    #   - namespaceSelector: {}
+    #     podSelector:
+    #       matchLabels:
+    #         coder.deployment: cemanager
+    #   # Allow ingress from an envproxy pod existing in any namespace.
+    #   - namespaceSelector: {}
+    #     podSelector:
+    #       matchLabels:
+    #         coder.deployment: envproxy
     #
     # e.g.
     #   ingress:
     #   - from:
     #     - ipBlock:
-    #       cidr: 172.17.0.0/16
-    #       except:
-    #       - 172.17.1.0/24
+    #         cidr: 172.17.0.0/16
+    #         except:
+    #         - 172.17.1.0/24
     #   ports:
     #   - protocol: TCP
     #     port: 6379
