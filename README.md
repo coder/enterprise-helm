@@ -27,6 +27,8 @@ in this repository. If you have questions, please [contact support](#support).
 | ------------------- | ---- | ----------- | ------------------------------- |
 | cemanager.accessURL | string | The cemanager access URL that the envproxy will use to communicate with the cemanager. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g. https://manager.coder.com | `""` |
 | cemanager.image | string | Injected during releases. | `""` |
+| cemanager.p2p | object | p2p contains configuration related to peer to peer networking. NOTE: This is a highly experimental feature and is prone to breaking changes. | `{"enable":false}` |
+| cemanager.p2p.enable | bool | enables the peer to peer networking feature. | `false` |
 | cemanager.replicas | int | The number of replicas to run of the manager. | `1` |
 | cemanager.resources | object | Kubernetes resource request and limits for cemanager pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | certs | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments. | `{"secret":{"key":"","name":""}}` |

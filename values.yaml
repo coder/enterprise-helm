@@ -143,6 +143,13 @@ cemanager:
     limits:
       cpu: "250m"
       memory: "512Mi"
+  # cemanager.p2p -- p2p contains configuration related to peer to peer
+  # networking.
+  # NOTE: This is a highly experimental feature and is prone to breaking
+  # changes.
+  p2p:
+    # cemanager.p2p.enable -- enables the peer to peer networking feature.
+    enable: false
 
 # Contains the user interface of the platform.
 dashboard:
