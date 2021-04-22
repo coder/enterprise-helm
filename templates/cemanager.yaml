@@ -113,6 +113,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
             - name: BUILT_IN_ENVPROXY_TOKEN
@@ -166,4 +170,7 @@ spec:
   ports:
     - name: tcp-cemanager
       port: 8080
+      protocol: TCP
+    - name: tcp-cemanager-turns
+      port: 5349
       protocol: TCP
