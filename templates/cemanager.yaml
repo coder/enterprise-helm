@@ -113,6 +113,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
             - name: BUILT_IN_ENVPROXY_TOKEN
@@ -151,8 +155,16 @@ spec:
             failureThreshold: 7
             periodSeconds: 10
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- include "coder.volumeMounts" . | indent 10 }}
-{{- include "coder.volumes" . | indent 6 }}
+{{- if .Values.ingress.tls.enable }}
+          volumeMounts:
+            - mountPath: /etc/coder/certificates
+              name: tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -166,4 +178,7 @@ spec:
   ports:
     - name: tcp-cemanager
       port: 8080
+      protocol: TCP
+    - name: tcp-cemanager-turns
+      port: 5349
       protocol: TCP
