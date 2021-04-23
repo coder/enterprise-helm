@@ -155,7 +155,7 @@ spec:
             failureThreshold: 7
             periodSeconds: 10
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- if .Values.ingress.tls.enable }}
+{{- if and .Values.cemanager.p2p.enable .Values.ingress.tls.enable }}
           volumeMounts:
             - mountPath: /etc/coder/certificates
               name: tls
