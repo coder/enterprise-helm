@@ -315,7 +315,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster
   type: LoadBalancer
   loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
   selector:
