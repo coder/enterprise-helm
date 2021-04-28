@@ -1,25 +1,39 @@
 # Coder Helm Chart
 
-⚠️ **WARNING**: The default branch (master) may contain updates for an
-unreleased version of Coder. The current state of the repository may not
-represent the current release.
+⚠️ **WARNING**: This repository may not represent the current Coder release,
+since the default branch (master) may contain updates for an unreleased version
+of Coder.
 
 During Coder's release process, we inject version numbers and image references
-(e.g. `docker.io/coderenvs/coder-service:1.17.2`), then publish the result
-to our [Helm repository](https://helm.coder.com).
+(i.e., `docker.io/coderenvs/coder-service:1.17.2`), then publish the result to
+our [Helm repository](https://helm.coder.com).
 
-When installing Coder, use the official packages:
+When installing Coder, use the official packages that you can obtain as follows:
 
 ```shell-session
 $ helm repo add coder https://helm.coder.com
-$ helm install coder coder/coder --namespace coder --version 1.17.2
+$ helm install coder coder/coder --namespace coder --version <VERSION_NUMBER>
 ```
 
-See the [installation guide](https://coder.com/docs/setup/installation)
-for details.
+See the [installation guide](https://coder.com/docs/setup/installation) for
+additional information.
 
-If you have suggestions or feedback, please open a pull request or issue
-in this repository. If you have questions, please [contact support](#support).
+If you have suggestions or feedback, please open a pull request or issue in this
+repository. If you have questions, please [contact support](#support).
+
+## Contributing
+
+The Helm templates for Coder services in the `templates` directory define the
+Kubernetes objects that comprise a Coder deployment. We list configurable values
+in the Helm values file (`values.yaml`), and we use `helm-docs` to generate the
+`README.md` file based on a template, `README.md.gotmpl`. When modifying content
+in the README or the `values.yaml` file, be sure to re-generate the README by
+running `make README.md`.
+
+## Support
+
+If you have any questions or concerns about our Helm installer, use our [contact
+form](https://coder.com/contact) or send an email to support@coder.com.
 
 ## Values
 
@@ -29,35 +43,18 @@ in this repository. If you have questions, please [contact support](#support).
 | {{ .Key }} | {{ .Type }} | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
 {{- end }}
 
-## Contributing
-
-The Helm templates for Coder services in the `templates` directory define
-the Kubernetes objects that comprise a Coder deployment. Configurable
-values are listed in the Helm Values file (`values.yaml`) and we use
-`helm-docs` to generate the `README.md` file based on a template,
-`README.md.gotmpl`. When modifying content in the README or modifying
-the `values.yaml` file, be sure to re-generate the README by running
-`make README.md`.
-
-## Support
-
-If you have any questions or concerns about our Helm installer, use
-our [contact form](https://coder.com/contact) or send an email to
-support@coder.com.
-
 ## Copyright and License
 
 Copyright (C) 2020-2021 Coder Technologies Inc.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <https://www.gnu.org/licenses/>.
