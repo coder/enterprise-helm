@@ -5,7 +5,7 @@ since the default branch (master) may contain updates for an unreleased version
 of Coder.
 
 During Coder's release process, we inject version numbers and image references
-(i.e., `docker.io/coderenvs/coder-service:1.17.2`), then publish the result to
+(e.g., `docker.io/coderenvs/coder-service:1.17.2`), then publish the result to
 our [Helm repository](https://helm.coder.com).
 
 When installing Coder, use the official packages that you can obtain as follows:
