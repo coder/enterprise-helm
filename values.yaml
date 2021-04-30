@@ -323,7 +323,8 @@ services:
   # nodeSelector:
   #   beta.kubernetes.io/os: linux
   #   cloud.google.com/gke-boot-disk: pd-ssd
-  nodeSelector: {}
+  nodeSelector:
+    beta.kubernetes.io/os: linux
 
 # logging configures the logging format of Coder services. Specify one
 # or more targets for logging output. If you have multiple output

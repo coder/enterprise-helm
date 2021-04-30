@@ -116,7 +116,7 @@ tolerations:
 {{- end }}
 
 {{/*
-  coder.serviceNodeSelectors adds nodeSelectors if any are specified to
+  coder.services.nodeSelector adds nodeSelectors if any are specified to
   coder-managed services.
 */}}
 {{- define "coder.services.nodeSelector" }}
