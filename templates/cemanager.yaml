@@ -46,6 +46,7 @@ spec:
       # 5 minutes
       terminationGracePeriodSeconds: 300
       serviceAccountName: coder
+{{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       initContainers:
         - name: migrations
