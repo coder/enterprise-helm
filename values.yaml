@@ -318,11 +318,7 @@ serviceTolerations: []
 services:
   # services.nodeSelector -- Node selectors that will be applied to all Coder
   # managed services.
-  #
-  # e.g.
-  # nodeSelector:
-  #   beta.kubernetes.io/os: linux
-  #   cloud.google.com/gke-boot-disk: pd-ssd
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
   nodeSelector:
     beta.kubernetes.io/os: linux
     beta.kubernetes.io/arch: amd64
