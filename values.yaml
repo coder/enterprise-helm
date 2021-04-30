@@ -1,5 +1,5 @@
 # storageClassName -- Sets the storage class for all Coder services and user
-# environments. By default the storageClassName is not specified and thus the
+# environments. By default, the storageClassName is unspecified, and thus the
 # default StorageClass is used. If storageClassName is not specified and a
 # default StorageClass does not exist, then the deployment will fail. The
 # storageClass MUST support the ReadWriteOnce access mode.
@@ -22,29 +22,29 @@ clusterDomainSuffix: ".svc.cluster.local"
 
 # contains configuration for the bundled ingress controller.
 ingress:
-  # ingress.enable -- If set to true a Coder compatible ingress kind will be
+  # ingress.enable -- If set to true, a Coder compatible ingress kind will be
   # created. You can configure it with `ingress.annotations` below.
   enable: true
-  # ingress.useDefault -- If set to true will deploy an nginx ingress that will
+  # ingress.useDefault -- If set to true, will deploy an nginx ingress that will
   # allow you to access Coder from an external IP address, but only if your
   # kubernetes cluster is configured to provision external IP addresses. If you
   # would like to bring your own ingress and hook Coder into that instead, set
   # this value to false.
   useDefault: true
   # ingress.usePathWildcards -- Whether or not the ingress object should use
-  # path wildcards, i.e. ending with "/*". Some ingresses require this
+  # path wildcards, i.e., ending with "/*". Some ingresses require this
   # while others do not. You should check which path style your ingress
   # requires. For ingress-nginx this should be set to false.
   usePathWildcards: false
   # ingress.host -- The hostname to use for accessing the platform. This can
-  # be left blank and the user can still access the platform from the external
+  # be left blank, and the user can still access the platform from the external
   # IP or a DNS name that resolves to the external IP address.
   host: ""
   # ingress.loadBalancerIP sets the external IP address of the ingress to the
   # provided value.
   loadBalancerIP: ""
   # ingress.podSecurityPolicyName -- The name of the pod security policy the
-  # built in ingress controller should abide. It should be noted that the
+  # built-in ingress controller should abide. It should be noted that the
   # ingress controller requires the `NET_BIND_SERVICE` capability, privilege
   # escalation, and access to privileged ports to successfully deploy. Ignored
   # if `ingress.useDefault` is false.
@@ -53,7 +53,7 @@ ingress:
   additionalAnnotations: []
   # ingress.annotations -- Additional annotations to be used when creating the
   # ingress. These only apply to the Ingress Kubernetes kind. The annotations
-  # can be used to specify certificate issuers or other cloud provider specific
+  # can be used to specify certificate issuers or other cloud provider-specific
   # integrations.
   annotations: {}
   # ingress.tls -- TLS options for the ingress. The hosts used for the tls
@@ -71,7 +71,7 @@ ingress:
   # ingress.service -- Options related to the ingress Kubernetes Service object.
   service:
     # ingress.service.annotations -- Additional annotations to add to the Service
-    # object. For example to make the ingress spawn an internal load balancer:
+    # object. For example, to make the ingress spawn an internal load balancer:
     # annotations:
     #  cloud.google.com/load-balancer-type: "Internal"
     annotations: {}
@@ -86,8 +86,9 @@ devurls:
 # instance, a minimum version of Postgres 11 is required with the contrib
 # package installed.
 postgres:
-  # postgres.useDefault -- Deploys an internal Postgres instance alongside the platform.
-  # It is not recommended to run the internal Postgres instance in production.
+  # postgres.useDefault -- Deploys an internal Postgres instance alongside the.
+  # platform. We don't recommend running the internal Postgres instance in
+  # production.
   # If true, all other values are ignored.
   useDefault: true
   # postgres.host -- The host of the external postgres instance.
@@ -119,7 +120,7 @@ cemanager:
   # cemanager.accessURL -- The cemanager access URL that the envproxy will use
   # to communicate with the cemanager. This should be a full URL complete with
   # protocol and no trailing slash. Uses internal cluster URL if not set.
-  # e.g. https://manager.coder.com
+  # e.g., https://manager.coder.com
   accessURL: ""
   # cemanager.replicas -- The number of replicas to run of the manager.
   replicas: 1
@@ -218,8 +219,8 @@ envproxy:
   # disconnects during deployments.
   terminationGracePeriodSeconds: 14400
 
-# timescale -- Contains configuration for the internal database. It is not
-# recommended to run this service in production. See the `postgres` section for
+# timescale -- Contains configuration for the internal database. We don't
+# recommend running this service in production. See the `postgres` section for
 # connecting to an external Postgres database.
 timescale:
   # timescale.image -- Injected during releases.
@@ -287,8 +288,8 @@ certs:
     # bundle.
     key: ""
 
-# namespaceWhitelist -- DEPRECATED: A list of additional namespaces that
-# environments may be deploy to. Use multiple workspace providers instead.
+# namespaceWhitelist -- DEPRECATED: A list of additional namespaces to which
+# environments may be deployed. Use multiple workspace providers instead.
 # Existing environments within these namespaces will continue to function, but
 # new environments cannot be created within these namespaces.
 #
