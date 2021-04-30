@@ -320,8 +320,8 @@ services:
   # managed services.
   # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
   nodeSelector:
-    beta.kubernetes.io/os: linux
-    beta.kubernetes.io/arch: amd64
+    kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
 
 # logging configures the logging format of Coder services. Specify one
 # or more targets for logging output. If you have multiple output
