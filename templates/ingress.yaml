@@ -235,8 +235,7 @@ spec:
       # wait up to five minutes for the drain of connections
       terminationGracePeriodSeconds: 300
       serviceAccountName: nginx-ingress-serviceaccount
-      nodeSelector:
-        beta.kubernetes.io/os: linux
+{{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: nginx-ingress-controller

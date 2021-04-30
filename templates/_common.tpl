@@ -1,6 +1,6 @@
 {{/* 
-	coder.storageClassName adds a storageClassName field to a volume claim
-	if the 'storageClassName' value is non-empty.
+  coder.storageClassName adds a storageClassName field to a volume claim
+  if the 'storageClassName' value is non-empty.
 */}}
 {{- define "coder.storageClassName" }}
 {{- if ne .Values.storageClassName "" }}
@@ -112,5 +112,16 @@ tolerations:
 {{- .Values.envproxy.clusterAddress -}}
 {{- else -}}
     https://kubernetes.default{{ .Values.clusterDomainSuffix }}:443
+{{- end }}
+{{- end }}
+
+{{/*
+  coder.services.nodeSelector adds nodeSelectors if any are specified to
+  coder-managed services.
+*/}}
+{{- define "coder.services.nodeSelector" }}
+{{- if .Values.services.nodeSelector }}
+nodeSelector:
+{{ toYaml .Values.services.nodeSelector | indent 1 }}
 {{- end }}
 {{- end }}

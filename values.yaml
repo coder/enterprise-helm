@@ -313,6 +313,16 @@ ssh:
 #   tolerationSeconds: 6000
 serviceTolerations: []
 
+# Services contains global configuration that applies to all Coder managed
+# services.
+services:
+  # services.nodeSelector -- Node selectors that will be applied to all Coder
+  # managed services.
+  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  nodeSelector:
+    kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+
 # logging configures the logging format of Coder services. Specify one
 # or more targets for logging output. If you have multiple output
 # targets configured, coder will write output to multiple targets.

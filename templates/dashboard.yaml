@@ -35,6 +35,7 @@ spec:
         fsGroup: 1000
       restartPolicy: Always
       serviceAccountName: dashboard
+{{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: dashboard
