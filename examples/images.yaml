@@ -9,5 +9,3 @@ timescale:
   image: gcr.io/coder/timescale:2.0.0
 envbox:
   image: gcr.io/coder/envbox:2.0.0
-envbuilder:
-  image: gcr.io/coder/envbuilder:2.0.0

@@ -100,11 +100,6 @@ spec:
               value: {{ .Values.logging.json | quote }}
             - name: STACKDRIVER_LOG
               value: {{ .Values.logging.stackdriver | quote }}
-              # ENVBUILDER_IMAGE describes the image used to build
-              # user images and populate them with coder assets
-              # (such as code-server).
-            - name: ENVBUILDER_IMAGE
-              value: {{ .Values.envbuilder.image | quote }}
               # ENVBOX_IMAGE describes the image used to provide
               # additional features to users for running applications
               # such as dockerd and kubernetes.
