@@ -49,6 +49,7 @@ spec:
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       initContainers:
+      {{- if .Values.cemanager.disableMigrationsInInit }}
         - name: migrations
           image: {{ .Values.cemanager.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
@@ -81,7 +82,9 @@ spec:
               /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               exec /entrypoint.sh cemanager migrate up
+      {{- end }}
       containers:
+{{- include "coder.array" .Values.cemanager.sidecars | indent 8 }}
         - name: cemanager
           image: {{ .Values.cemanager.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
@@ -91,8 +94,10 @@ spec:
           # cemanager is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
+          {{- if .Values.cemanager.disableMigrationsInInit }}
             - name: SKIP_MIGRATIONS
               value: "true"
+          {{- end }}
             - name: ASSETS_URL
             - name: HUMAN_LOG
               value: {{ .Values.logging.human | quote }}
@@ -156,12 +161,16 @@ spec:
             failureThreshold: 7
             periodSeconds: 10
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- if and .Values.cemanager.p2p.enable .Values.ingress.tls.enable }}
           volumeMounts:
+          {{- include "coder.array" .Values.cemanager.volumeMounts | indent 12 }}
+{{- if and .Values.cemanager.p2p.enable .Values.ingress.tls.enable }}
             - mountPath: /etc/coder/certificates
               name: tls
               readOnly: true
+{{- end }}
       volumes:
+      {{- include "coder.array" .Values.cemanager.volumes | indent 8 }}
+{{- if and .Values.cemanager.p2p.enable .Values.ingress.tls.enable }}
         - name: tls
           secret:
             secretName: {{ .Values.ingress.tls.hostSecretName | quote }}

@@ -144,6 +144,20 @@ cemanager:
     limits:
       cpu: "250m"
       memory: "512Mi"
+  # cemanager.sidecars -- A list of containers to be deployed inside the
+  # cemanager pod.
+  sidecars: []
+  # cemanager.volumeMounts -- A list of volume mounts to apply to the cemanager
+  # container. It can be used to share folders between cemanager and sidecar
+  # containers.
+  volumeMounts: []
+  # cemanager.volumes -- A list of volumes to add to the cemanager pod.
+  volumes: []
+  # cemanager.disableMigrationsInInit -- Disables running database migrations in
+  # an init container.  This helps prevent errors caused by migrations taking
+  # longer than the failureThreshold of the pod. It should only be disabled in
+  # cases where database access is facilitated by a sidecar container.
+  disableMigrationsInInit: false
   # cemanager.p2p -- p2p contains configuration related to peer to peer
   # networking.
   # NOTE: This is a highly experimental feature and is prone to breaking

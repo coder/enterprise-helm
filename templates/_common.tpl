@@ -30,11 +30,13 @@ storageClassName: {{ .Values.storageClassName | quote }}
   value: {{ .Values.postgres.port | quote }}
 - name: DB_USER
   value: {{ .Values.postgres.user | quote }}
+{{- if ne .Values.postgres.passwordSecret "" }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.postgres.passwordSecret | quote }}    
       key: password
+{{- end }}
 - name: DB_SSL_MODE
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
@@ -123,5 +125,14 @@ tolerations:
 {{- if .Values.services.nodeSelector }}
 nodeSelector:
 {{ toYaml .Values.services.nodeSelector | indent 1 }}
+{{- end }}
+{{- end }}
+
+{{/*
+  coder.array includes an array if it has one or more values.
+*/}}
+{{- define "coder.array" }}
+{{- if ne (len .) 0 }}
+{{ toYaml .}}
 {{- end }}
 {{- end }}

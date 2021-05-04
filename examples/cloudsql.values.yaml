@@ -1,0 +1,44 @@
+# This file is an example for running cloud_sql_proxy as a sidecar container to
+# manage CloudSQL authentication in GKE.
+# See: https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine
+
+postgres:
+  useDefault: false
+  host: "/var/run/cloudsql/<INSTANCE CONNECTION STRING>"
+  port: "5432"
+  user: "<YOUR USERNAME>"
+  database: "<YOUR DATABASE>"
+  passwordSecret: ""
+  sslMode: "disable"
+
+# kubectl create secret generic cloudsql-service-account --from-file=key.json=/path/to/key.json
+cemanager:
+  disableMigrationsInInit: true
+  sidecars:
+    - name: cloud-sql-proxy
+      image: gcr.io/cloudsql-docker/gce-proxy:1.22.0-alpine
+      command:
+        - "/cloud_sql_proxy"
+        - "-dir=/var/run/cloudsql"
+        - "-enable_iam_login"
+        - "-instances=<INSTANCE CONNECTION STRING>"
+        - "-credential_file=/cloudsql/key.json"
+      securityContext:
+        runAsNonRoot: true
+      volumeMounts:
+        - name: cloudsql
+          mountPath: /var/run/cloudsql
+          readOnly: false
+        - name: cloudsql-service-account
+          mountPath: /cloudsql
+          readOnly: true
+  volumeMounts:
+    - name: cloudsql
+      mountPath: /var/run/cloudsql
+      readOnly: true
+  volumes:
+    - name: cloudsql
+      emptyDir: {}
+    - name: cloudsql-service-account
+      secret:
+        secretName: cloudsql-service-account
