@@ -68,13 +68,25 @@ ingress:
     # ingress.tls.devurlsHostSecretName -- The secret to use for the
     # devurls.host hostname.
     devurlsHostSecretName: ""
-  # ingress.service -- Options related to the ingress Kubernetes Service object.
+  # ingress.service -- Options used to configure the LoadBalancer Service used
+  # in the default ingress controller.
   service:
     # ingress.service.annotations -- Additional annotations to add to the Service
     # object. For example, to make the ingress spawn an internal load balancer:
     # annotations:
     #  cloud.google.com/load-balancer-type: "Internal"
     annotations: {}
+    # ingress.service.externalTrafficPolicy -- Denotes whether to route external
+    # traffic to node-local or cluster-wide endpoints. "Local" routes external
+    # traffic directly to the correct node, while "Cluster" evenly distributes
+    # traffic across all nodes, but masks source IPs.
+    externalTrafficPolicy: Local
+  # ingress.deployment -- Options used to configure the Deployment of the
+  # default ingress controller.
+  deployment:
+  # ingress.deployment.kind -- How to deploy the built-in ingress. Can be
+  # "Deployment" or "DaemonSet".
+    kind: Deployment
 
 devurls:
   # devurls.host -- Should be a wildcard hostname to allow matching against
