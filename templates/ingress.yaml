@@ -203,7 +203,7 @@ subjects:
     namespace: {{ .Release.Namespace | quote }}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ .Values.ingress.deployment.kind | quote }}
 metadata:
   name: nginx-ingress-controller
   namespace: {{ .Release.Namespace | quote }}
@@ -215,7 +215,9 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
+{{- if eq .Values.ingress.deployment.kind "Deployment" }}
   replicas: 1
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
@@ -314,7 +316,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: {{ .Values.ingress.externalTrafficPolicy | quote }}
   type: LoadBalancer
   loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
   selector:
@@ -337,7 +339,7 @@ spec:
     - name: turns
       port: 5349
       targetPort: 5349
-{{- end}}
+{{- end }}
 {{- end }}
 {{- if or .Values.ingress.useDefault .Values.ingress.enable }}
 ---
