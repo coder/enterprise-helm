@@ -55,7 +55,6 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |
-| envbuilder.image | string | Injected during releases. | `""` |
 | environments.nodeSelector | object | nodeSelector is applied to all user environments to specify eligible nodes for environments to run on. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  eg. nodeSelector:   disktype: ssd | `{}` |
 | environments.tolerations | list | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example. | `[]` |
 | envproxy.accessURL | string | The URL reported to cemanager. Must be accessible by cemanager and all users who can use this workspace provider. This should be a full URL, complete with protocol and trailing "/proxy" (no trailing slash). This is derived from the ingress.host or the access URL set during cemanager setup if not set. e.g. "https://proxy.coder.com/proxy" | `""` |

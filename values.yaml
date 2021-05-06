@@ -262,10 +262,6 @@ envbox:
   # envbox.image -- Injected during releases.
   image: ""
 
-envbuilder:
-  # envbuilder.image -- Injected during releases.
-  image: ""
-
 # environments defines configuration that is applied to all
 # user environments.
 environments:
