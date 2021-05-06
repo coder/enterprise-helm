@@ -137,7 +137,7 @@ spec:
             - -c
             - |
               echo Waiting on db;
-              /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
+              PGSSLMODE="${DB_SSL_MODE:-prefer}" /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               # Pass signals down to the envmanager.
               exec /entrypoint.sh cemanager run
