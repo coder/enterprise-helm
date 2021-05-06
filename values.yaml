@@ -47,9 +47,6 @@ ingress:
   # platform, the traffic through the cloud-provider load-balancer will be
   # restricted to the specified client IPs. This field will be ignored if the
   # cloud-provider does not support the feature.
-  #
-  # More info:
-  # https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/
   loadBalancerSourceRanges: []
   # ingress.podSecurityPolicyName -- The name of the pod security policy the
   # built-in ingress controller should abide. It should be noted that the
