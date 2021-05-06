@@ -71,7 +71,8 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | ingress.deployment.kind | string | How to deploy the built-in ingress. Can be "Deployment" or "DaemonSet". | `"Deployment"` |
 | ingress.enable | bool | If set to true, a Coder compatible ingress kind will be created. You can configure it with `ingress.annotations` below. | `true` |
 | ingress.host | string | The hostname to use for accessing the platform. This can be left blank, and the user can still access the platform from the external IP or a DNS name that resolves to the external IP address. | `""` |
-| ingress.loadBalancerIP | string |  | `""` |
+| ingress.loadBalancerIP | string | sets the external IP address of the ingress to the provided value. | `""` |
+| ingress.loadBalancerSourceRanges | list | If specified and supported by the platform, the traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature. | `[]` |
 | ingress.podSecurityPolicyName | string | The name of the pod security policy the built-in ingress controller should abide. It should be noted that the ingress controller requires the `NET_BIND_SERVICE` capability, privilege escalation, and access to privileged ports to successfully deploy. Ignored if `ingress.useDefault` is false. | `""` |
 | ingress.service | object | Options used to configure the LoadBalancer Service used in the default ingress controller. | `{"annotations":{},"externalTrafficPolicy":"Local"}` |
 | ingress.service.annotations | object | Additional annotations to add to the Service object. For example, to make the ingress spawn an internal load balancer: annotations:  cloud.google.com/load-balancer-type: "Internal" | `{}` |

@@ -319,6 +319,10 @@ spec:
   externalTrafficPolicy: {{ .Values.ingress.externalTrafficPolicy | quote }}
   type: LoadBalancer
   loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
+  {{- if ne (len .Values.ingress.loadBalancerSourceRanges) 0 }}
+  loadBalancerSourceRanges:
+    {{- toYaml .Values.ingress.loadBalancerSourceRanges | indent 4 }}
+  {{- end }}
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
