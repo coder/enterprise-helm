@@ -364,4 +364,14 @@ logging:
     # like to associate with all messages.
     channel: ""
 
+# serviceAccount configures the service account used for all Coder deployed
+# services.
+serviceAccount:
+  # serviceAccount.annotations -- Adds annotations to the service account used
+  # for all Coder deployed services.
+  annotations: {}
+  # serviceAccount.labels -- Adds labels to the service account used for all
+  # Coder deployed services.
+  labels: {}
+
 deploymentAnnotations: {}
