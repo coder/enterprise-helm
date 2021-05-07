@@ -98,6 +98,7 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | postgres.useDefault | bool | Deploys an internal Postgres instance alongside the. platform. We don't recommend running the internal Postgres instance in production. If true, all other values are ignored. | `true` |
 | postgres.user | string | the user of the external postgres instance. | `""` |
 | serviceAccount.annotations | object | Adds annotations to the service account used for all Coder deployed services. | `{}` |
+| serviceAccount.labels | object | Adds labels to the service account used for all Coder deployed services. | `{}` |
 | serviceTolerations | list | Tolerations are applied to all Coder managed services. Each element is a toleration object. To set user environment tolerations see environments.tolerations. See values.yaml for an example. | `[]` |
 | serviceType | string | See the following for the different serviceType options and their use: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types | `"ClusterIP"` |
 | services.nodeSelector | object | Node selectors that will be applied to all Coder managed services. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector | `{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"}` |

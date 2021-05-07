@@ -9,6 +9,10 @@ metadata:
   {{- range $key, $value := .Values.serviceAccount.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
+  labels:
+  {{- range $key, $value := .Values.serviceAccount.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 ---
 # The roles the cemanager needs cluster wide for
 # checking available resources.
