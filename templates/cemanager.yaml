@@ -69,6 +69,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: DEVURL_HOST
+              value: {{ .Values.devurls.host | quote }}
             - name: VERBOSE
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
