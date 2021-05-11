@@ -339,7 +339,7 @@ spec:
       targetPort: 22
       protocol: TCP
 {{- end }}
-{{- if .Values.cemanager.p2p.enable }}
+{{- if .Values.cemanager.turn.enable }}
     - name: turns
       port: 5349
       targetPort: 5349
