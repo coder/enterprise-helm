@@ -161,12 +161,10 @@ cemanager:
     limits:
       cpu: "250m"
       memory: "512Mi"
-  # cemanager.p2p -- p2p contains configuration related to peer to peer
-  # networking.
-  # NOTE: This is a highly experimental feature and is prone to breaking
-  # changes.
-  p2p:
-    # cemanager.p2p.enable -- enables the peer to peer networking feature.
+  # cemanager.turn -- turn contains configuration related to running a TURN server on port 5349
+  # NOTE: This is an alpha feature and is prone to breaking changes.
+  turn:
+    # cemanager.turn.enable -- enables the TURN server and allows networking V2 alpha to be enabled in site config.
     enable: false
 
 # Contains the user interface of the platform.

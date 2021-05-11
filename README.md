@@ -41,10 +41,10 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | ------------------- | ---- | ----------- | ------------------------------- |
 | cemanager.accessURL | string | The cemanager access URL that the envproxy will use to communicate with the cemanager. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g., https://manager.coder.com | `""` |
 | cemanager.image | string | Injected during releases. | `""` |
-| cemanager.p2p | object | p2p contains configuration related to peer to peer networking. NOTE: This is a highly experimental feature and is prone to breaking changes. | `{"enable":false}` |
-| cemanager.p2p.enable | bool | enables the peer to peer networking feature. | `false` |
 | cemanager.replicas | int | The number of replicas to run of the manager. | `1` |
 | cemanager.resources | object | Kubernetes resource request and limits for cemanager pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| cemanager.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
+| cemanager.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
 | certs | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments. | `{"secret":{"key":"","name":""}}` |
 | certs.secret.key | string | The key in the secret pointing to the certificate bundle. | `""` |
 | certs.secret.name | string | The name of the secret. | `""` |

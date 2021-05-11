@@ -122,8 +122,8 @@ spec:
                   key: token
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
-            - name: P2P_ENABLED
-              value: {{ .Values.cemanager.p2p.enable | quote }}
+            - name: TURN_ENABLED
+              value: {{ .Values.cemanager.turn.enable | quote }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
@@ -151,7 +151,7 @@ spec:
             failureThreshold: 7
             periodSeconds: 10
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- if and .Values.cemanager.p2p.enable .Values.ingress.tls.enable }}
+{{- if and .Values.cemanager.turn.enable .Values.ingress.tls.enable }}
           volumeMounts:
             - mountPath: /etc/coder/certificates
               name: tls
