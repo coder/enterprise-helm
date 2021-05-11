@@ -402,8 +402,13 @@ spec:
       paths:
       - path: /
         backend:
+          {{- if .Values.cemanager.turn.enable }}
+          serviceName: cemanager
+          servicePort: 8080
+          {{- else }}
           serviceName: envproxy
           servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- else }}
       - path: /proxy/*
@@ -428,8 +433,13 @@ spec:
       paths:
       - path: /*
         backend:
+          {{- if .Values.cemanager.turn.enable }}
+          serviceName: cemanager
+          servicePort: 8080
+          {{- else }}
           serviceName: envproxy
           servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- end }}
 {{- end }}
