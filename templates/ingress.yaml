@@ -372,9 +372,6 @@ metadata:
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
-  backend:
-    serviceName: dashboard
-    servicePort: 3000
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
@@ -384,18 +381,10 @@ spec:
         backend:
           serviceName: envproxy
           servicePort: 8080
-      - path: /api/
-        backend:
-          serviceName: cemanager
-          servicePort: 8080
-      - path: /auth/
-        backend:
-          serviceName: cemanager
-          servicePort: 8080
       - path: /
         backend:
-          serviceName: dashboard
-          servicePort: 3000
+          serviceName: cemanager
+          servicePort: 8080
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
@@ -410,18 +399,10 @@ spec:
         backend:
           serviceName: envproxy
           servicePort: 8080
-      - path: /api/*
-        backend:
-          serviceName: cemanager
-          servicePort: 8080
-      - path: /auth/*
-        backend:
-          serviceName: cemanager
-          servicePort: 8080
       - path: /*
         backend:
-          serviceName: dashboard
-          servicePort: 3000
+          serviceName: cemanager
+          servicePort: 8080
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
