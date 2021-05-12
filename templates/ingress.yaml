@@ -372,6 +372,9 @@ metadata:
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
+  backend:
+    serviceName: cemanager
+    servicePort: 8080
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
