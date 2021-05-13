@@ -43,6 +43,7 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | cemanager.image | string | Injected during releases. | `""` |
 | cemanager.replicas | int | The number of replicas to run of the manager. | `1` |
 | cemanager.resources | object | Kubernetes resource request and limits for cemanager pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| cemanager.securityContext | object | Contains fields related to the cemanager container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | cemanager.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
 | cemanager.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
 | certs | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments. | `{"secret":{"key":"","name":""}}` |
@@ -59,6 +60,7 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | envproxy.image | string | Injected during releases. | `""` |
 | envproxy.replicas | int | The number of replicas to run of the envproxy. | `1` |
 | envproxy.resources | object | Kubernetes resource request and limits for envproxy pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| envproxy.securityContext | object | Contains fields related to the envproxy container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | envproxy.terminationGracePeriodSeconds | int | Amount of seconds to wait before shutting down the environment proxy if there are still open connections. This is set very long intentionally so developers do not deal with disconnects during deployments. | `14400` |
 | imagePullPolicy | string | Sets the policy for pulling a container image across all services. | `"Always"` |
 | ingress.additionalAnnotations | list | Deprecated. Please use `ingress.annotations`. | `[]` |

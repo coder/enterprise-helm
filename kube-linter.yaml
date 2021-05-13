@@ -14,9 +14,9 @@ checks:
     - run-as-non-root
     - ssh-port
     - writable-host-mount
+    - read-only-root-fs
   exclude:
     - no-extensions-v1beta
-    - no-read-only-root-fs
     - required-annotation-email
     - required-label-owner
     - unset-cpu-requirements
