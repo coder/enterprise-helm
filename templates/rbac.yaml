@@ -97,4 +97,3 @@ roleRef:
   kind: Role
   name: coder
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
