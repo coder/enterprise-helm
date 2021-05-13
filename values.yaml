@@ -143,6 +143,13 @@ cemanager:
   replicas: 1
   # cemanager.image -- Injected during releases.
   image: ""
+  # cemanager.securityContext -- Contains fields related to the cemanager
+  # container's security context (as opposed to the pod).
+  securityContext:
+    # cemanager.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the cemanager container to read-only. It is recommended to leave this setting enabled
+    # in production.
+    readOnlyRootFilesystem: true
   # cemanager.resources -- Kubernetes resource request and limits for cemanager
   # pods.
   # To unset a value, set it to "".
@@ -185,6 +192,13 @@ envproxy:
   replicas: 1
   # envproxy.image -- Injected during releases.
   image: ""
+  # envproxy.securityContext -- Contains fields related to the envproxy
+  # container's security context (as opposed to the pod).
+  securityContext:
+    # envproxy.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the envproxy container to read-only. It is recommended to leave this setting enabled
+    # in production.
+    readOnlyRootFilesystem: true
   # envproxy.resources -- Kubernetes resource request and limits for envproxy
   # pods.
   # To unset a value, set it to "".

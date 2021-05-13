@@ -8,6 +8,7 @@ checks:
     - mismatching-selector
     - no-anti-affinity
     - no-liveness-probe
+    - no-read-only-root-fs
     - no-readiness-probe
     - non-existent-service-account
     - privileged-container
@@ -16,7 +17,6 @@ checks:
     - writable-host-mount
   exclude:
     - no-extensions-v1beta
-    - no-read-only-root-fs
     - required-annotation-email
     - required-label-owner
     - unset-cpu-requirements
