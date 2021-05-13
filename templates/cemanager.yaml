@@ -90,6 +90,9 @@ spec:
           ports:
             - name: tcp-cemanager
               containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRooFilesystem: {{ .Values.cemanager.securityContext.readOnlyRootFilesystem }}
           # cemanager is a daemon service, no need to allocate a tty for it.
           tty: false
           env:

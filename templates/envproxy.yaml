@@ -70,7 +70,7 @@ spec:
 {{- end}}
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: {{ .Values.envproxy.securityContext.readOnlyRootFilesystem }}
           # envproxy is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
