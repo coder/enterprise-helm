@@ -4,13 +4,11 @@ updates:
   directory: "/"
   schedule:
     interval: "daily"
-    time: "11:00"
+    time: "06:00"
+    timezone: "America/Chicago"
+  commit-message:
+    prefix: "chore"
   ignore:
-    # GitHub always delivers the latest versions for each major
-    # release tag, so ignore minor version tags
-    - dependency-name: "actions/cache"
-      versions:
-        - 2.x
-    - dependency-name: "actions/checkout"
-      versions:
-        - 2.x
+    # These actions deliver the latest versions by updating the
+    # major release tag, so handle updates manually
+    - dependency-name: "actions/*"
