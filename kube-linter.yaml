@@ -8,10 +8,10 @@ checks:
     - mismatching-selector
     - no-anti-affinity
     - no-liveness-probe
+    - no-read-only-root-fs
     - no-readiness-probe
     - non-existent-service-account
     - privileged-container
-    - read-only-root-fs
     - run-as-non-root
     - ssh-port
     - writable-host-mount
