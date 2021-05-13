@@ -177,6 +177,9 @@ spec:
     - name: tcp-cemanager
       port: 8080
       protocol: TCP
+    - name: tcp-cemanager-https
+      port: 8443
+      protocol: TCP
     - name: tcp-cemanager-turns
       port: 5349
       protocol: TCP
