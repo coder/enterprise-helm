@@ -11,10 +11,10 @@ checks:
     - no-readiness-probe
     - non-existent-service-account
     - privileged-container
+    - read-only-root-fs
     - run-as-non-root
     - ssh-port
     - writable-host-mount
-    - read-only-root-fs
   exclude:
     - no-extensions-v1beta
     - required-annotation-email
