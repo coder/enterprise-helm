@@ -57,7 +57,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: nginx-ingress-clusterrole-{{ .Release.Namespace }}
@@ -123,7 +123,7 @@ rules:
       - list
       - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: nginx-ingress-role
@@ -167,7 +167,7 @@ rules:
     verbs:
       - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
@@ -184,7 +184,7 @@ subjects:
     name: nginx-ingress-serviceaccount
     namespace: {{ .Release.Namespace | quote }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   # The cluster role binding needs to be namespaced to avoid
@@ -347,7 +347,7 @@ spec:
 {{- end }}
 {{- if or .Values.ingress.useDefault .Values.ingress.enable }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
