@@ -1,6 +1,9 @@
 <!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
 
-# Coder Helm Chart &middot; [![build](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml/badge.svg)](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml) [![Twitter Follow](https://img.shields.io/twitter/follow/CoderHQ?label=%40CoderHQ&style=social)](https://twitter.com/coderhq)
+# Coder Helm Chart
+
+[![build](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml)
+[![Twitter Follow](https://img.shields.io/twitter/follow/CoderHQ?label=%40CoderHQ&style=social)](https://twitter.com/coderhq)
 
 Coder moves developer workspaces to your cloud and centralizes their creation and management. Keep developers in flow with the power of the cloud and a superior developer experience.
 
@@ -22,14 +25,14 @@ Helm compiles templates with `values.yaml` when deploying.
 
 `README.md` is generated from `README.md.gotmpl` to ensure values are correct. Regenerate the readme:
 
-```bash
+```shell-session
 $ make README.md
 ```
 
 ## Support
 
 If you experience issues, have feedback, or want to ask a question, open an issue or
-pull request in this repository. Feel free to [contact us via email](mailto:support@coder.com) instead.
+pull request in this repository. Feel free to [contact us instead](https://coder.com/contact).
 
 ## Values
 
