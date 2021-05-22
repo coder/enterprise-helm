@@ -174,6 +174,38 @@ cemanager:
     # cemanager.turn.enable -- enables the TURN server and allows networking V2 alpha to be enabled in site config.
     enable: false
 
+# Contains the user interface of the platform.
+dashboard:
+  # dashboard.replicas -- The number of replicas to run of the dashboard.
+  replicas: 1
+  # dashboard.image -- Injected during releases.
+  image: ""
+  # dashboard.securityContext -- Contains fields related to the dashboard
+  # container's security context (as opposed to the pod).
+  securityContext:
+    # dashboard.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the dashboard container to read-only. It is recommended to leave this setting enabled
+    # in production.
+    readOnlyRootFilesystem: true
+  # dashboard.resources -- Kubernetes resource request and limits for dashboard
+  # pods.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. See values.yaml for an example.
+  #
+  # e.g:
+  # dashboard:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   replica: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
