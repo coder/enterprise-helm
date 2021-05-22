@@ -18,22 +18,6 @@ our installation docs for instructions on a tagged release.
 
 View [our docs](https://coder.com/docs/setup/installation) for detailed installation.
 
-## Contributing
-
-Templates for Coder services live in the `templates` directory.
-Helm compiles templates with `values.yaml` when deploying.
-
-`README.md` is generated from `README.md.gotmpl` to ensure values are correct. Regenerate the readme:
-
-```shell-session
-$ make README.md
-```
-
-## Support
-
-If you experience issues, have feedback, or want to ask a question, open an issue or
-pull request in this repository. Feel free to [contact us instead](https://coder.com/contact).
-
 ## Values
 
 | Key                 | Type | Description | Default                         |
@@ -106,6 +90,22 @@ pull request in this repository. Feel free to [contact us instead](https://coder
 | timescale.image | string | Injected during releases. | `""` |
 | timescale.resources | object | Kubernetes resource request and limits for the timescale pod. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}}` |
 | timescale.resources.requests.storage | string | Specifies the size of the volume claim for persisting the database. | `"10Gi"` |
+
+## Contributing
+
+Templates for Coder services live in the `templates` directory.
+Helm compiles templates with `values.yaml` when deploying.
+
+`README.md` is generated from `README.md.gotmpl` to ensure values are correct. Regenerate the readme:
+
+```shell-session
+$ make README.md
+```
+
+## Support
+
+If you experience issues, have feedback, or want to ask a question, open an issue or
+pull request in this repository. Feel free to [contact us instead](https://coder.com/contact).
 
 ## Copyright and License
 
