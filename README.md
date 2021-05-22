@@ -16,7 +16,7 @@ The Coder chart is the best way to operate Coder on Kubernetes. It contains all 
 > ⚠️ **Warning**: This repository will not represent the latest Coder release. Reference
 our installation docs for instructions on a tagged release.
 
-View [our docs](https://coder.com/docs/setup/installation) for detailed installation.
+View [our docs](https://coder.com/docs/setup/installation) for detailed installation instructions.
 
 ## Values
 
