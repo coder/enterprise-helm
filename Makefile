@@ -38,6 +38,8 @@ fmt: README.md
 README.md: README.md.gotmpl values.yaml
 	@echo "--- Generating documentation"
 	helm-docs --template-files=$<
+	@echo -e "<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->\n\n$$(cat README.md)" > README.md
+.PHONY: README.md
 
 clean:
 	rm -vrf build/

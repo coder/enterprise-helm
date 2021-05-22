@@ -19,8 +19,21 @@ pushd "$PROJECT_ROOT" >/dev/null
 
   FILES="$(git ls-files --other --modified --exclude-standard)"
   if [ -n "$FILES" ]; then
-    echo "Unstaged files after running 'make fmt':"
-    echo "$FILES"
-    exit 1
+    mapfile -t files <<< "$FILES"
+
+    echo "The following files contain unstaged changes:"
+    echo
+    for file in "${files[@]}"
+    do
+      echo "  - $file"
+    done
+    echo
+
+    echo "These are the changes:"
+    echo
+    for file in "${files[@]}"
+    do
+      git --no-pager diff "$file"
+    done
   fi
 popd >/dev/null
