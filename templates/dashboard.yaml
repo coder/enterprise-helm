@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: dashboard
+  name: dashboard
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+  {{- range $key, $value := .Values.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.dashboard.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      coder.deployment: dashboard
+  template:
+    metadata:
+      labels:
+        coder.deployment: dashboard
+      annotations:
+      {{- range $key, $value := .Values.deploymentAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    spec:
+      # coder:coder
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      restartPolicy: Always
+      serviceAccountName: dashboard
+{{- include "coder.services.nodeSelector" . | indent 6 }}
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: dashboard
+          image: {{ .Values.cemanager.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-dashboard
+              containerPort: 3000
+          # dashboard runs a node server. no tty is needed for it.
+          tty: false
+          env:
+            - name: CEMANAGER_HOST
+              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+          command:
+            - /bin/bash
+            - -c
+            - |
+              exec cemanager replica --bind 0.0.0.0:3000 --main-url $CEMANAGER_HOST 
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            failureThreshold: 7
+            periodSeconds: 10
+{{- include "coder.resources" .Values.dashboard.resources | indent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType | quote }}
+  selector:
+    coder.deployment: dashboard
+  ports:
+    - name: tcp-dashboard
+      port: 3000
+      protocol: TCP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: dashboard
