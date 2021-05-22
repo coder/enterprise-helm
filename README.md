@@ -53,6 +53,7 @@ form](https://coder.com/contact) or send an email to support@coder.com.
 | dashboard.image | string | Injected during releases. | `""` |
 | dashboard.replicas | int | The number of replicas to run of the dashboard. | `1` |
 | dashboard.resources | object | Kubernetes resource request and limits for dashboard pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| dashboard.securityContext | object | Contains fields related to the dashboard container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |

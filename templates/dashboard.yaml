@@ -44,6 +44,9 @@ spec:
           ports:
             - name: tcp-dashboard
               containerPort: 3000
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: {{ .Values.dashboard.securityContext.readOnlyRootFilesystem }}
           # dashboard runs a node server. no tty is needed for it.
           tty: false
           env:

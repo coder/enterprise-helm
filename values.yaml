@@ -180,6 +180,13 @@ dashboard:
   replicas: 1
   # dashboard.image -- Injected during releases.
   image: ""
+  # dashboard.securityContext -- Contains fields related to the dashboard
+  # container's security context (as opposed to the pod).
+  securityContext:
+    # dashboard.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the dashboard container to read-only. It is recommended to leave this setting enabled
+    # in production.
+    readOnlyRootFilesystem: true
   # dashboard.resources -- Kubernetes resource request and limits for dashboard
   # pods.
   # To unset a value, set it to "".
