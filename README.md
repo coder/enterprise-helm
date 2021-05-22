@@ -1,39 +1,35 @@
-# Coder Helm Chart
+<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
 
-⚠️ **WARNING**: This repository may not represent the current Coder release,
-since the default branch (master) may contain updates for an unreleased version
-of Coder.
+# Coder Helm Chart &middot; [![build](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml/badge.svg)](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml) [![Twitter Follow](https://img.shields.io/twitter/follow/CoderHQ?label=%40CoderHQ&style=social)](https://twitter.com/coderhq)
 
-During Coder's release process, we inject version numbers and image references
-(e.g., `docker.io/coderenvs/coder-service:1.17.2`), then publish the result to
-our [Helm repository](https://helm.coder.com).
+Coder moves developer workspaces to your cloud and centralizes their creation and management. Keep developers in flow with the power of the cloud and a superior developer experience.
 
-When installing Coder, use the official packages that you can obtain as follows:
+The Coder chart is the best way to operate Coder on Kubernetes. It contains all the required components, and can scale to large deployments.
 
-```shell-session
-$ helm repo add coder https://helm.coder.com
-$ helm install coder coder/coder --namespace coder --version <VERSION_NUMBER>
-```
+![Coder Dashboard](./assets/coder.svg)
 
-See the [installation guide](https://coder.com/docs/setup/installation) for
-additional information.
+## Getting Started
 
-If you have suggestions or feedback, please open a pull request or issue in this
-repository. If you have questions, please [contact support](#support).
+> ⚠️ **Warning**: This repository will not represent the latest Coder release. Reference
+our installation docs for instructions on a tagged release.
+
+View [our docs](https://coder.com/docs/setup/installation) for detailed installation.
 
 ## Contributing
 
-The Helm templates for Coder services in the `templates` directory define the
-Kubernetes objects that comprise a Coder deployment. We list configurable values
-in the Helm values file (`values.yaml`), and we use `helm-docs` to generate the
-`README.md` file based on a template, `README.md.gotmpl`. When modifying content
-in the README or the `values.yaml` file, be sure to re-generate the README by
-running `make README.md`.
+Templates for Coder services live in the `templates` directory.
+Helm compiles templates with `values.yaml` when deploying.
+
+`README.md` is generated from `README.md.gotmpl` to ensure values are correct. Regenerate the readme:
+
+```bash
+$ make README.md
+```
 
 ## Support
 
-If you have any questions or concerns about our Helm installer, use our [contact
-form](https://coder.com/contact) or send an email to support@coder.com.
+If you experience issues, have feedback, or want to ask a question, open an issue or
+pull request in this repository. Feel free to [contact us via email](mailto:support@coder.com) instead.
 
 ## Values
 

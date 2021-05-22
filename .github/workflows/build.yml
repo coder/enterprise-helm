@@ -31,6 +31,10 @@ jobs:
         if: always()
         run: ./scripts/fmt.sh
 
+      - name: Generate README.md
+        if: always()
+        run: ./scripts/gen.sh
+
       - name: Lint Shell Scripts
         if: always()
         run: make lint/shellcheck
