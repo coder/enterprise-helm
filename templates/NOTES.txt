@@ -1,0 +1,15 @@
+{{- if .Values.ingress.additionalAnnotations }}
+Warning: `ingress.additionalAnnotations` has been moved to `ingress.annotations`.
+{{- end }}
+
+{{- if .Values.namespaceWhitelist }}
+Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers instead. See: https://coder.com/docs/admin/workspace-providers
+{{- end }}
+
+{{- if .Values.dashboard }}
+Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021). You can safely delete the `dashboard` property.
+{{- if eq .Values.ingress.useDefault false }}
+
+Breaking: All `dashboard` traffic should be routed to `cemanager` before v1.21.
+{{- end }}
+{{- end }}
