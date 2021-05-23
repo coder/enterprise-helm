@@ -1,0 +1,12 @@
+
+{{- if .Values.ingress.additionalAnnotations }}
+Warning: `ingress.additionalAnnotations` has been moved to `ingress.annotations`.
+{{- end }}
+
+{{- if .Values.namespaceWhitelist }}
+Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers instead. See: https://coder.com/docs/admin/workspace-providers
+{{- end }}
+
+{{- if .Values.dashboard }}
+Warning: `dashboard` is being merged with `cemanager` in a future release. If you are using a custom ingress, redirect all `dashboard` traffic to `cemanager`.
+{{- end }}
