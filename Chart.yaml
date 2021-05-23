@@ -3,14 +3,16 @@
 # See release.mk - build/helm target.
 apiVersion: v2
 name: coder
-description: Run Coder in Kubernetes
-type: application
-version: 1.0.0
+description: Coder moves developer workspaces to your cloud and centralizes their creation and management.
+appVersion: master
+version: 1.19.0
 home: https://coder.com
+keywords:
+  - coder
 sources:
   - https://github.com/cdr/enterprise-helm
-icon: https://helm.coder.com/coder_logo_blue.png
+icon: https://helm.coder.com/coder_logo_black.png
 maintainers:
-  - name: Coder Technologies Inc.
+  - name: Coder Technologies, Inc.
     email: support@coder.com
     url: https://coder.com/contact
