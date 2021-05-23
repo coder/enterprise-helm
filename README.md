@@ -66,7 +66,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | ingress.tls.devurlsHostSecretName | string | The secret to use for the devurls.host hostname. | `""` |
 | ingress.tls.enable | bool | Enables the tls configuration. | `false` |
 | ingress.tls.hostSecretName | string | The secret to use for the ingress.host hostname. | `""` |
-| ingress.useDefault | bool | If set to true, will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `true` |
+| ingress.useDefault | bool | If set to true, will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `false` |
 | ingress.usePathWildcards | bool | Whether or not the ingress object should use path wildcards, i.e., ending with "/*". Some ingresses require this while others do not. You should check which path style your ingress requires. For ingress-nginx this should be set to false. | `false` |
 | logging.human | string | Where to send logs that are formatted for readability by a human. Set to an empty string to disable. | `"/dev/stderr"` |
 | logging.json | string | Where to send logs that are formatted as JSON. Set to an empty string to disable. | `""` |
@@ -105,6 +105,8 @@ Helm compiles templates with `values.yaml` when deploying.
 ```shell-session
 $ make README.md
 ```
+
+Deprecation notices should be added to `templates/NOTES.txt`.
 
 ## Support
 
