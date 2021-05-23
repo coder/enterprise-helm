@@ -8,7 +8,7 @@ Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers
 
 {{- if .Values.dashboard }}
 Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021). You can safely delete the `dashboard` property.
-{{- if eq .Values.ingress.useDefault true }}
+{{- if eq .Values.ingress.useDefault false }}
 
 Breaking: All `dashboard` traffic should be routed to `cemanager` before v1.21.
 {{- end }}
