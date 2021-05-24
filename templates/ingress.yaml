@@ -389,10 +389,12 @@ spec:
     http:
       paths:
     {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
+      {{- if hasKey .Values "envproxy" }}
       - path: /proxy/
         backend:
           serviceName: envproxy
           servicePort: 8080
+      {{- end }}
       - path: /api/
         backend:
           serviceName: {{ include "coder.serviceName" . }}
@@ -403,16 +405,26 @@ spec:
           servicePort: 8080
       - path: /
         backend:
+          {{- if hasKey .Values "dashboard" }}
           serviceName: dashboard
           servicePort: 3000
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
       - path: /
         backend:
+          {{- if hasKey .Values "envproxy" }}
           serviceName: envproxy
           servicePort: 8080
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- else }}
       - path: /proxy/*
@@ -429,16 +441,26 @@ spec:
           servicePort: 8080
       - path: /*
         backend:
+          {{- if hasKey .Values "dashboard" }}
           serviceName: dashboard
           servicePort: 3000
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
       - path: /*
         backend:
+          {{- if hasKey .Values "envproxy" }}
           serviceName: envproxy
           servicePort: 8080
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- end }}
 {{- end }}
