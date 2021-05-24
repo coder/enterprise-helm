@@ -7,11 +7,11 @@ Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers
 {{- end }}
 
 {{- if .Values.dashboard }}
-Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021). You can safely delete the `dashboard` property.
+Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021).
 {{- if eq .Values.ingress.useDefault false }}
-
-Breaking: All `dashboard` traffic should be routed to `cemanager` before v1.21.
+  All `dashboard` traffic must be routed to `cemanager` before v1.21.
 {{- end }}
+  Delete `dashboard` in values.yaml to migrate.
 {{- end }}
 
 {{- if .Values.podSecurityPolicyName }}

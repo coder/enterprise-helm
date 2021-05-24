@@ -22,17 +22,17 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
-| cemanager.accessURL | string | The cemanager access URL that the envproxy will use to communicate with the cemanager. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g., https://manager.coder.com | `""` |
-| cemanager.image | string | Injected during releases. | `""` |
-| cemanager.replicas | int | The number of replicas to run of the manager. | `1` |
-| cemanager.resources | object | Kubernetes resource request and limits for cemanager pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
-| cemanager.securityContext | object | Contains fields related to the cemanager container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
-| cemanager.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
-| cemanager.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
 | certs | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments. | `{"secret":{"key":"","name":""}}` |
 | certs.secret.key | string | The key in the secret pointing to the certificate bundle. | `""` |
 | certs.secret.name | string | The name of the secret. | `""` |
 | clusterDomainSuffix | string | If you've set a custom default domain for your cluster, you may need to remove or change this DNS suffix for service resolution to work correctly. | `".svc.cluster.local"` |
+| coderd.accessURL | string | The coderd access URL that the envproxy will use to communicate with the coderd. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g., https://manager.coder.com | `""` |
+| coderd.image | string | Injected during releases. | `""` |
+| coderd.replicas | int | The number of replicas to run of the manager. | `1` |
+| coderd.resources | object | Kubernetes resource request and limits for coderd pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| coderd.securityContext | object | Contains fields related to the coderd container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
+| coderd.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
+| coderd.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
 | dashboard.image | string | Injected during releases. | `""` |
 | dashboard.replicas | int | The number of replicas to run of the dashboard. | `1` |
 | dashboard.resources | object | Kubernetes resource request and limits for dashboard pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
@@ -42,8 +42,8 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | envbox.image | string | Injected during releases. | `""` |
 | environments.nodeSelector | object | nodeSelector is applied to all user environments to specify eligible nodes for environments to run on. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  eg. nodeSelector:   disktype: ssd | `{}` |
 | environments.tolerations | list | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example. | `[]` |
-| envproxy.accessURL | string | The URL reported to cemanager. Must be accessible by cemanager and all users who can use this workspace provider. This should be a full URL, complete with protocol and trailing "/proxy" (no trailing slash). This is derived from the ingress.host or the access URL set during cemanager setup if not set. e.g. "https://proxy.coder.com/proxy" | `""` |
-| envproxy.clusterAddress | string | The address of the K8s cluster, must be reachable from the cemanager. Defaults to "https://kubernetes.default.$clusterDomainSuffix:443" if not set. | `""` |
+| envproxy.accessURL | string | The URL reported to coderd. Must be accessible by coderd and all users who can use this workspace provider. This should be a full URL, complete with protocol and trailing "/proxy" (no trailing slash). This is derived from the ingress.host or the access URL set during coderd setup if not set. e.g. "https://proxy.coder.com/proxy" | `""` |
+| envproxy.clusterAddress | string | The address of the K8s cluster, must be reachable from the coderd. Defaults to "https://kubernetes.default.$clusterDomainSuffix:443" if not set. | `""` |
 | envproxy.image | string | Injected during releases. | `""` |
 | envproxy.replicas | int | The number of replicas to run of the envproxy. | `1` |
 | envproxy.resources | object | Kubernetes resource request and limits for envproxy pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
