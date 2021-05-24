@@ -27,7 +27,7 @@ subjects:
     name: timescale
     namespace: {{ .Release.Namespace | quote }}
   - kind: ServiceAccount
-    name: cemanager
+    name: coderd
     namespace: {{ .Release.Namespace | quote }}
   - kind: ServiceAccount
     name: envproxy

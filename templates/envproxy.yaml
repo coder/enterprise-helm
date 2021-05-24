@@ -101,7 +101,7 @@ spec:
             - name: SSH_ENABLED
               value: {{ .Values.ssh.enable | quote }}
             - name: CEMANAGER_ACCESS_URL
-              value: {{ include "coder.cemanager.accessURL" . | quote }}
+              value: {{ include "coder.coderd.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
               valueFrom:
                 secretKeyRef:

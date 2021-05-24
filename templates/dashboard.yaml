@@ -39,7 +39,7 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: dashboard
-          image: {{ .Values.cemanager.image | quote }}
+          image: {{ default .Values.cemanager.image .Values.coderd.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           ports:
             - name: tcp-dashboard
@@ -50,13 +50,13 @@ spec:
           # dashboard runs a node server. no tty is needed for it.
           tty: false
           env:
-            - name: CEMANAGER_HOST
-              value: "http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+            - name: CODERD_HOST
+              value: "http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
           command:
             - /bin/bash
             - -c
             - |
-              exec cemanager replica --bind 0.0.0.0:3000 --main-url $CEMANAGER_HOST 
+              exec coderd replica --bind 0.0.0.0:3000 --main-url $CODERD_HOST 
           readinessProbe:
             httpGet:
               path: /healthz

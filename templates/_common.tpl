@@ -79,13 +79,13 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.cemanager.accessURL is a URL for accessing the cemanager.
+  coder.coderd.accessURL is a URL for accessing the coderd.
 */}}
-{{- define "coder.cemanager.accessURL" }}
-{{- if ne .Values.cemanager.accessURL "" }}
-{{- .Values.cemanager.accessURL -}}
+{{- define "coder.coderd.accessURL" }}
+{{- if ne (default .Values.cemanager.accessURL .Values.coderd.accessURL) "" }}
+{{- default .Values.cemanager.accessURL .Values.coderd.accessURL -}}
 {{- else -}}
-    http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+    http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
 {{- end }}
 {{- end }}
 {{/*

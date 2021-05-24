@@ -2,7 +2,7 @@
 ingress:
   useDefault: false
 
-cemanager:
+coderd:
   resources:
     requests:
       cpu: 100m

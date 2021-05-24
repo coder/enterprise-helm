@@ -13,3 +13,7 @@ Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021). You
 Breaking: All `dashboard` traffic should be routed to `cemanager` before v1.21.
 {{- end }}
 {{- end }}
+
+{{- if .Values.podSecurityPolicyName }}
+Warning: `podSecurityPolicyName` is deprecated. It will be removed in v1.21 (July 21st, 2021).
+{{- end }}
