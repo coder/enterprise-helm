@@ -19,5 +19,7 @@ Warning: `podSecurityPolicyName` is deprecated. It will be removed in v1.21 (Jul
 {{- end }}
 
 {{- if .Values.cemanager }}
-Breaking: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021). You can safely rename the `cemanager` property to `coderd`.
-{{- end}}
+Breaking: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021).
+  The `cemanager` deployment, service, and ingress networking will reference `coderd`.
+  Rename `cemanager` to `coderd` in values.yaml to trigger this change.
+{{- end }}
