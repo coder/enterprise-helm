@@ -7,11 +7,29 @@ Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers
 {{- end }}
 
 {{- if .Values.dashboard }}
-Warning: The `dashboard` service will be removed in v1.21 (July 21st, 2021).
+{{- if eq .Values.ingress.useDefault false }}
+Breaking
+{{- else -}}
+Warning
+{{- end -}}
+: The `dashboard` service will be removed in v1.21 (July 21st, 2021).
 {{- if eq .Values.ingress.useDefault false }}
   All `dashboard` traffic must be routed to `cemanager` before v1.21.
 {{- end }}
-  Delete `dashboard` in values.yaml to migrate.
+  The dashboard is now served from `cemanager`. Delete `dashboard` in values.yaml.
+{{- end }}
+
+{{- if .Values.envproxy }}
+{{- if eq .Values.ingress.useDefault false }}
+Breaking
+{{- else }}
+Warning
+{{- end -}}
+: The `envproxy` service will be removed in v1.21 (July 21st, 2021).
+{{- if eq .Values.ingress.useDefault false }}
+  All `envproxy` traffic must be routed to `cemanager` before v1.21.
+{{- end }}
+  Envproxy is now served from `cemanager`. Delete `envproxy` in values.yaml.
 {{- end }}
 
 {{- if .Values.podSecurityPolicyName }}
@@ -21,5 +39,6 @@ Warning: `podSecurityPolicyName` is deprecated. It will be removed in v1.21 (Jul
 {{- if .Values.cemanager }}
 Breaking: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021).
   The `cemanager` deployment, service, and ingress networking will reference `coderd`.
+  If you do not reference `cemanager` externally, this change is not breaking.
   Rename `cemanager` to `coderd` in values.yaml to trigger this change.
 {{- end }}

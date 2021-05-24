@@ -33,22 +33,11 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.securityContext | object | Contains fields related to the coderd container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | coderd.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
 | coderd.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
-| dashboard.image | string | Injected during releases. | `""` |
-| dashboard.replicas | int | The number of replicas to run of the dashboard. | `1` |
-| dashboard.resources | object | Kubernetes resource request and limits for dashboard pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
-| dashboard.securityContext | object | Contains fields related to the dashboard container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |
 | environments.nodeSelector | object | nodeSelector is applied to all user environments to specify eligible nodes for environments to run on. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  eg. nodeSelector:   disktype: ssd | `{}` |
 | environments.tolerations | list | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example. | `[]` |
-| envproxy.accessURL | string | The URL reported to coderd. Must be accessible by coderd and all users who can use this workspace provider. This should be a full URL, complete with protocol and trailing "/proxy" (no trailing slash). This is derived from the ingress.host or the access URL set during coderd setup if not set. e.g. "https://proxy.coder.com/proxy" | `""` |
-| envproxy.clusterAddress | string | The address of the K8s cluster, must be reachable from the coderd. Defaults to "https://kubernetes.default.$clusterDomainSuffix:443" if not set. | `""` |
-| envproxy.image | string | Injected during releases. | `""` |
-| envproxy.replicas | int | The number of replicas to run of the envproxy. | `1` |
-| envproxy.resources | object | Kubernetes resource request and limits for envproxy pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
-| envproxy.securityContext | object | Contains fields related to the envproxy container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
-| envproxy.terminationGracePeriodSeconds | int | Amount of seconds to wait before shutting down the environment proxy if there are still open connections. This is set very long intentionally so developers do not deal with disconnects during deployments. | `14400` |
 | imagePullPolicy | string | Sets the policy for pulling a container image across all services. | `"Always"` |
 | ingress.additionalAnnotations | list | Deprecated. Please use `ingress.annotations`. | `[]` |
 | ingress.annotations | object | Additional annotations to be used when creating the ingress. These only apply to the Ingress Kubernetes kind. The annotations can be used to specify certificate issuers or other cloud provider-specific integrations. | `{}` |
@@ -66,7 +55,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | ingress.tls.devurlsHostSecretName | string | The secret to use for the devurls.host hostname. | `""` |
 | ingress.tls.enable | bool | Enables the tls configuration. | `false` |
 | ingress.tls.hostSecretName | string | The secret to use for the ingress.host hostname. | `""` |
-| ingress.useDefault | bool | If set to true, will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `false` |
+| ingress.useDefault | bool | If set to true, will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `true` |
 | ingress.usePathWildcards | bool | Whether or not the ingress object should use path wildcards, i.e., ending with "/*". Some ingresses require this while others do not. You should check which path style your ingress requires. For ingress-nginx this should be set to false. | `false` |
 | logging.human | string | Where to send logs that are formatted for readability by a human. Set to an empty string to disable. | `"/dev/stderr"` |
 | logging.json | string | Where to send logs that are formatted as JSON. Set to an empty string to disable. | `""` |
