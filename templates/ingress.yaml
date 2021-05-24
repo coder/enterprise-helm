@@ -339,7 +339,7 @@ spec:
       targetPort: 22
       protocol: TCP
 {{- end }}
-{{- if .Values.coderd.turn.enable }}
+{{- if .Values.cemanager.turn.enable }}
     - name: turns
       port: 5349
       targetPort: 5349
@@ -373,7 +373,7 @@ metadata:
 spec:
 {{- include "coder.ingress.tls" . }}
   backend:
-    serviceName: cemanager
+    serviceName: {{ include "coder.serviceName" . }}
     servicePort: 8080
   rules:
   - host: {{ .Values.ingress.host | quote }}
@@ -386,11 +386,11 @@ spec:
           servicePort: 8080
       - path: /api/
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /auth/
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /
         backend:
@@ -412,11 +412,11 @@ spec:
           servicePort: 8080
       - path: /api/*
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /auth/*
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /*
         backend:

@@ -133,7 +133,7 @@ imagePullPolicy: Always
 
 # Contains configuration the REST API handling CRUD operations to
 # the platform.
-coderd:
+cemanager:
   # coderd.accessURL -- The coderd access URL that the envproxy will use
   # to communicate with the coderd. This should be a full URL complete with
   # protocol and no trailing slash. Uses internal cluster URL if not set.

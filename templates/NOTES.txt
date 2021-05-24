@@ -17,3 +17,7 @@ Breaking: All `dashboard` traffic should be routed to `cemanager` before v1.21.
 {{- if .Values.podSecurityPolicyName }}
 Warning: `podSecurityPolicyName` is deprecated. It will be removed in v1.21 (July 21st, 2021).
 {{- end }}
+
+{{- if .Values.cemanager }}
+Breaking: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021). You can safely rename the `cemanager` property to `coderd`.
+{{- end}}

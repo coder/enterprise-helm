@@ -11,26 +11,30 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    coder.deployment: coderd
-  name: coderd
+    coder.deployment: {{ include "coder.serviceName" . }}
+  name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
   annotations:
   {{- range $key, $value := .Values.deploymentAnnotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  replicas: {{ default .Values.cemanager.replicas .Values.coderd.replicas }}
+  {{- if hasKey .Values "cemanager" }}
+  replicas: {{ .Values.cemanager.replicas }}
+  {{- else -}}
+  replicas: {{ .Values.coderd.replicas }}
+  {{- end }}
   strategy:
     rollingUpdate:
       maxSurge: "25%"
       maxUnavailable: "25%"
   selector:
     matchLabels:
-      coder.deployment: coderd
+      coder.deployment: {{ include "coder.serviceName" . }}
   template:
     metadata:
       labels:
-        coder.deployment: coderd
+        coder.deployment: {{ include "coder.serviceName" . }}
       annotations:
       {{- range $key, $value := .Values.deploymentAnnotations }}
         {{ $key }}: {{ $value | quote }}
@@ -50,7 +54,11 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       initContainers:
         - name: migrations
-          image: {{ default .Values.cemanager.image .Values.coderd.image | quote }}
+          {{- if hasKey .Values "cemanager" }}
+          image: {{ .Values.cemanager.image | quote }}
+          {{- else -}}
+          image: {{ .Values.coderd.image | quote }}
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           env:
             - name: HUMAN_LOG
@@ -84,15 +92,23 @@ spec:
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
       containers:
-        - name: coderd
-          image: {{ default .Values.cemanager.image .Values.coderd.image | quote }}
+        - name: {{ include "coder.serviceName" . | quote }}
+          {{- if hasKey .Values "cemanager" }}
+          image: {{ .Values.cemanager.image | quote }}
+          {{- else -}}
+          image: {{ .Values.coderd.image | quote }}
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           ports:
-            - name: tcp-cemanager
+            - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ default .Values.cemanager.securityContext.readOnlyRootFilesystem .Values.coderd.securityContext.readOnlyRootFilesystem }}
+            {{- if hasKey .Values "cemanager" }}
+            readOnlyRootFilesystem: {{ .Values.cemanager.securityContext.readOnlyRootFilesystem }}
+            {{- else -}}
+            readOnlyRootFilesystem: {{ .Values.coderd.securityContext.readOnlyRootFilesystem }}
+            {{- end }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
@@ -128,7 +144,11 @@ spec:
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: TURN_ENABLED
-              value: {{ default .Values.cemanager.turn.enable .Values.coderd.turn.enable | quote }}
+              {{- if hasKey .Values "cemanager" }}
+              value: {{ .Values.cemanager.turn.enable }}
+              {{- else -}}
+              value: {{ .Values.coderd.turn.enable }}
+              {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
@@ -155,8 +175,13 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- include "coder.resources" .Values.cemanager.resources | default .Values.coderd.resources | indent 10 }}
-{{- if and (default .Values.cemanager.turn.enable .Values.coderd.turn.enable) .Values.ingress.tls.enable }}
+{{- if hasKey .Values "cemanager" }}
+{{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
+{{- else -}}
+{{- include "coder.resources" .Values.coderd.resources | indent 10 }}
+{{- end }}
+{{- if hasKey .Values "cemanager" }}
+{{- if and .Values.cemanager.turn.enable .Values.ingress.tls.enable }}
           volumeMounts:
             - mountPath: /etc/coder/certificates
               name: tls
@@ -166,23 +191,35 @@ spec:
           secret:
             secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
 {{- end }}
+{{- else -}}
+{{- if and .Values.coderd.turn.enable .Values.ingress.tls.enable }}
+          volumeMounts:
+            - mountPath: /etc/coder/certificates
+              name: tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
+{{- end }}
+{{- end}}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: coderd
+  name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   type: {{ .Values.serviceType | quote}}
   selector:
-    coder.deployment: coderd
+    coder.deployment: {{ include "coder.serviceName" . }}
   ports:
-    - name: tcp-coderd
+    - name: tcp-{{ include "coder.serviceName" . }}
       port: 8080
       protocol: TCP
-    - name: tcp-coderd-https
+    - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 8443
       protocol: TCP
-    - name: tcp-coderd-turns
+    - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP

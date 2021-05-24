@@ -39,7 +39,11 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: dashboard
-          image: {{ default .Values.cemanager.image .Values.coderd.image | quote }}
+          {{- if hasKey .Values "cemanager" }}
+          image: {{ .Values.cemanager.image | quote }}
+          {{- else -}}
+          image: {{ .Values.coderd.image | quote }}
+          {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           ports:
             - name: tcp-dashboard
@@ -51,7 +55,7 @@ spec:
           tty: false
           env:
             - name: CODERD_HOST
-              value: "http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
           command:
             - /bin/bash
             - -c
