@@ -92,7 +92,7 @@ spec:
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
       containers:
-        - name: {{ include "coder.serviceName" . | quote }}
+        - name: {{ include "coder.serviceName" . }}
           {{- if hasKey .Values "cemanager" }}
           image: {{ .Values.cemanager.image | quote }}
           {{- else }}
@@ -145,9 +145,9 @@ spec:
               value: {{ .Values.storageClassName | quote }}
             - name: TURN_ENABLED
               {{- if hasKey .Values "cemanager" }}
-              value: {{ .Values.cemanager.turn.enable }}
+              value: {{ .Values.cemanager.turn.enable | quote }}
               {{- else }}
-              value: {{ .Values.coderd.turn.enable }}
+              value: {{ .Values.coderd.turn.enable | quote }}
               {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
