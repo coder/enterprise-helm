@@ -1,5 +1,4 @@
 # Optionally include the dashboard if it's specified.
-# The dashboard will be removed in v1.21.
 {{- if hasKey .Values "dashboard" }}
 ---
 apiVersion: apps/v1

@@ -7,38 +7,29 @@ Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers
 {{- end }}
 
 {{- if .Values.dashboard }}
+Warning: The `dashboard` service has been deprecated.
 {{- if eq .Values.ingress.useDefault false }}
-Breaking
-{{- else -}}
-Warning
-{{- end -}}
-: The `dashboard` service will be removed in v1.21 (July 21st, 2021).
-{{- if eq .Values.ingress.useDefault false }}
-  All `dashboard` traffic must be routed to `cemanager` before v1.21.
+  All `dashboard` traffic can be routed to `cemanager`.
 {{- end }}
-  The dashboard is now served from `cemanager`. Delete `dashboard` in values.yaml.
-{{- end }}
+  Dashboard is now served from `cemanager`. Delete `dashboard` in values.yaml.
+{{ end }}
 
 {{- if .Values.envproxy }}
+Warning: The `envproxy` service has been deprecated.
 {{- if eq .Values.ingress.useDefault false }}
-Breaking
+  Coder now supports end-to-end encryption. To migrate, expose port 5349 to `cemanager`.
 {{- else }}
-Warning
-{{- end -}}
-: The `envproxy` service will be removed in v1.21 (July 21st, 2021).
-{{- if eq .Values.ingress.useDefault false }}
-  All `envproxy` traffic must be routed to `cemanager` before v1.21.
-{{- end }}
   Envproxy is now served from `cemanager`. Delete `envproxy` in values.yaml.
-{{- end }}
+{{- end}}
+{{ end }}
 
 {{- if .Values.podSecurityPolicyName }}
 Warning: `podSecurityPolicyName` is deprecated. It will be removed in v1.21 (July 21st, 2021).
 {{- end }}
 
 {{- if .Values.cemanager }}
-Breaking: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021).
+Warning: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021).
   The `cemanager` deployment, service, and ingress networking will reference `coderd`.
   If you do not reference `cemanager` externally, this change is not breaking.
   Rename `cemanager` to `coderd` in values.yaml to trigger this change.
-{{- end }}
+{{ end }}
