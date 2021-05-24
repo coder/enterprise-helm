@@ -168,11 +168,6 @@ coderd:
     limits:
       cpu: "250m"
       memory: "512Mi"
-  # coderd.turn -- turn contains configuration related to running a TURN server on port 5349
-  # NOTE: This is an alpha feature and is prone to breaking changes.
-  turn:
-    # coderd.turn.enable -- enables the TURN server and allows networking V2 alpha to be enabled in site config.
-    enable: false
 
 # Deprecated: Being removed in v1.21.
 # Contains the user interface of the platform.

@@ -31,8 +31,6 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.replicas | int | The number of replicas to run of the manager. | `1` |
 | coderd.resources | object | Kubernetes resource request and limits for coderd pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | coderd.securityContext | object | Contains fields related to the coderd container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
-| coderd.turn | object | turn contains configuration related to running a TURN server on port 5349 NOTE: This is an alpha feature and is prone to breaking changes. | `{"enable":false}` |
-| coderd.turn.enable | bool | enables the TURN server and allows networking V2 alpha to be enabled in site config. | `false` |
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |

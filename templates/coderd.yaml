@@ -144,11 +144,7 @@ spec:
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: TURN_ENABLED
-              {{- if hasKey .Values "cemanager" }}
-              value: {{ .Values.cemanager.turn.enable | quote }}
-              {{- else }}
-              value: {{ .Values.coderd.turn.enable | quote }}
-              {{- end }}
+              value: "true"
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
@@ -180,8 +176,6 @@ spec:
 {{- else }}
 {{- include "coder.resources" .Values.coderd.resources | indent 10 }}
 {{- end }}
-{{- if hasKey .Values "cemanager" }}
-{{- if and .Values.cemanager.turn.enable .Values.ingress.tls.enable }}
           volumeMounts:
             - mountPath: /etc/coder/certificates
               name: tls
@@ -190,19 +184,6 @@ spec:
         - name: tls
           secret:
             secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
-{{- end }}
-{{- else }}
-{{- if and .Values.coderd.turn.enable .Values.ingress.tls.enable }}
-          volumeMounts:
-            - mountPath: /etc/coder/certificates
-              name: tls
-              readOnly: true
-      volumes:
-        - name: tls
-          secret:
-            secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
-{{- end }}
-{{- end}}
 ---
 apiVersion: v1
 kind: Service
