@@ -21,7 +21,7 @@ metadata:
 spec:
   {{- if hasKey .Values "cemanager" }}
   replicas: {{ .Values.cemanager.replicas }}
-  {{- else -}}
+  {{- else }}
   replicas: {{ .Values.coderd.replicas }}
   {{- end }}
   strategy:
@@ -56,7 +56,7 @@ spec:
         - name: migrations
           {{- if hasKey .Values "cemanager" }}
           image: {{ .Values.cemanager.image | quote }}
-          {{- else -}}
+          {{- else }}
           image: {{ .Values.coderd.image | quote }}
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
@@ -95,7 +95,7 @@ spec:
         - name: {{ include "coder.serviceName" . | quote }}
           {{- if hasKey .Values "cemanager" }}
           image: {{ .Values.cemanager.image | quote }}
-          {{- else -}}
+          {{- else }}
           image: {{ .Values.coderd.image | quote }}
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
@@ -106,7 +106,7 @@ spec:
             allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
             readOnlyRootFilesystem: {{ .Values.cemanager.securityContext.readOnlyRootFilesystem }}
-            {{- else -}}
+            {{- else }}
             readOnlyRootFilesystem: {{ .Values.coderd.securityContext.readOnlyRootFilesystem }}
             {{- end }}
           # coderd is a daemon service, no need to allocate a tty for it.
@@ -146,7 +146,7 @@ spec:
             - name: TURN_ENABLED
               {{- if hasKey .Values "cemanager" }}
               value: {{ .Values.cemanager.turn.enable }}
-              {{- else -}}
+              {{- else }}
               value: {{ .Values.coderd.turn.enable }}
               {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
@@ -177,7 +177,7 @@ spec:
             periodSeconds: 10
 {{- if hasKey .Values "cemanager" }}
 {{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- else -}}
+{{- else }}
 {{- include "coder.resources" .Values.coderd.resources | indent 10 }}
 {{- end }}
 {{- if hasKey .Values "cemanager" }}
@@ -191,7 +191,7 @@ spec:
           secret:
             secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
 {{- end }}
-{{- else -}}
+{{- else }}
 {{- if and .Values.coderd.turn.enable .Values.ingress.tls.enable }}
           volumeMounts:
             - mountPath: /etc/coder/certificates

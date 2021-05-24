@@ -37,7 +37,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   22: "{{ .Release.Namespace }}/envproxy:2222"
-  5349: "{{ .Release.Namespace }}/coderd:5349"
+  5349: "{{ .Release.Namespace }}/{{ include "coder.serviceName" . }}:5349"
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -339,10 +339,19 @@ spec:
       targetPort: 22
       protocol: TCP
 {{- end }}
+{{- if hasKey .Values "cemanager" }}
 {{- if .Values.cemanager.turn.enable }}
     - name: turns
       port: 5349
       targetPort: 5349
+{{- end }}
+{{- end }}
+{{- if hasKey .Values "coderd" }}
+{{- if .Values.coderd.turn.enable }}
+    - name: turns
+      port: 5349
+      targetPort: 5349
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if or .Values.ingress.useDefault .Values.ingress.enable }}

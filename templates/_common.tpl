@@ -135,7 +135,9 @@ nodeSelector:
 {{- end }}
 
 {{- define "coder.serviceName" }}
-{{- if hasKey .Values "cemanager" }}cemanagerasdasd
-{{- else -}}coderd
+{{- if hasKey .Values "cemanager" -}}
+cemanager
+{{- else -}}
+coderd
 {{- end }}
 {{- end }}

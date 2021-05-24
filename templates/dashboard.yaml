@@ -41,7 +41,7 @@ spec:
         - name: dashboard
           {{- if hasKey .Values "cemanager" }}
           image: {{ .Values.cemanager.image | quote }}
-          {{- else -}}
+          {{- else }}
           image: {{ .Values.coderd.image | quote }}
           {{- end }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
