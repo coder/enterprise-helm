@@ -102,6 +102,8 @@ spec:
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
+            - name: tcp-turns-{{ include "coder.serviceName" . }}
+              containerPort: 5349
           securityContext:
             allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
