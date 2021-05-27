@@ -33,7 +33,7 @@ subjects:
     name: envproxy
     namespace: {{ .Release.Namespace | quote }}
   - kind: ServiceAccount
-    name: environments
+    name: coder
     namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
