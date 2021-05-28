@@ -1,3 +1,5 @@
+# Envproxy is being removed in v1.21.
+{{- if hasKey .Values "envproxy" }}
 ---
 apiVersion: v1
 kind: Secret
@@ -101,7 +103,7 @@ spec:
             - name: SSH_ENABLED
               value: {{ .Values.ssh.enable | quote }}
             - name: CEMANAGER_ACCESS_URL
-              value: {{ include "coder.cemanager.accessURL" . | quote }}
+              value: {{ include "coder.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -153,4 +155,5 @@ spec:
     - name: tcp-ssh
       port: 2222
       protocol: TCP
+{{- end }}
 {{- end }}

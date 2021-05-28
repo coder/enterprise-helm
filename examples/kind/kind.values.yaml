@@ -2,23 +2,11 @@
 ingress:
   useDefault: false
 
-cemanager:
+coderd:
   resources:
     requests:
       cpu: 100m
       memory: 64Mi
-
-dashboard:
-  resources:
-    requests:
-      cpu: 0m
-      memory: 16Mi
-
-envproxy:
-  resources:
-    requests:
-      cpu: 0m
-      memory: 16Mi
 
 timescale:
   resources:

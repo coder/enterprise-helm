@@ -79,13 +79,21 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.cemanager.accessURL is a URL for accessing the cemanager.
+  coder.accessURL is a URL for accessing the coderd.
 */}}
-{{- define "coder.cemanager.accessURL" }}
+{{- define "coder.accessURL" }}
+{{- if hasKey .Values "cemanager" }}
 {{- if ne .Values.cemanager.accessURL "" }}
-{{- .Values.cemanager.accessURL -}}
+{{- .Values.coderd.accessURL -}}
 {{- else -}}
     http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+{{- end }}
+{{- else -}}
+{{- if ne .Values.coderd.accessURL "" }}
+{{- .Values.coderd.accessURL -}}
+{{- else -}}
+    http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+{{- end }}
 {{- end }}
 {{- end }}
 {{/*
@@ -123,5 +131,13 @@ tolerations:
 {{- if .Values.services.nodeSelector }}
 nodeSelector:
 {{ toYaml .Values.services.nodeSelector | indent 1 }}
+{{- end }}
+{{- end }}
+
+{{- define "coder.serviceName" }}
+{{- if hasKey .Values "cemanager" -}}
+cemanager
+{{- else -}}
+coderd
 {{- end }}
 {{- end }}

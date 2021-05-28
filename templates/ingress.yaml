@@ -37,7 +37,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   22: "{{ .Release.Namespace }}/envproxy:2222"
-  5349: "{{ .Release.Namespace }}/cemanager:5349"
+  5349: "{{ .Release.Namespace }}/{{ include "coder.serviceName" . }}:5349"
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -339,11 +339,9 @@ spec:
       targetPort: 22
       protocol: TCP
 {{- end }}
-{{- if .Values.cemanager.turn.enable }}
     - name: turns
       port: 5349
       targetPort: 5349
-{{- end }}
 {{- end }}
 {{- if or .Values.ingress.useDefault .Values.ingress.enable }}
 ---
@@ -373,37 +371,49 @@ metadata:
 spec:
 {{- include "coder.ingress.tls" . }}
   backend:
-    serviceName: cemanager
+    serviceName: {{ include "coder.serviceName" . }}
     servicePort: 8080
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
     {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
+      {{- if hasKey .Values "envproxy" }}
       - path: /proxy/
         backend:
           serviceName: envproxy
           servicePort: 8080
+      {{- end }}
       - path: /api/
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /auth/
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /
         backend:
+          {{- if hasKey .Values "dashboard" }}
           serviceName: dashboard
           servicePort: 3000
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
       - path: /
         backend:
+          {{- if hasKey .Values "envproxy" }}
           serviceName: envproxy
           servicePort: 8080
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- else }}
       - path: /proxy/*
@@ -412,24 +422,34 @@ spec:
           servicePort: 8080
       - path: /api/*
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /auth/*
         backend:
-          serviceName: cemanager
+          serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
       - path: /*
         backend:
+          {{- if hasKey .Values "dashboard" }}
           serviceName: dashboard
           servicePort: 3000
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
       - path: /*
         backend:
+          {{- if hasKey .Values "envproxy" }}
           serviceName: envproxy
           servicePort: 8080
+          {{- else }}
+          serviceName: {{ include "coder.serviceName" . }}
+          servicePort: 8080
+          {{- end }}
     {{- end }}
     {{- end }}
 {{- end }}

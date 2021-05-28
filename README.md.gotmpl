@@ -21,7 +21,9 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
 {{- range .Values }}
+{{- if not (or (hasPrefix "dashboard" .Key) (hasPrefix "envproxy" .Key)) }}
 | {{ .Key }} | {{ .Type }} | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+{{- end }}
 {{- end }}
 
 ## Contributing
