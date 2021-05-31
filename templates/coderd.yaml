@@ -102,7 +102,7 @@ spec:
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
-              # Truncated to be less than 15 chars.
+              # This name cannot be longer than 15 chars.
               # This is exposed for TURNS.
             - name: tcp-t-{{ include "coder.serviceName" . }}
               containerPort: 5349
