@@ -52,7 +52,9 @@ spec:
               containerPort: 3000
           securityContext:
             allowPrivilegeEscalation: false
+            {{- if hasKey .Values.dashboard "securityContext" }}
             readOnlyRootFilesystem: {{ .Values.dashboard.securityContext.readOnlyRootFilesystem }}
+            {{- end }}
           # dashboard runs a node server. no tty is needed for it.
           tty: false
           env:
