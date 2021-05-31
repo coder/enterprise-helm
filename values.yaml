@@ -133,31 +133,31 @@ imagePullPolicy: Always
 
 # Contains configuration the REST API handling CRUD operations to
 # the platform.
-coderd:
-  # coderd.accessURL -- The coderd access URL that the envproxy will use
-  # to communicate with the coderd. This should be a full URL complete with
+cemanager:
+  # cemanager.accessURL -- The cemanager access URL that the envproxy will use
+  # to communicate with the cemanager. This should be a full URL complete with
   # protocol and no trailing slash. Uses internal cluster URL if not set.
   # e.g., https://manager.coder.com
   accessURL: ""
-  # coderd.replicas -- The number of replicas to run of the manager.
+  # cemanager.replicas -- The number of replicas to run of the manager.
   replicas: 1
-  # coderd.image -- Injected during releases.
+  # cemanager.image -- Injected during releases.
   image: ""
-  # coderd.securityContext -- Contains fields related to the coderd
+  # cemanager.securityContext -- Contains fields related to the cemanager
   # container's security context (as opposed to the pod).
   securityContext:
-    # coderd.securityContext.readonlyRootFilesystem -- Sets the root filesystem
-    # of the coderd container to read-only. It is recommended to leave this setting enabled
+    # cemanager.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the cemanager container to read-only. It is recommended to leave this setting enabled
     # in production.
     readOnlyRootFilesystem: true
-  # coderd.resources -- Kubernetes resource request and limits for coderd
+  # cemanager.resources -- Kubernetes resource request and limits for cemanager
   # pods.
   # To unset a value, set it to "".
   # To unset all values, you can provide a values.yaml file which sets resources
   # to nil. See values.yaml for an example.
   #
   # e.g:
-  # coderd:
+  # cemanager:
   #   # This will cause all values to be unset.
   #   resources:
   #   replica: 1
@@ -206,15 +206,15 @@ dashboard:
 # envproxy contains configuration for the service handling long-lived
 # connections to environments such as IDE or shell sessions.
 envproxy:
-  # envproxy.accessURL -- The URL reported to coderd. Must be accessible by
-  # coderd and all users who can use this workspace provider. This should be
+  # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
+  # cemanager and all users who can use this workspace provider. This should be
   # a full URL, complete with protocol and trailing "/proxy" (no trailing
   # slash). This is derived from the ingress.host or the access URL set during
-  # coderd setup if not set.
+  # cemanager setup if not set.
   # e.g. "https://proxy.coder.com/proxy"
   accessURL: ""
   # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
-  # from the coderd. Defaults to
+  # from the cemanager. Defaults to
   # "https://kubernetes.default.$clusterDomainSuffix:443" if not set.
   clusterAddress: ""
   # envproxy.replicas -- The number of replicas to run of the envproxy.

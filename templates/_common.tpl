@@ -83,13 +83,13 @@ tolerations:
 */}}
 {{- define "coder.accessURL" }}
 {{- if hasKey .Values "cemanager" }}
-{{- if ne .Values.cemanager.accessURL "" }}
+{{- if hasKey .Values.cemanager "accessURL" }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
     http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
 {{- end }}
 {{- else -}}
-{{- if ne .Values.coderd.accessURL "" }}
+{{- if hasKey .Values.coderd "accessURL" }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
     http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
