@@ -1,5 +1,5 @@
 # Optionally include the dashboard if it's specified.
-{{- if hasKey .Values "dashboard" }}
+{{- if .Values.dashboard }}
 ---
 apiVersion: apps/v1
 kind: Deployment
