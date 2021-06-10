@@ -180,16 +180,8 @@ spec:
 {{- else }}
 {{- include "coder.resources" .Values.coderd.resources | indent 10 }}
 {{- end }}
-{{- if .Values.ingress.tls.enable }}
-          volumeMounts:
-            - mountPath: /etc/coder/certificates
-              name: tls
-              readOnly: true
-      volumes:
-        - name: tls
-          secret:
-            secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
-{{- end }}
+{{- include "coder.volumeMounts" . | indent 10 }}
+{{- include "coder.volumes" . | indent 6 }}
 ---
 apiVersion: v1
 kind: Service

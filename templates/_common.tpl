@@ -45,7 +45,7 @@ storageClassName: {{ .Values.storageClassName | quote }}
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}
-{{- if .Values.certs.secret.name }}
+{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
 volumes:
 {{- end }}
 {{- if .Values.certs.secret.name }}
@@ -53,19 +53,29 @@ volumes:
     secret:
       secretName: {{ .Values.certs.secret.name | quote }}
 {{- end }}
+{{- if .Values.ingress.tls.enable }}
+  - name: tls
+    secret:
+      secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
+{{- end }}
 {{- end }}
 
 {{/* 
   coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumeMounts" }}
-{{- if .Values.certs.secret.name }}
+{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
 volumeMounts:
 {{- end }}
 {{- if .Values.certs.secret.name }}
   - name: {{ .Values.certs.secret.name | quote }}
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
     subPath: {{ .Values.certs.secret.key | quote }}
+{{- end }}
+{{- if .Values.ingress.tls.enable }}
+  - name: tls
+    mountPath: /etc/coder/certificates
+    readOnly: true
 {{- end }}
 {{- end }}
 {{/*
