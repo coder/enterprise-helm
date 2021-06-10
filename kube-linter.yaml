@@ -1,19 +1,30 @@
 checks:
   include:
+    - cluster-admin-role-binding
     - dangling-service
     - default-service-account
     - deprecated-service-account-field
+    - docker-sock
     - drop-net-raw-capability
     - env-var-secret
+    - exposed-services
+    - host-ipc
+    - host-network
+    - host-pid
     - mismatching-selector
     - no-anti-affinity
     - no-liveness-probe
     - no-read-only-root-fs
     - no-readiness-probe
     - non-existent-service-account
+    - privilege-escalation-container
     - privileged-container
+    - privileged-ports
     - run-as-non-root
+    - sensitive-host-mounts
     - ssh-port
+    - unsafe-proc-mount
+    - unsafe-sysctls
     - writable-host-mount
   exclude:
     - no-extensions-v1beta
