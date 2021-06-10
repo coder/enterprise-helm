@@ -18,7 +18,7 @@ curl_flags=(
 run_trace false sudo apt-get install --no-install-recommends --yes \
   shellcheck
 
-run_trace false curl "${curl_flags[@]}" "https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz" \| \
+run_trace false curl "${curl_flags[@]}" "https://get.helm.sh/helm-v3.6.0-linux-amd64.tar.gz" \| \
   tar -C "$TMPDIR" --strip-components=1 -zxf - linux-amd64/helm
 
 run_trace false curl "${curl_flags[@]}" "https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_Linux_x86_64.tar.gz" \| \
