@@ -391,3 +391,8 @@ serviceAccount:
   labels: {}
 
 deploymentAnnotations: {}
+
+coderd:
+  replica:
+    enable: false
+    primaryURL: ""

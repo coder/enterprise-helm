@@ -1,4 +1,5 @@
 {{- if eq .Values.postgres.useDefault  true}}
+{{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
 kind: Service
@@ -121,4 +122,5 @@ metadata:
   name: timescale
   labels:
     coder.deployment: timescale
+{{- end }}
 {{- end }}
