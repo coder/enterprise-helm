@@ -392,7 +392,11 @@ serviceAccount:
 
 deploymentAnnotations: {}
 
+# coderd is the coder enterprise application server
 coderd:
+  # coderd.replica -- Configuration for deployment a coder replica to geodistrubute access to workspaces
   replica:
+    # coderd.replica.enable -- Runs a coderd replica instead of the primary application if true
     enable: false
+    # coderd.replica.primaryURL -- (required for coderd replica) The url of the primary coder deployment
     primaryURL: ""
