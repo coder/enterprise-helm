@@ -151,6 +151,13 @@ spec:
                   name: built-in-envproxy-token
                   key: token
             {{- end }}
+            {{- if .Values.coderd.replica.enable }}
+            - name: CODER_REPLICA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: coder-replica-private-key
+                  key: privateKey
+            {{- end }}
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: TURN_ENABLED
@@ -214,3 +221,19 @@ spec:
     - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP
+{{- if .Values.coderd.replica.enable }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: coder-replica-private-key
+  namespace: {{ .Release.Namespace | quote }}
+type: Opaque
+# Adapted from https://stackoverflow.com/a/64325744
+data:
+  {{- if (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key") }}
+  privateKey: {{ (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key").data.privateKey }}
+  {{- else }}
+  privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
+  {{- end }}
+{{- end }}
