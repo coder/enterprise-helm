@@ -49,9 +49,12 @@ spec:
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
       terminationGracePeriodSeconds: 300
+      {{- if not .Values.coderd.replica.enable }}
       serviceAccountName: coder
+      {{- end }}
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
+      {{- if not .Values.coderd.replica.enable }}
       initContainers:
         - name: migrations
           {{- if hasKey .Values "cemanager" }}
@@ -91,6 +94,7 @@ spec:
               /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
+      {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
           {{- if hasKey .Values "cemanager" }}
@@ -140,11 +144,20 @@ spec:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
+            {{- if not .Values.coderd.replica.enable }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: built-in-envproxy-token
                   key: token
+            {{- end }}
+            {{- if .Values.coderd.replica.enable }}
+            - name: CODER_REPLICA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: coder-replica-private-key
+                  key: privateKey
+            {{- end }}
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: TURN_ENABLED
@@ -156,11 +169,17 @@ spec:
             - /bin/bash
             - -c
             - |
+              {{- if not .Values.coderd.replica.enable }}
               echo Waiting on db;
               PGSSLMODE="${DB_SSL_MODE:-prefer}" /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               # Pass signals down to the envmanager.
               exec /entrypoint.sh coderd run
+              {{- else }}
+              echo Starting replica;
+              # Pass signals down to the envmanager.
+              exec /entrypoint.sh coderd replica --main-url {{ .Values.coderd.replica.primaryURL | quote }}
+              {{- end }}
           readinessProbe:
             httpGet:
               path: /cem-healthz
@@ -202,3 +221,19 @@ spec:
     - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP
+{{- if .Values.coderd.replica.enable }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: coder-replica-private-key
+  namespace: {{ .Release.Namespace | quote }}
+type: Opaque
+# Adapted from https://stackoverflow.com/a/64325744
+data:
+  {{- if (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key") }}
+  privateKey: {{ (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key").data.privateKey }}
+  {{- else }}
+  privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
+  {{- end }}
+{{- end }}

@@ -373,6 +373,7 @@ spec:
   backend:
     serviceName: {{ include "coder.serviceName" . }}
     servicePort: 8080
+  {{- if not .Values.coderd.replica.enable }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
@@ -452,5 +453,6 @@ spec:
           {{- end }}
     {{- end }}
     {{- end }}
+  {{- end }}
 {{- end }}
 ---

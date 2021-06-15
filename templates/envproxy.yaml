@@ -1,5 +1,6 @@
 # Envproxy is being removed in v1.21.
 {{- if hasKey .Values "envproxy" }}
+{{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
 kind: Secret
@@ -155,5 +156,6 @@ spec:
     - name: tcp-ssh
       port: 2222
       protocol: TCP
+{{- end }}
 {{- end }}
 {{- end }}
