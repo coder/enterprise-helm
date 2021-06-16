@@ -321,7 +321,7 @@ spec:
   loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
   {{- if ne (len .Values.ingress.loadBalancerSourceRanges) 0 }}
   loadBalancerSourceRanges:
-    {{ toYaml .Values.ingress.loadBalancerSourceRanges | indent 4 }}
+{{ toYaml .Values.ingress.loadBalancerSourceRanges | indent 4 }}
   {{- end }}
   selector:
     app.kubernetes.io/name: ingress-nginx
