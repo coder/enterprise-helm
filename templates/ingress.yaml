@@ -59,7 +59,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: nginx-ingress-clusterrole-{{ .Release.Namespace }}
@@ -125,7 +125,7 @@ rules:
       - list
       - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: nginx-ingress-role
@@ -169,7 +169,7 @@ rules:
     verbs:
       - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
@@ -186,7 +186,7 @@ subjects:
     name: nginx-ingress-serviceaccount
     namespace: {{ .Release.Namespace | quote }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   # The cluster role binding needs to be namespaced to avoid
@@ -347,7 +347,7 @@ spec:
 {{- end }}
 {{- if or .Values.ingress.useDefault .Values.ingress.enable }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
@@ -372,9 +372,11 @@ metadata:
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
-  backend:
-    serviceName: {{ include "coder.serviceName" . }}
-    servicePort: 8080
+  defaultBackend:
+    service:
+      name: {{ include "coder.serviceName" . }}
+      port:
+        number: 8080
   {{- if not .Values.coderd.replica.enable }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
@@ -382,76 +384,114 @@ spec:
       paths:
     {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
       {{- if hasKey .Values "envproxy" }}
-      - path: /proxy/
+      - path: /proxy
+        pathType: Prefix
         backend:
-          serviceName: envproxy
-          servicePort: 8080
+          service:
+            name: envproxy
+            port:
+              number: 8080
       {{- end }}
-      - path: /api/
+      - path: /api
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /auth/
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
+      - path: /auth
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
       - path: /
+        pathType: Prefix
         backend:
           {{- if hasKey .Values "dashboard" }}
-          serviceName: dashboard
-          servicePort: 3000
+          service:
+            name: dashboard
+            port:
+              number: 3000
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
           {{- if hasKey .Values "envproxy" }}
-          serviceName: envproxy
-          servicePort: 8080
+          service:
+            name: envproxy
+            port:
+              number: 8080
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- end }}
     {{- else }}
-      - path: /proxy/*
+      - path: /proxy
+        pathType: Prefix
         backend:
-          serviceName: envproxy
-          servicePort: 8080
-      - path: /api/*
+          service:
+            name: envproxy
+            port:
+              number: 8080
+      - path: /api
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /auth/*
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
+      - path: /auth
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /*
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
         backend:
           {{- if hasKey .Values "dashboard" }}
-          serviceName: dashboard
-          servicePort: 3000
+          service:
+            name: dashboard
+            port:
+              number: 3000
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
-      - path: /*
+      - path: /
+        pathType: Prefix
         backend:
           {{- if hasKey .Values "envproxy" }}
-          serviceName: envproxy
-          servicePort: 8080
+          service:
+            name: envproxy
+            port:
+              number: 8080
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- end }}
     {{- end }}
