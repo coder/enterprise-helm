@@ -52,10 +52,7 @@ ingress:
   # configuration come from the ingress.host and the devurls.host variables. If
   # those don't exist, then the TLS configuration will be ignored.
   tls:
-    # ingress.tls.enable -- Enables the tls configuration.
-    enable: false
-    # ingress.tls.hostSecretName -- The secret to use for the ingress.host
-    # hostname.
+    # ingress.tls.hostSecretName -- The secret to use for TLS.
     hostSecretName: ""
     # ingress.tls.devurlsHostSecretName -- The secret to use for the
     # devurls.host hostname.
