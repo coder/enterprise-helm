@@ -27,9 +27,6 @@ coderd:
     limits:
       cpu: "250m"
       memory: "512Mi"
-  # coderd.serviceType -- Coder uses a Service to expose coderd. See the following
-  # for configurable types: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-  serviceType: "ClusterIP"
 
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
@@ -122,6 +119,9 @@ services:
   nodeSelector:
     kubernetes.io/os: linux
     kubernetes.io/arch: amd64
+  # services.type -- See the following for configurable types:
+  # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: "ClusterIP"
 
 # logging -- Configures the logging format and output of Coder.
 logging:
