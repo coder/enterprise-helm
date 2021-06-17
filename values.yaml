@@ -4,12 +4,26 @@ coderd:
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   replicas: 1
+  # coderd.serviceSpec -- Specification to inject for the coderd service. See:
+  # https://kubernetes.io/docs/concepts/services-networking/service/
+  serviceSpec:
+    type: LoadBalancer
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+  # coderd.tls -- TLS configuration for coderd.
+  # These options will override dashboard configuration.
+  tls:
+    # coderd.tls.hostSecretName -- The secret to use for TLS.
+    hostSecretName: ""
+    # coderd.tls.devurlsHostSecretName -- The secret to use for DevURL TLS.
+    devurlsHostSecretName: ""
   # coderd.replica -- Deploy a replica to geodistribute access to
   # workspaces for lower latency.
   replica:
     # coderd.replica.enable -- Run coderd as a replica pointing to a primary deployment.
     enable: false
     # coderd.replica.primaryURL -- URL of the primary deployment.
+    # eg. us-east.coder.myorg.com
     primaryURL: ""
   # coderd.securityContext -- Fields related to the container's security
   # context (as opposed to the pod).
@@ -33,30 +47,6 @@ coderd:
 envbox:
   # envbox.image -- Injected by Coder during release.
   image: ""
-
-# ingress -- Configure access to your deployment.
-ingress:
-  # ingress.enable -- A Service with type LoadBalancer will be deployed
-  # if true. Custom ingress configurations are welcomed for complex
-  # installations. See the requirements here:
-  # <insert docs here>
-  enable: true
-  # ingress.loadBalancerIP -- Set the external IP address of the LoadBalancer.
-  loadBalancerIP: ""
-  # ingress.loadBalancerSourceRanges -- If specified and supported by the
-  # platform, the traffic through the cloud-provider load-balancer will be
-  # restricted to the specified client IPs. This field will be ignored if the
-  # cloud-provider does not support the feature.
-  loadBalancerSourceRanges: []
-  # ingress.tls -- TLS options for the ingress. The hosts used for the tls
-  # configuration come from the ingress.host and the devurls.host variables. If
-  # those don't exist, then the TLS configuration will be ignored.
-  tls:
-    # ingress.tls.hostSecretName -- The secret to use for TLS.
-    hostSecretName: ""
-    # ingress.tls.devurlsHostSecretName -- The secret to use for the
-    # devurls.host hostname.
-    devurlsHostSecretName: ""
 
 # Contains fields related to the Postgres backend. If providing your own
 # instance, a minimum version of Postgres 11 is required with the contrib
