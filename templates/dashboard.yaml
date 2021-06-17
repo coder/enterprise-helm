@@ -1,5 +1,6 @@
 # Optionally include the dashboard if it's specified.
 {{- if .Values.dashboard }}
+{{- if .Values.dashboard.image }}
 {{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: apps/v1
@@ -98,5 +99,6 @@ kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }}
   name: dashboard
+{{- end }}
 {{- end }}
 {{- end }}
