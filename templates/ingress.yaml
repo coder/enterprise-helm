@@ -26,6 +26,8 @@ metadata:
 data:
   proxy-set-headers: "{{ .Release.Namespace }}/custom-headers"
   enable-underscores-in-headers: "true"
+  use-gzip: "true"
+  ssl-session-tickets: "true"
 ---
 kind: ConfigMap
 apiVersion: v1
