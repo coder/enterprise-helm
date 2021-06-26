@@ -31,11 +31,6 @@ ingress:
   # would like to bring your own ingress and hook Coder into that instead, set
   # this value to false.
   useDefault: true
-  # ingress.usePathWildcards -- Whether or not the ingress object should use
-  # path wildcards, i.e., ending with "/*". Some ingresses require this
-  # while others do not. You should check which path style your ingress
-  # requires. For ingress-nginx this should be set to false.
-  usePathWildcards: false
   # ingress.host -- The hostname to use for accessing the platform. This can
   # be left blank, and the user can still access the platform from the external
   # IP or a DNS name that resolves to the external IP address.

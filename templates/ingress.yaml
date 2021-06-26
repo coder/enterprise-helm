@@ -382,7 +382,7 @@ spec:
   - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
-    {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
+    {{- if .Values.ingress.useDefault }}
       {{- if hasKey .Values "envproxy" }}
       - path: /proxy
         pathType: Prefix
@@ -420,7 +420,7 @@ spec:
             port:
               number: 8080
           {{- end }}
-    {{- if ne .Values.devurls.host "" }}
+      {{- if ne .Values.devurls.host "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
@@ -438,62 +438,7 @@ spec:
             port:
               number: 8080
           {{- end }}
-    {{- end }}
-    {{- else }}
-      - path: /proxy
-        pathType: Prefix
-        backend:
-          service:
-            name: envproxy
-            port:
-              number: 8080
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "coder.serviceName" . }}
-            port:
-              number: 8080
-      - path: /auth
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "coder.serviceName" . }}
-            port:
-              number: 8080
-      - path: /
-        pathType: Prefix
-        backend:
-          {{- if hasKey .Values "dashboard" }}
-          service:
-            name: dashboard
-            port:
-              number: 3000
-          {{- else }}
-          service:
-            name: {{ include "coder.serviceName" . }}
-            port:
-              number: 8080
-          {{- end }}
-    {{- if ne .Values.devurls.host "" }}
-  - host: {{ .Values.devurls.host | quote }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          {{- if hasKey .Values "envproxy" }}
-          service:
-            name: envproxy
-            port:
-              number: 8080
-          {{- else }}
-          service:
-            name: {{ include "coder.serviceName" . }}
-            port:
-              number: 8080
-          {{- end }}
-    {{- end }}
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
