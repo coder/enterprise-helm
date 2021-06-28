@@ -333,7 +333,7 @@ spec:
     - name: https
       port: 443
       targetPort: https
-{{- if .Values.ssh.enable }}
+{{- if (merge .Values dict | dig "ssh" "enable" true) }}
     - name: ssh
       port: 22
       targetPort: 22
