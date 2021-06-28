@@ -87,6 +87,9 @@ postgres:
     enable: true
     # postgres.default.image -- Injected by Coder during release.
     image: ""
+    # postgres.default.storageClassName -- Set the storageClass to store
+    # the database.
+    storageClassName: ""
     # postgres.default.resources -- Kubernetes resource specification for the PostgreSQL pod.
     # To unset a value, set it to "". To unset all values, set resources to nil.
     resources:
