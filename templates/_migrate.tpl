@@ -11,6 +11,9 @@
   Use when a key has been moved for deprecation.
   Prioritizes the value of "New" above "Old".
   Provide a "Default" key to set a default value.
+
+  Example:
+  {{ include "lookup" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
 */}}
 {{- define "lookup" }}
   {{- $key := required "`Key` must be set!" .Key }}
