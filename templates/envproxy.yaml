@@ -1,5 +1,6 @@
-# Envproxy is being removed in v1.21.
+{{ /* Envproxy is being removed in v1.22 */ }}
 {{- if hasKey .Values "envproxy" }}
+{{ /* Don't deploy envproxy on replica */ }}
 {{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
