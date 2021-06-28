@@ -3,6 +3,7 @@
 {{- /* of deprecation in NOTES.txt */}}
 {{- define "moved" }}
 {{- $moved := dict }}
+{{- /* To deprecate a value, map the new location to the old below */}}
 {{- $_ := set $moved "postgres.default.storageClassName" "storageClassName" }}
 {{- $_ := set $moved "postgres.default.image" "timescale.image" }}
 {{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}
