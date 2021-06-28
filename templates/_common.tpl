@@ -13,7 +13,7 @@ storageClassName: {{ $storageClass | quote }}
   specify how to connect to a Postgres instance.
 */}}
 {{- define "coder.postgres.env" }}
-{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" false)) }}
+{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" true)) "true" }}
 - name: DB_HOST
   value: timescale.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}
 - name: DB_PORT
