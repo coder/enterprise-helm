@@ -46,15 +46,15 @@ storageClassName: {{ $storageClass | quote }}
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}
-{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (merge .Values dict | dig "ingress" "tls" "enable" false) }}
 volumes:
 {{- end }}
-{{- if .Values.certs.secret.name }}
+{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     secret:
       secretName: {{ .Values.certs.secret.name | quote }}
 {{- end }}
-{{- if .Values.ingress.tls.enable }}
+{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
   - name: tls
     secret:
       secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
@@ -65,15 +65,15 @@ volumes:
   coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumeMounts" }}
-{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (merge .Values dict | dig "ingress" "tls" "enable" false) }}
 volumeMounts:
 {{- end }}
-{{- if .Values.certs.secret.name }}
+{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
     subPath: {{ .Values.certs.secret.key | quote }}
 {{- end }}
-{{- if .Values.ingress.tls.enable }}
+{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
   - name: tls
     mountPath: /etc/coder/certificates
     readOnly: true
