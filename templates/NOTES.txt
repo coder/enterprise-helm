@@ -25,6 +25,10 @@
 {{- if gt (len $movedList) 0 }}
 Deprecated: The values below should be moved to avoid breaking in a future release!
 {{- range $_, $key := $movedList }}
-  - {{ $key }}
+  ↪ {{ $key }}
 {{- end }}
 {{ end }}
+
+{{- if hasKey .Values "cemanager" }}
+  The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
+{{- end }}
