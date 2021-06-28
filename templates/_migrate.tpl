@@ -4,6 +4,9 @@
 {{- define "moved" }}
 {{- $moved := dict }}
 {{- $_ := set $moved "postgres.default.storageClassName" "storageClassName" }}
+{{- $_ := set $moved "postgres.default.image" "timescale.image" }}
+{{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}
+{{- $_ := set $moved "postgres.default.resources.requests.storage" "timescale.resources.requests.storage" }}
 {{- toJson $moved }}
 {{- end }}
 

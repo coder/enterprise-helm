@@ -3,8 +3,9 @@
   if the 'storageClassName' value is non-empty.
 */}}
 {{- define "coder.storageClassName" }}
-{{- if ne .Values.storageClassName "" }}
-storageClassName: {{ .Values.storageClassName | quote }}
+{{ $storageClass := include "lookup" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
+{{- if ne $storageClass "" }}
+storageClassName: {{ $storageClass | quote }}
 {{- end }}
 {{- end }}
 {{/*

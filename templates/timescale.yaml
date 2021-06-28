@@ -1,4 +1,4 @@
-{{- if eq .Values.postgres.useDefault  true}}
+{{- if eq (include "lookup" (dict "Values" .Values "Key" "postgres.default.enable" "Default" "false")) "true"}}
 {{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
@@ -52,7 +52,7 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
-          image: {{ .Values.timescale.image }}
+          image: {{ include "lookup" (dict "Values" .Values "Key" "postgres.default.image") }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           readinessProbe:
             exec:
@@ -91,7 +91,7 @@ spec:
             - name: run
               mountPath: /var/run/postgresql
               readOnly: false
-{{- include "coder.resources" .Values.timescale.resources | indent 10 }}
+{{- include "coder.resources" (fromYaml (include "lookup" (dict "Values" .Values "Key" "postgres.default.resources"))) | indent 10 }}
           lifecycle:
             preStop:
               exec:
@@ -113,7 +113,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: {{ .Values.timescale.resources.requests.storage | quote }}
+            storage: {{ include "lookup" (dict "Values" .Values "Key" "postgres.default.resources.requests.storage") | quote }}
 ---
 apiVersion: v1
 kind: ServiceAccount
