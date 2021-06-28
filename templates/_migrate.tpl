@@ -8,6 +8,7 @@
 {{- $_ := set $moved "postgres.default.image" "timescale.image" }}
 {{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}
 {{- $_ := set $moved "postgres.default.resources.requests.storage" "timescale.resources.requests.storage" }}
+{{- $_ := set $moved "clusterDomainSuffix" "services.clusterDomainSuffix" }}
 {{- toJson $moved }}
 {{- end }}
 
