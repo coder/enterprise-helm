@@ -21,7 +21,7 @@ metadata:
   to user environments.
 */}}
 {{- define "coder.environments.configMap" }}
-{{- if .Values.environments.tolerations }}
+{{- if (merge .Values dict | dig "environments" "tolerations" false) }}
 ---
 apiVersion: v1
 kind: ConfigMap
