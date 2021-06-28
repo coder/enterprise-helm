@@ -25,12 +25,14 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd | object | Primary service responsible for all things Coder! | `{"image":"","replica":{"enable":false,"primaryURL":""},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
 | coderd.image | string | Injected by Coder during release. | `""` |
 | coderd.replica | object | Deploy a replica to geodistribute access to workspaces for lower latency. | `{"enable":false,"primaryURL":""}` |
-| coderd.replica.enable | bool | Run coderd as a replica pointing to a primary deployment. | `false` |
-| coderd.replica.primaryURL | string | URL of the primary deployment. eg. us-east.coder.myorg.com | `""` |
+| coderd.replica.enable | bool | Run coderd as a replica pointing to a primary deployment. Replicas enable low-latency access to workspaces all over the world. Read more: TODO: Link to docs. | `false` |
+| coderd.replica.primaryURL | string | URL of the primary deployment. eg. https://coder.myorg.com | `""` |
 | coderd.replicas | int | The number of Kubernetes Pod replicas. | `1` |
 | coderd.resources | object | Kubernetes resource specification for coderd pods. To unset a value, set it to "". To unset all values, set resources to nil. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | coderd.securityContext | object | Fields related to the container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
+| coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
+| coderd.serviceSpec.loadBalancerSourceRanges | list | Traffic through the LoadBalancer will be restricted to the specified client IPs. This field will be ignored if the cloud provider does not support this feature. | `[]` |
 | coderd.tls | object | TLS configuration for coderd. These options will override dashboard configuration. | `{"devurlsHostSecretName":"","hostSecretName":""}` |
 | coderd.tls.devurlsHostSecretName | string | The secret to use for DevURL TLS. | `""` |
 | coderd.tls.hostSecretName | string | The secret to use for TLS. | `""` |
@@ -54,8 +56,9 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
 | postgres.sslMode | string | Provides variable levels of protection for the PostgreSQL connection. For acceptable values, see:  https://www.postgresql.org/docs/9.1/libpq-ssl.html | `"require"` |
 | postgres.user | string | User of the external PostgreSQL instance. | `""` |
-| services | object | Kubernetes Service configuration that applies to Coder services.  | `{"annotations":{},"nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
+| services | object | Kubernetes Service configuration that applies to Coder services.  | `{"annotations":{},"clusterDomainSuffix":".svc.cluster.local","nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
 | services.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
+| services.clusterDomainSuffix | string | Custom domain suffix for DNS resolution in your cluster. See: https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/ | `".svc.cluster.local"` |
 | services.nodeSelector | object | See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector | `{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"}` |
 | services.tolerations | list | Each element is a toleration object. See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ | `[]` |
 | services.type | string | See the following for configurable types: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types | `"ClusterIP"` |

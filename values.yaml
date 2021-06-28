@@ -8,7 +8,12 @@ coderd:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
     type: LoadBalancer
+    # coderd.serviceSpec.loadBalancerIP -- Set the external IP address of the
+    # Ingress service.
     loadBalancerIP: ""
+    # coderd.serviceSpec.loadBalancerSourceRanges -- Traffic through the LoadBalancer
+    # will be restricted to the specified client IPs. This field will be ignored if
+    # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
   # coderd.tls -- TLS configuration for coderd.
   # These options will override dashboard configuration.
@@ -21,9 +26,11 @@ coderd:
   # workspaces for lower latency.
   replica:
     # coderd.replica.enable -- Run coderd as a replica pointing to a primary deployment.
+    # Replicas enable low-latency access to workspaces all over the world. Read more:
+    # TODO: Link to docs.
     enable: false
     # coderd.replica.primaryURL -- URL of the primary deployment.
-    # eg. us-east.coder.myorg.com
+    # eg. https://coder.myorg.com
     primaryURL: ""
   # coderd.securityContext -- Fields related to the container's security
   # context (as opposed to the pod).
@@ -98,6 +105,9 @@ services:
   # services.annotations -- A KV mapping of annotations. See:
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   annotations: {}
+  # services.clusterDomainSuffix -- Custom domain suffix for DNS resolution in your cluster. See:
+  # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
+  clusterDomainSuffix: ".svc.cluster.local"
   # services.tolerations -- Each element is a toleration object. See:
   # https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
   tolerations: []
