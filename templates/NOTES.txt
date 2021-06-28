@@ -24,6 +24,7 @@
 {{- end }}
 {{- if gt (len $movedList) 0 }}
 Deprecated: The values below should be moved to avoid breaking in a future release!
+{{ $movedList = sortAlpha $movedList }}
 {{- range $_, $key := $movedList }}
   ↪ {{ $key }}
 {{- end }}
