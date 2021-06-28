@@ -93,14 +93,14 @@ tolerations:
   coder.accessURL is a URL for accessing the coderd.
 */}}
 {{- define "coder.accessURL" }}
-{{- if hasKey .Values "cemanager" }}
-{{- if ne .Values.cemanager.accessURL "" }}
+{{- if .Values.cemanager }}
+{{- if ne (merge .Values dict | dig "cemanager" "accessURL" "") "" }}
 {{- .Values.cemanager.accessURL -}}
 {{- else -}}
     http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
 {{- end }}
 {{- else -}}
-{{- if ne .Values.coderd.accessURL "" }}
+{{- if ne (merge .Values dict | dig "coderd" "accessURL" "") "" }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
     http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
