@@ -95,7 +95,7 @@ spec:
             - name: CLUSTER_ADDRESS
               value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
-              value: {{ .Values.clusterDomainSuffix | quote }}
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:

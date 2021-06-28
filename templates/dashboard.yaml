@@ -57,7 +57,7 @@ spec:
           tty: false
           env:
             - name: CODERD_HOST
-              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080"
           command:
             - /bin/bash
             - -c

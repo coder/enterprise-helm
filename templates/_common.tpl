@@ -13,9 +13,9 @@ storageClassName: {{ $storageClass | quote }}
   specify how to connect to a Postgres instance.
 */}}
 {{- define "coder.postgres.env" }}
-{{- if eq .Values.postgres.useDefault true }}
+{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" false)) }}
 - name: DB_HOST
-  value: timescale.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}
+  value: timescale.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}
 - name: DB_PORT
   value: "5432"
 - name: DB_USER
@@ -97,13 +97,13 @@ tolerations:
 {{- if ne (merge .Values dict | dig "cemanager" "accessURL" "") "" }}
 {{- .Values.cemanager.accessURL -}}
 {{- else -}}
-    http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+    http://cemanager.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
 {{- end }}
 {{- else -}}
 {{- if ne (merge .Values dict | dig "coderd" "accessURL" "") "" }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
-    http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+    http://coderd.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
 {{- end }}
 {{- end }}
 {{- end }}
