@@ -9,7 +9,8 @@
 {{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}
 {{- $_ := set $moved "postgres.default.resources.requests.storage" "timescale.resources.requests.storage" }}
 {{- $_ := set $moved "postgres.default.enable" "postgres.useDefault" }}
-{{- $_ := set $moved "clusterDomainSuffix" "services.clusterDomainSuffix" }}
+{{- $_ := set $moved "services.clusterDomainSuffix" "clusterDomainSuffix" }}
+{{- $_ := set $moved "coderd" "cemanager" }}
 {{- toJson $moved }}
 {{- end }}
 

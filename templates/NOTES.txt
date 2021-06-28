@@ -1,6 +1,7 @@
 {{- /* Deprecation notices for moved properties. See _migrate.tpl */}}
-{{ $movedMap := fromJson (include "moved" .) }}
-{{- range $index, $key := values $movedMap }}
+{{- $movedMap := fromJson (include "moved" .) }}
+{{- $movedList := list }}
+{{- range $_, $key := values $movedMap }}
   {{- $values := $.Values }}
   {{- $found := true }}
   {{- range $_, $keypart := splitList "." $key }}
@@ -12,10 +13,18 @@
       {{- end }}
     {{- end }}
   {{- end }}
-
   {{- if $found }}
-    {{- $newKey := index (keys $movedMap) $index }}
-
-    Deprecated: "{{ $key }}" has been moved to "{{ $newKey }}". Migrate now to avoid breaking!
+    {{- range $newKey, $_ := $movedMap }}
+      {{- if eq (index $movedMap $newKey) $key }}
+        {{- $item := printf "Move \"%s\" to \"%s\"" $key $newKey }}
+        {{- $movedList = append $movedList $item }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}
+{{- if gt (len $movedList) 0 }}
+Deprecated: The values below should be moved to avoid breaking in a future release!
+{{- range $_, $key := $movedList }}
+  - {{ $key }}
+{{- end }}
+{{ end }}
