@@ -23,7 +23,7 @@
   {{- end }}
 {{- end }}
 {{- if gt (len $movedList) 0 }}
-Deprecated: The values below should be moved to avoid breaking in a future release!
+Deprecated: The values below should be updated to avoid breaking in a future release!
 {{ $movedList = sortAlpha $movedList }}
 {{- range $_, $key := $movedList }}
   ↪ {{ $key }}
@@ -31,5 +31,9 @@ Deprecated: The values below should be moved to avoid breaking in a future relea
 {{ end }}
 
 {{- if hasKey .Values "cemanager" }}
-  The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
+  ⚠ The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
+{{ end }}
+
+{{- if hasKey .Values "dashboard" }}
+  ✗ The "dashboard" Kubernetes Service has been merged with "coderd".
 {{- end }}

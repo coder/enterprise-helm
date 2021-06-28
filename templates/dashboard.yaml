@@ -53,7 +53,7 @@ spec:
               containerPort: 3000
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ .Values.dashboard.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "dashboard" "securityContext" "readOnlyRootFilesystem" true }}
           tty: false
           env:
             - name: CODERD_HOST
