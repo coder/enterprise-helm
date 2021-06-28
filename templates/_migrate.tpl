@@ -46,8 +46,11 @@
     {{- $key = index $moved $key }}
     {{- if $key }}
       {{- /* We can use this function to check for the key again! */}}
-      {{- include "lookup" (dict "Values" .Values "Key" $key "Default" .Default) }}
+      {{- include "lookup" (dict "Values" .Values "Key" $key "Default" .Default "Nested" true) }}
     {{- else }}
+        {{- if not .Nested }}
+        {{ fail "Developer Error: 'lookup' is used for deprecated values only. Reference the value directly instead!" }}
+      {{- end }}
       {{- toYaml .Default | default "" }}
     {{- end }}
   {{- end }}
