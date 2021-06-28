@@ -9,6 +9,7 @@
 {{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}
 {{- $_ := set $moved "postgres.default.resources.requests.storage" "timescale.resources.requests.storage" }}
 {{- $_ := set $moved "postgres.default.enable" "postgres.useDefault" }}
+{{- $_ := set $moved "services.annotations" "deploymentAnnotations" }}
 {{- $_ := set $moved "services.clusterDomainSuffix" "clusterDomainSuffix" }}
 {{- $_ := set $moved "coderd" "cemanager" }}
 {{- toJson $moved }}
@@ -43,7 +44,7 @@
   {{- end }}
 
   {{- if $found }}
-    {{- $values }}
+    {{- toYaml $values }}
   {{- else }}
     {{- $moved := fromJson (include "moved" .) }}
     {{- $key = index $moved $key }}

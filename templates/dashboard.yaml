@@ -10,7 +10,7 @@ metadata:
   name: dashboard
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := .Values.deploymentAnnotations }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -27,7 +27,7 @@ spec:
       labels:
         coder.deployment: dashboard
       annotations:
-      {{- range $key, $value := .Values.deploymentAnnotations }}
+      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
