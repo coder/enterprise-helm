@@ -17,9 +17,9 @@
   Provide a "Default" key to set a default value.
 
   Example:
-  {{ include "lookup" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
+  {{ include "movedValue" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
 */}}
-{{- define "lookup" }}
+{{- define "movedValue" }}
   {{- $key := required "`Key` must be set!" .Key }}
 
   {{- $values := required "`Values` must be set!" .Values }}
@@ -46,10 +46,10 @@
     {{- $key = index $moved $key }}
     {{- if $key }}
       {{- /* We can use this function to check for the key again! */}}
-      {{- include "lookup" (dict "Values" .Values "Key" $key "Default" .Default "Nested" true) }}
+      {{- include "movedValue" (dict "Values" .Values "Key" $key "Default" .Default "Nested" true) }}
     {{- else }}
         {{- if not .Nested }}
-        {{ fail "Developer Error: 'lookup' is used for deprecated values only. Reference the value directly instead!" }}
+        {{ fail "Developer Error: 'movedValue' is used for deprecated values only. Reference the value directly instead!" }}
       {{- end }}
       {{- toYaml .Default | default "" }}
     {{- end }}
