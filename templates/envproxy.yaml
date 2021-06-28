@@ -114,7 +114,7 @@ spec:
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
-              value: {{ .Values.devurls.host | quote }}
+              value: {{ merge .Values dict | dig "devurls" "host" "" | quote }}
             - name: ENVIRONMENT_SA_NAME
               value: "environments"
           command:
