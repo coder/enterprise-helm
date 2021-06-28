@@ -145,11 +145,14 @@ spec:
             - name: VERBOSE
               value: "true"
             {{- if not .Values.coderd.replica.enable }}
+            {{ /* Envproxy is being removed in v1.22 */ }}
+            {{- if hasKey .Values "envproxy" }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: built-in-envproxy-token
                   key: token
+            {{- end }}
             {{- end }}
             {{- if .Values.coderd.replica.enable }}
             - name: CODER_REPLICA_PRIVATE_KEY
