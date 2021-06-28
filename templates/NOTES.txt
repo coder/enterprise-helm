@@ -1,26 +1,21 @@
-{{- if .Values.ingress.additionalAnnotations }}
-Warning: `ingress.additionalAnnotations` has been moved to `ingress.annotations`.
-{{- end }}
+{{- /* Deprecation notices for moved properties. See _migrate.tpl */}}
+{{ $movedMap := fromJson (include "moved" .) }}
+{{- range $index, $key := values $movedMap }}
+  {{- $values := $.Values }}
+  {{- $found := true }}
+  {{- range $_, $keypart := splitList "." $key }}
+    {{- if $found }}
+      {{- if index $values $keypart  }}
+        {{- $values = index $values $keypart }}
+      {{- else }}
+        {{- $found = false }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
 
-{{- if .Values.namespaceWhitelist }}
-Warning: `namespaceWhitelist` has been removed. Use multiple workspace providers instead. See: https://coder.com/docs/admin/workspace-providers
-{{- end }}
+  {{- if $found }}
+    {{- $newKey := index (keys $movedMap) $index }}
 
-{{- if .Values.dashboard }}
-Warning: The `dashboard` service is deprecated since Coder v1.20, and will be removed in v1.23.
-{{- if eq .Values.ingress.useDefault false }}
-  All `dashboard` traffic can be routed to `cemanager`.
+    Deprecated: "{{ $key }}" has been moved to "{{ $newKey }}". Migrate now to avoid breaking!
+  {{- end }}
 {{- end }}
-  The `cemanager` serves the dashboard; delete `dashboard` in values.yaml.
-{{ end }}
-
-{{- if .Values.podSecurityPolicyName }}
-Warning: `podSecurityPolicyName` is deprecated since Coder v1.20, and will be removed in v1.23.
-{{- end }}
-
-{{- if .Values.cemanager }}
-Warning: The `cemanager` service will be renamed to `coderd` in v1.21 (July 21st, 2021).
-  The `cemanager` deployment, service, and ingress networking will reference `coderd`.
-  If you do not reference `cemanager` externally, this change is not breaking.
-  Rename `cemanager` to `coderd` in values.yaml to trigger this change.
-{{ end }}
