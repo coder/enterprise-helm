@@ -44,7 +44,7 @@
       {{- /* We can use this function to check for the key again! */}}
       {{- include "lookup" (dict "Values" .Values "Key" $key "Default" .Default) }}
     {{- else }}
-      {{- .Default | default "" }}
+      {{- toYaml .Default | default "" }}
     {{- end }}
   {{- end }}
 {{- end }}
