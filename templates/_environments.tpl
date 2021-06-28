@@ -37,11 +37,11 @@ data:
   ce-manager uses this environment variable to unmarshal pod toleration objects.
 */}}
 {{- define "coder.environments.configMapEnv" }}
-{{- if .Values.environments.tolerations }}
+{{- if (merge .Values dict | dig "environments" "tolerations" false) }}
 - name: POD_TOLERATIONS
   value: {{ toJson .Values.environments.tolerations | b64enc | quote }}
 {{- end }}
-{{- if .Values.environments.nodeSelector }}
+{{- if (merge .Values dict | dig "environments" "nodeSelector" false) }}
 - name: POD_NODESELECTOR
   value: {{ toJson .Values.environments.nodeSelector | b64enc | quote }}
 {{- end }}
