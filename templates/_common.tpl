@@ -111,9 +111,9 @@ tolerations:
   coder.envproxy.accessURL is a URL for accessing the envproxy.
 */}}
 {{- define "coder.envproxy.accessURL" }}
-{{- if ne .Values.envproxy.accessURL "" }}
+{{- if ne (merge .Values dict | dig "envproxy" "accessURL" "") "" }}
 {{- .Values.envproxy.accessURL -}}
-{{- else if ne .Values.ingress.host "" }}
+{{- else if ne (merge .Values dict | dig "ingress" "host" "") "" }}
     {{- if .Values.ingress.tls.enable -}}
     https://
     {{- else -}}
