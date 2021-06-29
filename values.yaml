@@ -7,7 +7,12 @@ coderd:
   # coderd.serviceSpec -- Specification to inject for the coderd service. See:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
+    # coderd.serviceSpec.type -- Set the type of Service. See:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     type: LoadBalancer
+    # coderd.serviceSpec.externalTrafficPolicy -- Set the traffic policy for the service. See:
+    # https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    externalTrafficPolicy: Local
     # coderd.serviceSpec.loadBalancerIP -- Set the external IP address of the
     # Ingress service.
     loadBalancerIP: ""
@@ -48,7 +53,15 @@ coderd:
     limits:
       cpu: "250m"
       memory: "512Mi"
-
+  # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
+  # provider service account.
+  builtinProviderServiceAccount:
+    # coderd.builtinProviderServiceAccount.annotations -- A KV mapping of annotations. See:
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
+    # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
+    # used for the built-in provider.
+    labels: []
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
 envbox:

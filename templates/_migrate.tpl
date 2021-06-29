@@ -15,6 +15,8 @@
 {{- $_ := set $moved "postgres.default.enable" "postgres.useDefault" }}
 {{- $_ := set $moved "services.annotations" "deploymentAnnotations" }}
 {{- $_ := set $moved "services.clusterDomainSuffix" "clusterDomainSuffix" }}
+{{- $_ := set $moved "coderd.builtinProviderServiceAccount.annotations" "serviceAccount.annotations" }}
+{{- $_ := set $moved "coderd.builtinProviderServiceAccount.labels" "serviceAccount.labels" }}
 {{- toJson $moved }}
 {{- end }}
 

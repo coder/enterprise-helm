@@ -347,7 +347,7 @@ metadata:
   name: web-ingress
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- if .Values.ingress.useDefault }}
+  {{- if ne (merge .Values dict | dig "ingress" "useDefault" true) false }}
     # This class definition connects the nginx ingress controller
     # to the web-ingress.
     kubernetes.io/ingress.class: {{ .Release.Namespace | quote }}
@@ -355,14 +355,8 @@ metadata:
     # push an image.
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   {{- end }}
-  {{- range $key, $value := .Values.ingress.annotations }}
+  {{- range $key, $value := fromYaml (merge .Values dict | dig "ingress" "annotations" "{}") }}
     {{ $key }}: {{ $value | quote }}
-  {{- end }}
-  {{/* ingress.additionalAnnotations is deprecated. Use ingress.annotations instead */}}
-  {{- if .Values.ingress.additionalAnnotations }}
-    {{- range .Values.ingress.additionalAnnotations }}
-    {{ . }}
-    {{- end }}
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
@@ -371,10 +365,10 @@ spec:
     servicePort: 8080
   {{- if not .Values.coderd.replica.enable }}
   rules:
-  - host: {{ .Values.ingress.host | quote }}
+  - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}
     http:
       paths:
-    {{- if or (not .Values.ingress.usePathWildcards) .Values.ingress.useDefault }}
+    {{- if or (not (merge .Values dict | dig "ingress" "usePathWildcards" false)) (merge .Values dict | dig "ingress" "useDefault" true) }}
       {{- if hasKey .Values "envproxy" }}
       - path: /proxy/
         backend:
@@ -399,7 +393,7 @@ spec:
           servicePort: 8080
           {{- end }}
     {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
-  - host: {{ .Values.devurls.host | quote }}
+  - host: {{ merge .Values dict | dig "devurls" "host" "" | quote }}
     http:
       paths:
       - path: /
@@ -435,7 +429,7 @@ spec:
           servicePort: 8080
           {{- end }}
     {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
-  - host: {{ .Values.devurls.host | quote }}
+  - host: {{ merge .Values dict | dig "devurls" "host" "" | quote }}
     http:
       paths:
       - path: /*
