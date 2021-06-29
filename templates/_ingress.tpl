@@ -4,7 +4,7 @@
   values.yaml settings.
 */}}
 {{- define "coder.ingress.tls" }}
-{{- if .Values.ingress.tls.enable }}
+{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
   tls:
     {{- if and .Values.ingress.host .Values.ingress.tls.hostSecretName }}
     - hosts:

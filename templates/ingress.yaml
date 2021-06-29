@@ -1,6 +1,4 @@
-# This configuration file is ported from the nginx repo:
-# See https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-{{- if .Values.ingress.useDefault }}
+{{- if ne (merge .Values dict | dig "ingress" "useDefault" true) false }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -203,7 +201,7 @@ subjects:
     namespace: {{ .Release.Namespace | quote }}
 ---
 apiVersion: apps/v1
-kind: {{ .Values.ingress.deployment.kind | quote }}
+kind: {{ merge .Values dict | dig "ingress" "deployment" "kind" "Deployment" | quote }}
 metadata:
   name: nginx-ingress-controller
   namespace: {{ .Release.Namespace | quote }}
@@ -215,7 +213,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-{{- if eq .Values.ingress.deployment.kind "Deployment" }}
+{{- if eq (merge .Values dict | dig "ingress" "deployment" "kind" "Deployment") "Deployment" }}
   replicas: 1
 {{- end }}
   selector:
@@ -312,17 +310,15 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
   annotations:
-  {{- range $key, $value := .Values.ingress.service.annotations }}
+  {{- range $key, $value := fromYaml (merge .Values dict | dig "ingress" "service" "annotations" "[]") }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  externalTrafficPolicy: {{ .Values.ingress.externalTrafficPolicy | quote }}
+  externalTrafficPolicy: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.externalTrafficPolicy") | quote }}
   type: LoadBalancer
-  loadBalancerIP: {{ .Values.ingress.loadBalancerIP | quote }}
-  {{- if ne (len .Values.ingress.loadBalancerSourceRanges) 0 }}
+  loadBalancerIP: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.loadBalancerIP") | quote }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.ingress.loadBalancerSourceRanges | indent 4 }}
-  {{- end }}
+{{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.loadBalancerSourceRanges") | indent 4 }}
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
@@ -343,7 +339,7 @@ spec:
       port: 5349
       targetPort: 5349
 {{- end }}
-{{- if or .Values.ingress.useDefault .Values.ingress.enable }}
+{{- if or (ne (merge .Values dict | dig "ingress" "useDefault" true) false) (ne (merge .Values dict | dig "ingress" "enable" true) false) }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -402,7 +398,7 @@ spec:
           serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
           {{- end }}
-    {{- if ne .Values.devurls.host "" }}
+    {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
@@ -438,7 +434,7 @@ spec:
           serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
           {{- end }}
-    {{- if ne .Values.devurls.host "" }}
+    {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
   - host: {{ .Values.devurls.host | quote }}
     http:
       paths:
