@@ -19,11 +19,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  {{- if hasKey .Values "cemanager" }}
-  replicas: {{ .Values.cemanager.replicas }}
-  {{- else }}
-  replicas: {{ .Values.coderd.replicas }}
-  {{- end }}
+  replicas: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.replicas" 1) }}
   strategy:
     rollingUpdate:
       maxSurge: "25%"
@@ -57,12 +53,8 @@ spec:
       {{- if not .Values.coderd.replica.enable }}
       initContainers:
         - name: migrations
-          {{- if hasKey .Values "cemanager" }}
-          image: {{ .Values.cemanager.image | quote }}
-          {{- else }}
-          image: {{ .Values.coderd.image | quote }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          imagePullPolicy: Always
           env:
             - name: HUMAN_LOG
               value: {{ .Values.logging.human | quote }}
@@ -97,12 +89,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
-          {{- if hasKey .Values "cemanager" }}
-          image: {{ .Values.cemanager.image | quote }}
-          {{- else }}
-          image: {{ .Values.coderd.image | quote }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
@@ -161,8 +149,6 @@ spec:
                   name: coder-replica-private-key
                   key: privateKey
             {{- end }}
-            - name: STORAGE_CLASS
-              value: {{ .Values.storageClassName | quote }}
             {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
@@ -196,11 +182,7 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- if hasKey .Values "cemanager" }}
-{{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- else }}
-{{- include "coder.resources" .Values.coderd.resources | indent 10 }}
-{{- end }}
+{{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.resources"))) | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
 ---
@@ -210,7 +192,7 @@ metadata:
   name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  type: {{ .Values.serviceType | quote}}
+  type: {{ include "movedValue" (dict "Values" .Values "Key" "services.type") | quote}}
   selector:
     coder.deployment: {{ include "coder.serviceName" . }}
   ports:

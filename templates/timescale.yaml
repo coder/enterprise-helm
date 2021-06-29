@@ -53,7 +53,7 @@ spec:
       containers:
         - name: timescale
           image: {{ include "movedValue" (dict "Values" .Values "Key" "postgres.default.image") }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: Always
           readinessProbe:
             exec:
               command:

@@ -5,6 +5,9 @@
 {{- $moved := dict }}
 {{- /* To deprecate a value, map the new location to the old below */}}
 {{- $_ := set $moved "coderd" "cemanager" }}
+{{- $_ := set $moved "coderd.replicas" "cemanager.replicas" }}
+{{- $_ := set $moved "coderd.image" "cemanager.image" }}
+{{- $_ := set $moved "coderd.resources" "cemanager.resources" }}
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerIP" "ingress.loadBalancerIP" }}
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerSourceRanges" "ingress.loadBalancerSourceRanges" }}
 {{- $_ := set $moved "coderd.serviceSpec.externalTrafficPolicy" "ingress.service.externalTrafficPolicy" }}
@@ -15,6 +18,7 @@
 {{- $_ := set $moved "postgres.default.enable" "postgres.useDefault" }}
 {{- $_ := set $moved "services.annotations" "deploymentAnnotations" }}
 {{- $_ := set $moved "services.clusterDomainSuffix" "clusterDomainSuffix" }}
+{{- $_ := set $moved "services.type" "serviceType" }}
 {{- $_ := set $moved "coderd.builtinProviderServiceAccount.annotations" "serviceAccount.annotations" }}
 {{- $_ := set $moved "coderd.builtinProviderServiceAccount.labels" "serviceAccount.labels" }}
 {{- toJson $moved }}

@@ -47,7 +47,7 @@ spec:
           {{- else }}
           image: {{ .Values.coderd.image | quote }}
           {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-dashboard
               containerPort: 3000

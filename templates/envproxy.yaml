@@ -64,7 +64,7 @@ spec:
       containers:
         - name: envproxy
           image: {{ .Values.envproxy.image | quote }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-envproxy
               containerPort: 8080
