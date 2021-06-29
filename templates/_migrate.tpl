@@ -11,6 +11,7 @@
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerIP" "ingress.loadBalancerIP" }}
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerSourceRanges" "ingress.loadBalancerSourceRanges" }}
 {{- $_ := set $moved "coderd.serviceSpec.externalTrafficPolicy" "ingress.service.externalTrafficPolicy" }}
+{{- $_ := set $moved "coderd.tls.hostSecretName" "ingress.hostSecretName" }}
 {{- $_ := set $moved "postgres.default.storageClassName" "storageClassName" }}
 {{- $_ := set $moved "postgres.default.image" "timescale.image" }}
 {{- $_ := set $moved "postgres.default.resources" "timescale.resources" }}

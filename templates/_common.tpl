@@ -46,7 +46,7 @@ storageClassName: {{ $storageClass | default "" | quote }}
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}
-{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (merge .Values dict | dig "ingress" "tls" "enable" false) }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumes:
 {{- end }}
 {{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
@@ -54,10 +54,10 @@ volumes:
     secret:
       secretName: {{ .Values.certs.secret.name | quote }}
 {{- end }}
-{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
   - name: tls
     secret:
-      secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
+      secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName") }}
 {{- end }}
 {{- end }}
 
@@ -65,7 +65,7 @@ volumes:
   coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumeMounts" }}
-{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (merge .Values dict | dig "ingress" "tls" "enable" false) }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumeMounts:
 {{- end }}
 {{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
@@ -73,9 +73,9 @@ volumeMounts:
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
     subPath: {{ .Values.certs.secret.key | quote }}
 {{- end }}
-{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
   - name: tls
-    mountPath: /etc/coder/certificates
+    mountPath: /etc/ssl/certs/host
     readOnly: true
 {{- end }}
 {{- end }}
