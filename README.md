@@ -22,19 +22,23 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
+| cemanager.accessURL | string | The cemanager access URL that the envproxy will use to communicate with the cemanager. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g., https://manager.coder.com | `""` |
+| cemanager.image | string | Injected during releases. | `""` |
+| cemanager.replicas | int | The number of replicas to run of the manager. | `1` |
+| cemanager.resources | object | Kubernetes resource request and limits for cemanager pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| cemanager.securityContext | object | Contains fields related to the cemanager container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
 | certs | object | Describes CAs that should be added to Coder services. These certs are NOT added to environments. | `{"secret":{"key":"","name":""}}` |
 | certs.secret.key | string | The key in the secret pointing to the certificate bundle. | `""` |
 | certs.secret.name | string | The name of the secret. | `""` |
 | clusterDomainSuffix | string | If you've set a custom default domain for your cluster, you may need to remove or change this DNS suffix for service resolution to work correctly. | `".svc.cluster.local"` |
-| coderd.accessURL | string | The coderd access URL that the envproxy will use to communicate with the coderd. This should be a full URL complete with protocol and no trailing slash. Uses internal cluster URL if not set. e.g., https://manager.coder.com | `""` |
-| coderd.image | string | Injected during releases. | `""` |
-| coderd.replicas | int | The number of replicas to run of the manager. | `1` |
-| coderd.resources | object | Kubernetes resource request and limits for coderd pods. To unset a value, set it to "". To unset all values, you can provide a values.yaml file which sets resources to nil. See values.yaml for an example. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
-| coderd.securityContext | object | Contains fields related to the coderd container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
+| coderd.replica | object | Configuration for deployment a coder replica to geodistrubute access to workspaces | `{"enable":false,"primaryURL":""}` |
+| coderd.replica.enable | bool | Runs a coderd replica instead of the primary application if true | `false` |
+| coderd.replica.primaryURL | string | (required for coderd replica) The url of the primary coder deployment | `""` |
 | deploymentAnnotations | object |  | `{}` |
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |
 | environments.nodeSelector | object | nodeSelector is applied to all user environments to specify eligible nodes for environments to run on. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  eg. nodeSelector:   disktype: ssd | `{}` |
+| environments.serviceAccount.annotations | object | Annotations that should be added to the service account applied to all workspaces. | `{}` |
 | environments.tolerations | list | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example. | `[]` |
 | imagePullPolicy | string | Sets the policy for pulling a container image across all services. | `"Always"` |
 | ingress.additionalAnnotations | list | Deprecated. Please use `ingress.annotations`. | `[]` |
@@ -54,7 +58,6 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | ingress.tls.enable | bool | Enables the tls configuration. | `false` |
 | ingress.tls.hostSecretName | string | The secret to use for the ingress.host hostname. | `""` |
 | ingress.useDefault | bool | If set to true, will deploy an nginx ingress that will allow you to access Coder from an external IP address, but only if your kubernetes cluster is configured to provision external IP addresses. If you would like to bring your own ingress and hook Coder into that instead, set this value to false. | `true` |
-| ingress.usePathWildcards | bool | Whether or not the ingress object should use path wildcards, i.e., ending with "/*". Some ingresses require this while others do not. You should check which path style your ingress requires. For ingress-nginx this should be set to false. | `false` |
 | logging.human | string | Where to send logs that are formatted for readability by a human. Set to an empty string to disable. | `"/dev/stderr"` |
 | logging.json | string | Where to send logs that are formatted as JSON. Set to an empty string to disable. | `""` |
 | logging.splunk | object | Coder can send logs directly to Splunk, in addition to file-based output, if these values are configured. The channel is optional, and this logging is disabled if either the URL and Token are set to the empty string. | `{"channel":"","token":"","url":""}` |

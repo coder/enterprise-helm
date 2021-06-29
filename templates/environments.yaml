@@ -7,6 +7,10 @@ kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }} 
   name: environments
+  annotations:
+  {{- range $key, $value := .Values.environments.serviceAccount.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 {{- include "coder.namespaceWhitelist.envSA" . }}
 {{- include "coder.environments.configMap" . }}
 {{- end }}

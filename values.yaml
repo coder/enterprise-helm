@@ -302,6 +302,13 @@ environments:
   #   disktype: ssd
   nodeSelector: {}
 
+  # serviceAccount defines configuration for the Kubernetes service account
+  # applied to all workspaces.
+  serviceAccount:
+    # environments.serviceAccount.annotations -- Annotations that should be
+    # added to the service account applied to all workspaces.
+    annotations: {}
+
 # certs -- Describes CAs that should be added to Coder services. These certs
 # are NOT added to environments.
 certs:
