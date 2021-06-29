@@ -7,11 +7,11 @@ metadata:
   name: coder
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.annotations" "Default" "{}")) }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
-  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.labels" "Default" "{}")) }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.labels")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 ---
