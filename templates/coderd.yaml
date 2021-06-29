@@ -113,9 +113,9 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
-            readOnlyRootFilesystem: {{ .Values.cemanager.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "cemanager" "securityContext" "readOnlyRootFilesystem" true }}
             {{- else }}
-            readOnlyRootFilesystem: {{ .Values.coderd.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "coderd" "securityContext" "readOnlyRootFilesystem" true }}
             {{- end }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
@@ -163,8 +163,7 @@ spec:
             {{- end }}
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
-            - name: TURN_ENABLED
-              value: "true"
+            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
