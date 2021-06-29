@@ -1,21 +1,3 @@
-{{/*
-  coder.namespaceWhitelist.envSA contains a service account used by all
-  environments in each namespace.
-  LEGACY: .Values.namespaceWhitelist is deprecated. This exists to support
-          existing environments.
-*/}}
-{{- define "coder.namespaceWhitelist.envSA" }}
-{{- if .Values.namespaceWhitelist }}
-{{- range .Values.namespaceWhitelist }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ . | quote }}
-  name: environments
-{{- end }}
-{{- end }}
-{{- end }}
 {{/* 
   coder.environments.configMap defines configuration that is applied
   to user environments.
