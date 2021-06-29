@@ -149,7 +149,6 @@ spec:
                   name: coder-replica-private-key
                   key: privateKey
             {{- end }}
-            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
