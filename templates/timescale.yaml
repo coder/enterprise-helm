@@ -48,7 +48,7 @@ spec:
         runAsUser: 70
         runAsGroup: 70
         fsGroup: 70
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: 60
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
