@@ -38,7 +38,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | devurls.host | string | Should be a wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in devurls being disabled. Example: "*.devurls.coder.com". | `""` |
 | envbox.image | string | Injected during releases. | `""` |
 | environments.nodeSelector | object | nodeSelector is applied to all user environments to specify eligible nodes for environments to run on. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector  eg. nodeSelector:   disktype: ssd | `{}` |
-| environments.serviceAccount.annotations | object | Annotations that should be added to the service account applied to all workspaces. | `{}` |
+| environments.serviceAccount.annotations | object | Annotations that should be added to the service account applied to all workspaces. Can be used to bind the service account to a cloud identity | `{}` |
 | environments.tolerations | list | Tolerations are applied to all user environments. Each element is a regular pod toleration object. To set service tolerations see serviceTolerations. See values.yaml for an example. | `[]` |
 | imagePullPolicy | string | Sets the policy for pulling a container image across all services. | `"Always"` |
 | ingress.additionalAnnotations | list | Deprecated. Please use `ingress.annotations`. | `[]` |

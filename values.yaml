@@ -306,7 +306,8 @@ environments:
   # applied to all workspaces.
   serviceAccount:
     # environments.serviceAccount.annotations -- Annotations that should be
-    # added to the service account applied to all workspaces.
+    # added to the service account applied to all workspaces. Can be used to
+    # bind the service account to a cloud identity
     annotations: {}
 
 # certs -- Describes CAs that should be added to Coder services. These certs
