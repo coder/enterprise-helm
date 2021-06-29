@@ -4,7 +4,7 @@
 */}}
 {{- define "coder.storageClassName" }}
 {{ $storageClass := include "movedValue" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
-{{- if ne $storageClass "null" }}
+{{- if ne $storageClass "" }}
 storageClassName: {{ $storageClass | default "" | quote }}
 {{- end }}
 {{- end }}

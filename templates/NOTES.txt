@@ -34,6 +34,6 @@ Deprecated: The values below should be updated to avoid breaking in a future rel
   ⚠ The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
 {{ end }}
 
-{{- if hasKey .Values "dashboard" }}
+{{- if .Values.dashboard }}
   ✗ The "dashboard" Kubernetes Service has been merged with "coderd".
 {{- end }}

@@ -421,7 +421,7 @@ spec:
           servicePort: 8080
       - path: /*
         backend:
-          {{- if hasKey .Values "dashboard" }}
+          {{- if .Values.dashboard }}
           serviceName: dashboard
           servicePort: 3000
           {{- else }}

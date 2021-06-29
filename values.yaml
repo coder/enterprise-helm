@@ -61,7 +61,7 @@ coderd:
     annotations: {}
     # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
     # used for the built-in provider.
-    labels: []
+    labels: {}
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
 envbox:
