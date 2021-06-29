@@ -315,7 +315,7 @@ metadata:
   {{- end }}
 spec:
   externalTrafficPolicy: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.externalTrafficPolicy") | quote }}
-  type: LoadBalancer
+  type: {{ merge .Values dict | dig "coderd" "serviceSpec" "type" "LoadBalancer" }}
   loadBalancerIP: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.loadBalancerIP") | quote }}
   loadBalancerSourceRanges:
 {{ include "movedValue" (dict "Values" .Values "Key" "coderd.serviceSpec.loadBalancerSourceRanges") | indent 4 }}
