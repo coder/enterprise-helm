@@ -1,6 +1,4 @@
-<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
-
-# Coder Helm Chart
+<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->\n\n# Coder Helm Chart
 
 [![build](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml)
 [![Twitter Follow](https://img.shields.io/twitter/follow/CoderHQ?label=%40CoderHQ&style=social)](https://twitter.com/coderhq)
@@ -88,7 +86,16 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.host | string | Host of the external PostgreSQL instance. | `""` |
 | postgres.passwordSecret | string | Name of an existing secret in the current namespace with the password of the PostgreSQL instance. The password must be contained in the secret field `password`. This should be set to an empty string if the database does not require a password to connect. | `""` |
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
-| postgres.sslMode | string | Provides variable levels of protection for the PostgreSQL connection. For acceptable values, see:  https://www.postgresql.org/docs/9.1/libpq-ssl.html | `"require"` |
+| postgres.ssl | object | Options for configuring the SSL cert, key, and root cert when connecting to Postgres. | `{"certSecret":{"key":"","name":""},"keySecret":{"key":"","name":""},"rootCertSecret":{"key":"","name":""}}` |
+| postgres.ssl.certSecret | object | Secret containing a PEM encoded cert file. | `{"key":"","name":""}` |
+| postgres.ssl.certSecret.key | string | Key pointing to a certificate in the secret. | `""` |
+| postgres.ssl.certSecret.name | string | Name of the secret. | `""` |
+| postgres.ssl.keySecret | object | Secret containing a PEM encoded key file. | `{"key":"","name":""}` |
+| postgres.ssl.keySecret.key | string | Key pointing to a certificate in the secret. | `""` |
+| postgres.ssl.rootCertSecret | object | Secret containing a PEM encoded root cert file. | `{"key":"","name":""}` |
+| postgres.ssl.rootCertSecret.key | string | Key pointing to a certificate in the secret. | `""` |
+| postgres.ssl.rootCertSecret.name | string | Name of the secret. | `""` |
+| postgres.sslMode | string | Provides variable levels of protection for the PostgreSQL connection. For acceptable values, see:  https://www.postgresql.org/docs/11/libpq-ssl.html | `"require"` |
 | postgres.user | string | User of the external PostgreSQL instance. | `""` |
 | services | object | Kubernetes Service configuration that applies to Coder services. | `{"annotations":{},"clusterDomainSuffix":".svc.cluster.local","nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
 | services.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
