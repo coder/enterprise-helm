@@ -18,3 +18,24 @@
     {{- end }}
 {{- end }}
 {{- end }}
+
+{{/* */}}
+{{- define "coder.hasNginxIngress" }}
+{{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+{{- define "coder.useServiceNext" }}
+{{- if eq (merge .Values dict | dig "coderd" "serviceNext" false) true -}}
+true
+{{- else if eq (merge .Values dict | dig "ingress" "useDefault" true) false -}}
+false
+{{- else if eq (include "coder.hasNginxIngress" .) "false" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}

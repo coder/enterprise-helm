@@ -198,6 +198,34 @@ data:
   privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
   {{- end }}
 {{- end }}
+{{ if eq (include "coder.useServiceNext" .) "true" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") }}
+  name: nginx-ingress
+  {{- else }}
+  name: {{ include "coder.serviceName" . }}
+  {{- end }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+{{ toYaml .Values.coderd.serviceSpec | indent 2 }}
+  selector:
+    coder.deployment: {{ include "coder.serviceName" . }}
+  ports:
+    - name: tcp-{{ include "coder.serviceName" . }}
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+    - name: tcp-{{ include "coder.serviceName" . }}-https
+      port: 443
+      targetPort: 8443
+      protocol: TCP
+    - name: tcp-{{ include "coder.serviceName" . }}-turns
+      port: 5349
+      protocol: TCP
+{{- else }}
 ---
 apiVersion: v1
 kind: Service
@@ -218,3 +246,4 @@ spec:
     - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP
+{{- end }}

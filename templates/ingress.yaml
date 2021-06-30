@@ -1,4 +1,4 @@
-{{- if ne (merge .Values dict | dig "ingress" "useDefault" true) false }}
+{{- if and (eq (include "coder.hasNginxIngress" .) "true") (eq (merge .Values dict | dig "coderd" "serviceNext" false) false) }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -338,8 +338,6 @@ spec:
     - name: turns
       port: 5349
       targetPort: 5349
-{{- end }}
-{{- if or (ne (merge .Values dict | dig "ingress" "useDefault" true) false) (ne (merge .Values dict | dig "ingress" "enable" true) false) }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

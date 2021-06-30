@@ -33,6 +33,7 @@ Deprecated: The Helm values below should be updated to avoid breaking in a futur
 {{- end }}
 {{ end }}
 
+{{- if eq (include "coder.useServiceNext" .) "true" }}
 {{- if .Values.dashboard }}
 Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
   ✗ All "dashboard.*" values can be safely removed.
@@ -49,12 +50,20 @@ Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
   ✗ Custom ingress detected; ensure port 5349 directs to "coderd".
 {{- end }}
 {{ end }}
-
-{{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }}
-Breaking: The "coderd" Kubernetes Service will modify it's port mapping in a future release. Update your custom ingress:
-  ↪ Move TCP port 8080 -> 80
-  ↪ Move TCP port 8443 -> 443
-  ↪ Expose TCP port 5349
-  ⚠ The Kubernetes Service will be type "LoadBalancer" by default. Adjust options using "coderd.serviceSpec".
+{{- else }}
+{{- if eq (include "coder.hasNginxIngress" .) "true" }}
+Deprecated: The "nginx" ingress controller will be removed in a future release.
+  🌍 The "coderd" Kubernetes Service now serves TLS certificates.
   ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
+{{ else }}
+Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into "coderd" in a future release. Update your custom ingress:
+  ↪ Rename "cemanager" to "coderd"
+  ↪ Route traffic from "dashboard" to "coderd"
+  ↪ Route traffic from "envproxy" to "coderd"
+  ↪ Move TCP port from 8080 to 80
+  ↪ Move TCP port from 8443 to 443
+  ↪ Expose TCP port 5349
+  ⚠ The "coderd" Kubernetes Service will be type "LoadBalancer" by default. Adjust options using "coderd.serviceSpec".
+  ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
+{{- end }}
 {{- end }}
