@@ -23,17 +23,38 @@
   {{- end }}
 {{- end }}
 {{- if gt (len $movedList) 0 }}
-Deprecated: The values below should be updated to avoid breaking in a future release!
-{{ $movedList = sortAlpha $movedList }}
+Deprecated: The Helm values below should be updated to avoid breaking in a future release!
+{{- if hasKey .Values "cemanager" }}
+  ⚠ The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
+{{- end }}
+{{- $movedList = sortAlpha $movedList }}
 {{- range $_, $key := $movedList }}
   ↪ {{ $key }}
 {{- end }}
 {{ end }}
 
-{{- if hasKey .Values "cemanager" }}
-  ⚠ The "cemanager" Kubernetes Service will be renamed to "coderd" once moved.
+{{- if .Values.dashboard }}
+Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
+  ✗ All "dashboard.*" values can be safely removed.
+{{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }}    
+  ✗ Custom ingress detected; ensure all traffic directs to "coderd".
+{{- end }}
 {{ end }}
 
-{{- if .Values.dashboard }}
-  ✗ The "dashboard" Kubernetes Service has been merged with "coderd".
+{{- if .Values.envproxy }}
+Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
+  ✗ All "envproxy.*" values can be safely removed.
+  ✗ Workspaces will need to be rebuilt after this change.
+{{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }} 
+  ✗ Custom ingress detected; ensure port 5349 directs to "coderd".
+{{- end }}
+{{ end }}
+
+{{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }}
+Breaking: The "coderd" Kubernetes Service will modify it's port mapping in a future release. Update your custom ingress:
+  ↪ Move TCP port 8080 -> 80
+  ↪ Move TCP port 8443 -> 443
+  ↪ Expose TCP port 5349
+  ⚠ The Kubernetes Service will be type "LoadBalancer" by default. Adjust options using "coderd.serviceSpec".
+  ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
 {{- end }}

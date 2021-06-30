@@ -1,4 +1,3 @@
-# Optionally include the dashboard if it's specified.
 {{- if .Values.dashboard }}
 {{- if not .Values.coderd.replica.enable }}
 ---
