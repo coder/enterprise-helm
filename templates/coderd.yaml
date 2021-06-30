@@ -218,13 +218,16 @@ spec:
       port: 80
       targetPort: 8080
       protocol: TCP
+      appProtocol: http
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 443
       targetPort: 8443
       protocol: TCP
+      appProtocol: https
     - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP
+      appProtocol: turns
 {{- else }}
 ---
 apiVersion: v1
