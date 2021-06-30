@@ -1,11 +1,3 @@
-# The following describes the Kubernetes deployment of the Coder service.
-# The general setup is as follows:
-#   - A namespace contains all the relevant resources for Coder.
-#   - A deployment describes the configuration of the manager container.
-#   - A service is created to route requests to the manager pod.
-#   - A service account (along with a Role and Role binding) is created to grant
-#     the manager the necessary permissions to administer environments.
-#
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -190,6 +182,22 @@ spec:
 {{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.resources"))) | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
+{{- if .Values.coderd.replica.enable }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: coder-replica-private-key
+  namespace: {{ .Release.Namespace | quote }}
+type: Opaque
+# Adapted from https://stackoverflow.com/a/64325744
+data:
+  {{- if (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key") }}
+  privateKey: {{ (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key").data.privateKey }}
+  {{- else }}
+  privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
+  {{- end }}
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -210,19 +218,3 @@ spec:
     - name: tcp-{{ include "coder.serviceName" . }}-turns
       port: 5349
       protocol: TCP
-{{- if .Values.coderd.replica.enable }}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: coder-replica-private-key
-  namespace: {{ .Release.Namespace | quote }}
-type: Opaque
-# Adapted from https://stackoverflow.com/a/64325744
-data:
-  {{- if (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key") }}
-  privateKey: {{ (lookup "v1" "Secret" .Release.Namespace "coder-replica-private-key").data.privateKey }}
-  {{- else }}
-  privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
-  {{- end }}
-{{- end }}
