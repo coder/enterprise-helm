@@ -22,7 +22,10 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
-| coderd | object | Primary service responsible for all things Coder! | `{"image":"","replica":{"enable":false,"primaryURL":""},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"image":"","replica":{"enable":false,"primaryURL":""},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
+| coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
+| coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
+| coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
 | coderd.image | string | Injected by Coder during release. | `""` |
 | coderd.replica | object | Deploy a replica to geodistribute access to workspaces for lower latency. | `{"enable":false,"primaryURL":""}` |
 | coderd.replica.enable | bool | Run coderd as a replica pointing to a primary deployment. Replicas enable low-latency access to workspaces all over the world. Read more: TODO: Link to docs. | `false` |
@@ -30,9 +33,11 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.replicas | int | The number of Kubernetes Pod replicas. | `1` |
 | coderd.resources | object | Kubernetes resource specification for coderd pods. To unset a value, set it to "". To unset all values, set resources to nil. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | coderd.securityContext | object | Fields related to the container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
-| coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
+| coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
+| coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
 | coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
 | coderd.serviceSpec.loadBalancerSourceRanges | list | Traffic through the LoadBalancer will be restricted to the specified client IPs. This field will be ignored if the cloud provider does not support this feature. | `[]` |
+| coderd.serviceSpec.type | string | Set the type of Service. See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types | `"LoadBalancer"` |
 | coderd.tls | object | TLS configuration for coderd. These options will override dashboard configuration. | `{"devurlsHostSecretName":"","hostSecretName":""}` |
 | coderd.tls.devurlsHostSecretName | string | The secret to use for DevURL TLS. | `""` |
 | coderd.tls.hostSecretName | string | The secret to use for TLS. | `""` |
@@ -46,11 +51,12 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | logging.splunk.url | string | Splunk HEC collector endpoint. | `""` |
 | logging.stackdriver | string | Location to send logs that are formatted for Google Stackdriver. Set to an empty string to disable. | `""` |
 | postgres.database | string | Name of the database that Coder will use. You must create this database first. | `""` |
-| postgres.default | object | Configure a built-in PostgreSQL deployment. | `{"enable":true,"image":"","resources":{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}}}` |
+| postgres.default | object | Configure a built-in PostgreSQL deployment. | `{"enable":true,"image":"","resources":{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}},"storageClassName":""}` |
 | postgres.default.enable | bool | Deploys a PostgreSQL instance. We recommend using an external PostgreSQL instance in production. If true, all other values are ignored. | `true` |
 | postgres.default.image | string | Injected by Coder during release. | `""` |
 | postgres.default.resources | object | Kubernetes resource specification for the PostgreSQL pod. To unset a value, set it to "". To unset all values, set resources to nil. | `{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}}` |
 | postgres.default.resources.requests.storage | string | Specifies the size of the volume claim for persisting the database. | `"10Gi"` |
+| postgres.default.storageClassName | string | Set the storageClass to store the database. | `""` |
 | postgres.host | string | Host of the external PostgreSQL instance. | `""` |
 | postgres.passwordSecret | string | Name of an existing secret in the current namespace with the password of the PostgreSQL instance. The password must be contained in the secret field `password`. This should be set to an empty string if the database does not require a password to connect. | `""` |
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
