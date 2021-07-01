@@ -13,7 +13,7 @@
     {{- end }}
     {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
     - hosts:
-      - {{ .Values.devurls.host | quote }}
+      - {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
       secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
     {{- end }}
 {{- end }}

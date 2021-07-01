@@ -116,7 +116,7 @@ spec:
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
-              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
           command:
             - /entrypoint.sh
             - envproxy

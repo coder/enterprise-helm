@@ -407,7 +407,7 @@ spec:
               number: 8080
           {{- end }}
     {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
-  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
+  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
     http:
       paths:
       - path: /

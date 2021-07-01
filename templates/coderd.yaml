@@ -65,7 +65,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DEVURL_HOST
-              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
             - name: VERBOSE
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
