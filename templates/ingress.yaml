@@ -55,7 +55,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: nginx-ingress-clusterrole-{{ .Release.Namespace }}
@@ -121,7 +121,7 @@ rules:
       - list
       - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: nginx-ingress-role
@@ -165,7 +165,7 @@ rules:
     verbs:
       - get
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
@@ -182,7 +182,7 @@ subjects:
     name: nginx-ingress-serviceaccount
     namespace: {{ .Release.Namespace | quote }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   # The cluster role binding needs to be namespaced to avoid
@@ -339,7 +339,7 @@ spec:
       port: 5349
       targetPort: 5349
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
@@ -358,86 +358,71 @@ metadata:
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
-  backend:
-    serviceName: {{ include "coder.serviceName" . }}
-    servicePort: 8080
+  defaultBackend:
+    service:
+      name: {{ include "coder.serviceName" . }}
+      port:
+        number: 8080
   {{- if not .Values.coderd.replica.enable }}
   rules:
   - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}
     http:
       paths:
-    {{- if or (not (merge .Values dict | dig "ingress" "usePathWildcards" false)) (merge .Values dict | dig "ingress" "useDefault" true) }}
+    {{- if (merge .Values dict | dig "ingress" "useDefault" true) }}
       {{- if hasKey .Values "envproxy" }}
       - path: /proxy/
+        pathType: Prefix
         backend:
-          serviceName: envproxy
-          servicePort: 8080
+          service:
+            name: envproxy
+            port:
+              number: 8080
       {{- end }}
-      - path: /api/
+      - path: /api
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /auth/
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
+      - path: /auth
+        pathType: Prefix
         backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
       - path: /
+        pathType: Prefix
         backend:
           {{- if .Values.dashboard }}
-          serviceName: dashboard
-          servicePort: 3000
+          service:
+            name: dashboard
+            port:
+              number: 3000
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
   - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
           {{- if hasKey .Values "envproxy" }}
-          serviceName: envproxy
-          servicePort: 8080
+          service:
+            name: envproxy
+            port:
+              number: 8080
           {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-          {{- end }}
-    {{- end }}
-    {{- else }}
-      - path: /proxy/*
-        backend:
-          serviceName: envproxy
-          servicePort: 8080
-      - path: /api/*
-        backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /auth/*
-        backend:
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-      - path: /*
-        backend:
-          {{- if .Values.dashboard }}
-          serviceName: dashboard
-          servicePort: 3000
-          {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
-          {{- end }}
-    {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
-  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
-    http:
-      paths:
-      - path: /*
-        backend:
-          {{- if hasKey .Values "envproxy" }}
-          serviceName: envproxy
-          servicePort: 8080
-          {{- else }}
-          serviceName: {{ include "coder.serviceName" . }}
-          servicePort: 8080
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 8080
           {{- end }}
     {{- end }}
     {{- end }}

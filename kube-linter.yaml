@@ -13,6 +13,7 @@ checks:
     - host-pid
     - mismatching-selector
     - no-anti-affinity
+    - no-extensions-v1beta
     - no-liveness-probe
     - no-read-only-root-fs
     - no-readiness-probe
@@ -27,7 +28,6 @@ checks:
     - unsafe-sysctls
     - writable-host-mount
   exclude:
-    - no-extensions-v1beta
     - required-annotation-email
     - required-label-owner
     - unset-cpu-requirements
