@@ -20,6 +20,11 @@ coderd:
     # will be restricted to the specified client IPs. This field will be ignored if
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
+
+  # coderd.devurlsHost -- Wildcard hostname to allow matching against custom-created
+  # dev URLs. Leaving as an empty string results in DevURLs being disabled.
+  devurlsHost: ""
+
   # coderd.tls -- TLS configuration for coderd.
   # These options will override dashboard configuration.
   tls:
