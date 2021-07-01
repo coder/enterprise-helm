@@ -25,8 +25,9 @@
 true
 {{- else if .Values.envproxy -}}
 true
-{{- else }}
+{{- else -}}
 false
+{{- end }}
 {{- end }}
 
 {{- define "coder.useServiceNext" }}
