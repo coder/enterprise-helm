@@ -204,7 +204,7 @@ apiVersion: v1
 kind: Service
 metadata:
   {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") }}
-  name: nginx-ingress
+  name: ingress-nginx
   {{- else }}
   name: {{ include "coder.serviceName" . }}
   {{- end }}
