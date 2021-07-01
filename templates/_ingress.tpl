@@ -23,9 +23,10 @@
 {{- define "coder.hasNginxIngress" }}
 {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
 true
-{{- else -}}
+{{- else if .Values.envproxy -}}
+true
+{{- else }}
 false
-{{- end }}
 {{- end }}
 
 {{- define "coder.useServiceNext" }}
