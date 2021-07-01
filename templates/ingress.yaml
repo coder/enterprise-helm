@@ -390,8 +390,8 @@ spec:
           serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
           {{- end }}
-    {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
-  - host: {{ merge .Values dict | dig "devurls" "host" "" | quote }}
+    {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
+  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
     http:
       paths:
       - path: /
@@ -426,8 +426,8 @@ spec:
           serviceName: {{ include "coder.serviceName" . }}
           servicePort: 8080
           {{- end }}
-    {{- if ne (merge .Values dict | dig "devurls" "host" "") "" }}
-  - host: {{ merge .Values dict | dig "devurls" "host" "" | quote }}
+    {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
+  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") | quote }}
     http:
       paths:
       - path: /*

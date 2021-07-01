@@ -8,6 +8,7 @@
 {{- $_ := set $moved "coderd.replicas" "cemanager.replicas" }}
 {{- $_ := set $moved "coderd.image" "cemanager.image" }}
 {{- $_ := set $moved "coderd.resources" "cemanager.resources" }}
+{{- $_ := set $moved "coderd.devurlsHost" "devurls.host" }}
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerIP" "ingress.loadBalancerIP" }}
 {{- $_ := set $moved "coderd.serviceSpec.loadBalancerSourceRanges" "ingress.loadBalancerSourceRanges" }}
 {{- $_ := set $moved "coderd.serviceSpec.externalTrafficPolicy" "ingress.service.externalTrafficPolicy" }}
