@@ -102,6 +102,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: ENVPROXY_ACCESS_URL
               value: {{ include "coder.envproxy.accessURL" . | quote }}
+            - name: ENVIRONMENT_SA_NAME
+              value: ""
             - name: SSH_ENABLED
               value: {{ merge .Values dict | dig "ssh" "enable" true | quote }}
             - name: CEMANAGER_ACCESS_URL
