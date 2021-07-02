@@ -40,11 +40,8 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
-      # coder:coder
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsNonRoot: true
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -94,6 +91,9 @@ spec:
               /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
