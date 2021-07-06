@@ -1,4 +1,4 @@
-{{- if and (eq (include "coder.hasNginxIngress" .) "true") (eq (merge .Values dict | dig "coderd" "serviceNext" false) false) (merge .Values dict | dig "ingress" "enable" true) }}
+{{- if and (eq (include "coder.hasNginxIngress" .) "true") (eq (merge .Values dict | dig "coderd" "serviceNext" false) false) (merge .Values dict | dig "ingress" "enable" true) (merge .Values dict | dig "ingress" "useDefault" true) }}
 ---
 apiVersion: v1
 kind: ConfigMap
