@@ -1,5 +1,5 @@
 {{- if not .Values.coderd.replica.enable }}
-{{- if ne .Values.podSecurityPolicyName "" }}
+{{- if ne (.Values.podSecurityPolicyName | default "") "" }}
 ---
 # The coder-restricted role adds the pod security policy if one is specified.
 apiVersion: rbac.authorization.k8s.io/v1
@@ -33,15 +33,13 @@ subjects:
   - kind: ServiceAccount
     name: envproxy
     namespace: {{ .Release.Namespace | quote }}
-  - kind: ServiceAccount
-    name: environments
-    namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: coder-restricted
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
-{{- if and (ne .Values.ingress.podSecurityPolicyName "") (eq .Values.ingress.useDefault true) }}
+
+{{- if and (ne (merge .Values dict | dig "ingress" "podSecurityPolicyName" "") "") (eq (merge .Values dict | dig "ingress" "useDefault" false) true)}}
 ---
 # The ingress-restricted role adds the pod security policy if one is specified
 # to the ingress service account.

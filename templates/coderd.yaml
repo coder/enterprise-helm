@@ -1,11 +1,3 @@
-# The following describes the Kubernetes deployment of the Coder service.
-# The general setup is as follows:
-#   - A namespace contains all the relevant resources for Coder.
-#   - A deployment describes the configuration of the manager container.
-#   - A service is created to route requests to the manager pod.
-#   - A service account (along with a Role and Role binding) is created to grant
-#     the manager the necessary permissions to administer environments.
-#
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -15,15 +7,11 @@ metadata:
   name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := .Values.deploymentAnnotations }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  {{- if hasKey .Values "cemanager" }}
-  replicas: {{ .Values.cemanager.replicas }}
-  {{- else }}
-  replicas: {{ .Values.coderd.replicas }}
-  {{- end }}
+  replicas: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.replicas" 1) }}
   strategy:
     rollingUpdate:
       maxSurge: "25%"
@@ -36,7 +24,7 @@ spec:
       labels:
         coder.deployment: {{ include "coder.serviceName" . }}
       annotations:
-      {{- range $key, $value := .Values.deploymentAnnotations }}
+      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
@@ -54,12 +42,8 @@ spec:
       {{- if not .Values.coderd.replica.enable }}
       initContainers:
         - name: migrations
-          {{- if hasKey .Values "cemanager" }}
-          image: {{ .Values.cemanager.image | quote }}
-          {{- else }}
-          image: {{ .Values.coderd.image | quote }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          imagePullPolicy: Always
           env:
             - name: HUMAN_LOG
               value: {{ .Values.logging.human | quote }}
@@ -78,7 +62,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DEVURL_HOST
-              value: {{ .Values.devurls.host | quote }}
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
             - name: VERBOSE
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
@@ -97,12 +81,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
-          {{- if hasKey .Values "cemanager" }}
-          image: {{ .Values.cemanager.image | quote }}
-          {{- else }}
-          image: {{ .Values.coderd.image | quote }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
@@ -113,9 +93,9 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
-            readOnlyRootFilesystem: {{ .Values.cemanager.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "cemanager" "securityContext" "readOnlyRootFilesystem" true }}
             {{- else }}
-            readOnlyRootFilesystem: {{ .Values.coderd.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "coderd" "securityContext" "readOnlyRootFilesystem" true }}
             {{- end }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
@@ -145,11 +125,13 @@ spec:
             - name: VERBOSE
               value: "true"
             {{- if not .Values.coderd.replica.enable }}
+            {{- if .Values.envproxy }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: built-in-envproxy-token
                   key: token
+            {{- end }}
             {{- end }}
             {{- if .Values.coderd.replica.enable }}
             - name: CODER_REPLICA_PRIVATE_KEY
@@ -158,10 +140,12 @@ spec:
                   name: coder-replica-private-key
                   key: privateKey
             {{- end }}
-            - name: STORAGE_CLASS
-              value: {{ .Values.storageClassName | quote }}
-            - name: TURN_ENABLED
-              value: "true"
+            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+            - name: SSL_SERVER_CERT_FILE
+              value: /etc/ssl/certs/host/tls.crt
+            - name: SSL_SERVER_KEY_FILE
+              value: /etc/ssl/certs/host/tls.key
+            {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
@@ -194,33 +178,9 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- if hasKey .Values "cemanager" }}
-{{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
-{{- else }}
-{{- include "coder.resources" .Values.coderd.resources | indent 10 }}
-{{- end }}
+{{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.resources"))) | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "coder.serviceName" . }}
-  namespace: {{ .Release.Namespace | quote }}
-spec:
-  type: {{ .Values.serviceType | quote}}
-  selector:
-    coder.deployment: {{ include "coder.serviceName" . }}
-  ports:
-    - name: tcp-{{ include "coder.serviceName" . }}
-      port: 8080
-      protocol: TCP
-    - name: tcp-{{ include "coder.serviceName" . }}-https
-      port: 8443
-      protocol: TCP
-    - name: tcp-{{ include "coder.serviceName" . }}-turns
-      port: 5349
-      protocol: TCP
 {{- if .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
@@ -236,4 +196,56 @@ data:
   {{- else }}
   privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
   {{- end }}
+{{- end }}
+{{ if eq (include "coder.useServiceNext" .) "true" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") }}
+  name: ingress-nginx
+  {{- else }}
+  name: {{ include "coder.serviceName" . }}
+  {{- end }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+{{ toYaml .Values.coderd.serviceSpec | indent 2 }}
+  selector:
+    coder.deployment: {{ include "coder.serviceName" . }}
+  ports:
+    - name: tcp-{{ include "coder.serviceName" . }}
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+      appProtocol: http
+    - name: tcp-{{ include "coder.serviceName" . }}-https
+      port: 443
+      targetPort: 8443
+      protocol: TCP
+      appProtocol: https
+    - name: tcp-{{ include "coder.serviceName" . }}-turns
+      port: 5349
+      protocol: TCP
+      appProtocol: turns
+{{- else }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "coder.serviceName" . }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ include "movedValue" (dict "Values" .Values "Key" "services.type") | quote}}
+  selector:
+    coder.deployment: {{ include "coder.serviceName" . }}
+  ports:
+    - name: tcp-{{ include "coder.serviceName" . }}
+      port: 8080
+      protocol: TCP
+    - name: tcp-{{ include "coder.serviceName" . }}-https
+      port: 8443
+      protocol: TCP
+    - name: tcp-{{ include "coder.serviceName" . }}-turns
+      port: 5349
+      protocol: TCP
 {{- end }}

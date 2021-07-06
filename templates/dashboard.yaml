@@ -1,4 +1,3 @@
-# Optionally include the dashboard if it's specified.
 {{- if .Values.dashboard }}
 {{- if not .Values.coderd.replica.enable }}
 ---
@@ -10,7 +9,7 @@ metadata:
   name: dashboard
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := .Values.deploymentAnnotations }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -27,7 +26,7 @@ spec:
       labels:
         coder.deployment: dashboard
       annotations:
-      {{- range $key, $value := .Values.deploymentAnnotations }}
+      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
@@ -39,22 +38,18 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: dashboard
-          {{- if hasKey .Values "cemanager" }}
-          image: {{ .Values.cemanager.image | quote }}
-          {{- else }}
-          image: {{ .Values.coderd.image | quote }}
-          {{- end }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-dashboard
               containerPort: 3000
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ .Values.dashboard.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "dashboard" "securityContext" "readOnlyRootFilesystem" true }}
           tty: false
           env:
             - name: CODERD_HOST
-              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}:8080"
+              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080"
           command:
             - /bin/bash
             - -c

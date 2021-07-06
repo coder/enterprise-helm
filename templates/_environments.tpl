@@ -1,27 +1,9 @@
-{{/*
-  coder.namespaceWhitelist.envSA contains a service account used by all
-  environments in each namespace.
-  LEGACY: .Values.namespaceWhitelist is deprecated. This exists to support
-          existing environments.
-*/}}
-{{- define "coder.namespaceWhitelist.envSA" }}
-{{- if .Values.namespaceWhitelist }}
-{{- range .Values.namespaceWhitelist }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ . | quote }}
-  name: environments
-{{- end }}
-{{- end }}
-{{- end }}
 {{/* 
   coder.environments.configMap defines configuration that is applied
   to user environments.
 */}}
 {{- define "coder.environments.configMap" }}
-{{- if .Values.environments.tolerations }}
+{{- if (merge .Values dict | dig "environments" "tolerations" false) }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -37,11 +19,11 @@ data:
   ce-manager uses this environment variable to unmarshal pod toleration objects.
 */}}
 {{- define "coder.environments.configMapEnv" }}
-{{- if .Values.environments.tolerations }}
+{{- if (merge .Values dict | dig "environments" "tolerations" false) }}
 - name: POD_TOLERATIONS
   value: {{ toJson .Values.environments.tolerations | b64enc | quote }}
 {{- end }}
-{{- if .Values.environments.nodeSelector }}
+{{- if (merge .Values dict | dig "environments" "nodeSelector" false) }}
 - name: POD_NODESELECTOR
   value: {{ toJson .Values.environments.nodeSelector | b64enc | quote }}
 {{- end }}

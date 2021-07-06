@@ -1,5 +1,6 @@
-# Envproxy is being removed in v1.21.
+{{- /* Envproxy is being removed in v1.22 */}}
 {{- if hasKey .Values "envproxy" }}
+{{- /* Don't deploy envproxy on replica */}}
 {{- if not .Values.coderd.replica.enable }}
 ---
 apiVersion: v1
@@ -25,7 +26,7 @@ metadata:
   name: envproxy
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := .Values.deploymentAnnotations }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -42,7 +43,7 @@ spec:
       labels:
         coder.deployment: envproxy
       annotations:
-      {{- range $key, $value := .Values.deploymentAnnotations }}
+      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
@@ -59,17 +60,17 @@ spec:
       containers:
         - name: envproxy
           image: {{ .Values.envproxy.image | quote }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          imagePullPolicy: Always
           ports:
             - name: tcp-envproxy
               containerPort: 8080
-{{- if eq .Values.ssh.enable true }}
+{{- if eq (merge .Values dict | dig "ssh" "enable" true) true }}
             - name: ssh-envproxy
               containerPort: 2222
 {{- end}}
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ .Values.envproxy.securityContext.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ merge .Values dict | dig "envproxy" "securityContext" "readOnlyRootFilesystem" true }}
           # envproxy is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
@@ -90,15 +91,17 @@ spec:
             - name: CLUSTER_ADDRESS
               value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: CLUSTER_DOMAIN_SUFFIX
-              value: {{ .Values.clusterDomainSuffix | quote }}
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: ENVPROXY_ACCESS_URL
               value: {{ include "coder.envproxy.accessURL" . | quote }}
+            - name: ENVIRONMENT_SA_NAME
+              value: ""
             - name: SSH_ENABLED
-              value: {{ .Values.ssh.enable | quote }}
+              value: {{ merge .Values dict | dig "ssh" "enable" true | quote }}
             - name: CEMANAGER_ACCESS_URL
               value: {{ include "coder.accessURL" . | quote }}
             - name: CEMANAGER_TOKEN
@@ -109,9 +112,7 @@ spec:
             - name: STORAGE_CLASS
               value: {{ .Values.storageClassName | quote }}
             - name: DEVURL_HOST
-              value: {{ .Values.devurls.host | quote }}
-            - name: ENVIRONMENT_SA_NAME
-              value: "environments"
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
           command:
             - /entrypoint.sh
             - envproxy
@@ -148,7 +149,7 @@ spec:
     - name: tcp-envproxy
       port: 8080
       protocol: TCP
-{{- if eq .Values.ssh.enable true}}
+{{- if eq (merge .Values dict | dig "ssh" "enable" true) true}}
     - name: tcp-ssh
       port: 2222
       protocol: TCP

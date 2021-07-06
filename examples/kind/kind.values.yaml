@@ -1,14 +1,12 @@
-# Values for a small local test deployment using Kind
-ingress:
-  useDefault: false
-
 coderd:
+  serviceSpec:
+    type: ClusterIP
   resources:
     requests:
       cpu: 100m
       memory: 64Mi
 
-timescale:
+postgres:
   resources:
     requests:
       cpu: 100m

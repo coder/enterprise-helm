@@ -7,109 +7,37 @@ metadata:
   name: coder
   namespace: {{ .Release.Namespace | quote }}
   annotations:
-  {{- range $key, $value := .Values.serviceAccount.annotations }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.annotations")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
-  {{- range $key, $value := .Values.serviceAccount.labels }}
+  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.builtinProviderServiceAccount.labels")) }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
-
-# LEGACY: using multiple namespaces in a single workspace provider is
-# deprecated, see values.yaml for more information
-{{- $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
-{{- range $namespaces }}
 ---
-# The roles the manager needs in the workspace namespace.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: coder
-  namespace: {{ . | quote }}
+  namespace: {{ .Release.Namespace | quote }}
 rules:
-  - apiGroups:
-      - "" # indicates the core API group
-      - "apps"
-    resources:
-      # Required for workspace home volumes.
-      - persistentvolumeclaims
-      # Workspaces are created as pods.
-      - pods
-      # Required for creating registry pull secrets.
-      - secrets
-      # Every workspace has a service.
-      - services
-      # LEGACY: old workspaces may be deployments, so we need this permission to
-      # recreate old workspaces as pods.
-      - deployments
-    verbs:
-      - create
-      - get
-      - list
-      - watch
-      - update
-      - patch
-      - delete
-      - deletecollection
-  - apiGroups:
-      - "" # indicates the core API group
-    resources:
-      - pods/exec
-      - pods/log
-      - events
-      - configmaps
-    verbs:
-      - create
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - "apps"
-    resources:
-      # LEGACY: old workspaces may be deployments
-      - deployments/scale
-    verbs:
-      - update
-  - apiGroups:
-      - metrics.k8s.io
-    resources:
-      - pods
-    # Necessary for gathering stats about an environment.
-    verbs:
-      - list
-      - get
-  - apiGroups:
-      - networking.k8s.io
-    resources:
-      # Necessary for preventing inter-environment communication.
-      - networkpolicies
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-  - apiGroups:
-      - storage.k8s.io
-    resources:
-      - storageclasses
-    verbs:
-      - get
-      - list
-      - watch
+  - apiGroups: ["", "apps", "networking.k8s.io"] # "" indicates the core API group
+    resources: ["persistentvolumeclaims", "pods", "deployments", "services", "secrets", "pods/exec","pods/log", "events", "networkpolicies"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["metrics.k8s.io", "storage.k8s.io"]
+    resources: ["pods", "storageclasses"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: {{ . | quote }}
   name: coder
+  namespace: {{ .Release.Namespace | quote }}
 subjects:
   - kind: ServiceAccount
     name: coder
-    namespace: {{ $.Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: coder
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
 {{- end }}

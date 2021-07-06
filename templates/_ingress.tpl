@@ -4,7 +4,7 @@
   values.yaml settings.
 */}}
 {{- define "coder.ingress.tls" }}
-{{- if .Values.ingress.tls.enable }}
+{{- if (merge .Values dict | dig "ingress" "tls" "enable" false) }}
   tls:
     {{- if and .Values.ingress.host .Values.ingress.tls.hostSecretName }}
     - hosts:
@@ -13,8 +13,31 @@
     {{- end }}
     {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
     - hosts:
-      - {{ .Values.devurls.host | quote }}
+      - {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
       secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
     {{- end }}
+{{- end }}
+{{- end }}
+
+{{/* */}}
+{{- define "coder.hasNginxIngress" }}
+{{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
+true
+{{- else if .Values.envproxy -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+{{- define "coder.useServiceNext" }}
+{{- if eq (merge .Values dict | dig "coderd" "serviceNext" false) true -}}
+true
+{{- else if eq (merge .Values dict | dig "ingress" "useDefault" true) false -}}
+false
+{{- else if eq (include "coder.hasNginxIngress" .) "false" -}}
+true
+{{- else -}}
+false
 {{- end }}
 {{- end }}

@@ -3,8 +3,9 @@
   if the 'storageClassName' value is non-empty.
 */}}
 {{- define "coder.storageClassName" }}
-{{- if ne .Values.storageClassName "" }}
-storageClassName: {{ .Values.storageClassName | quote }}
+{{ $storageClass := include "movedValue" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
+{{- if ne $storageClass "" }}
+storageClassName: {{ $storageClass | default "" | quote }}
 {{- end }}
 {{- end }}
 {{/*
@@ -12,9 +13,9 @@ storageClassName: {{ .Values.storageClassName | quote }}
   specify how to connect to a Postgres instance.
 */}}
 {{- define "coder.postgres.env" }}
-{{- if eq .Values.postgres.useDefault true }}
+{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" true)) "true" }}
 - name: DB_HOST
-  value: timescale.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}
+  value: timescale.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}
 - name: DB_PORT
   value: "5432"
 - name: DB_USER
@@ -45,18 +46,18 @@ storageClassName: {{ .Values.storageClassName | quote }}
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}
-{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumes:
 {{- end }}
-{{- if .Values.certs.secret.name }}
+{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     secret:
       secretName: {{ .Values.certs.secret.name | quote }}
 {{- end }}
-{{- if .Values.ingress.tls.enable }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
   - name: tls
     secret:
-      secretName: {{ .Values.ingress.tls.hostSecretName | quote }}
+      secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName") }}
 {{- end }}
 {{- end }}
 
@@ -64,17 +65,17 @@ volumes:
   coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumeMounts" }}
-{{- if or .Values.certs.secret.name .Values.ingress.tls.enable }}
+{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumeMounts:
 {{- end }}
-{{- if .Values.certs.secret.name }}
+{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
     subPath: {{ .Values.certs.secret.key | quote }}
 {{- end }}
-{{- if .Values.ingress.tls.enable }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
   - name: tls
-    mountPath: /etc/coder/certificates
+    mountPath: /etc/ssl/certs/host
     readOnly: true
 {{- end }}
 {{- end }}
@@ -92,17 +93,17 @@ tolerations:
   coder.accessURL is a URL for accessing the coderd.
 */}}
 {{- define "coder.accessURL" }}
-{{- if hasKey .Values "cemanager" }}
-{{- if ne .Values.cemanager.accessURL "" }}
+{{- if .Values.cemanager }}
+{{- if ne (merge .Values dict | dig "cemanager" "accessURL" "") "" }}
 {{- .Values.cemanager.accessURL -}}
 {{- else -}}
-    http://cemanager.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+    http://cemanager.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
 {{- end }}
 {{- else -}}
-{{- if ne .Values.coderd.accessURL "" }}
+{{- if ne (merge .Values dict | dig "coderd" "accessURL" "") "" }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
-    http://coderd.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix }}:8080
+    http://coderd.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
 {{- end }}
 {{- end }}
 {{- end }}
@@ -110,9 +111,9 @@ tolerations:
   coder.envproxy.accessURL is a URL for accessing the envproxy.
 */}}
 {{- define "coder.envproxy.accessURL" }}
-{{- if ne .Values.envproxy.accessURL "" }}
+{{- if ne (merge .Values dict | dig "envproxy" "accessURL" "") "" }}
 {{- .Values.envproxy.accessURL -}}
-{{- else if ne .Values.ingress.host "" }}
+{{- else if ne (merge .Values dict | dig "ingress" "host" "") "" }}
     {{- if .Values.ingress.tls.enable -}}
     https://
     {{- else -}}
@@ -126,10 +127,10 @@ tolerations:
   coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
 */}}
 {{- define "coder.cluster.accessURL" }}
-{{- if ne .Values.envproxy.clusterAddress "" }}
+{{- if ne (merge .Values dict | dig "envproxy" "clusterAddress" "") "" }}
 {{- .Values.envproxy.clusterAddress -}}
 {{- else -}}
-    https://kubernetes.default{{ .Values.clusterDomainSuffix }}:443
+    https://kubernetes.default{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:443
 {{- end }}
 {{- end }}
 

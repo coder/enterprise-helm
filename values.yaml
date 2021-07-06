@@ -1,397 +1,165 @@
-# storageClassName -- Sets the storage class for all Coder services and user
-# environments. By default, the storageClassName is unspecified, and thus the
-# default StorageClass is used. If storageClassName is not specified and a
-# default StorageClass does not exist, then the deployment will fail. The
-# storageClass MUST support the ReadWriteOnce access mode.
-storageClassName: ""
-
-# serviceType -- See the following for the different serviceType options and
-# their use:
-# https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-serviceType: "ClusterIP"
-
-# podSecurityPolicyName -- The name of the pod security policy to apply to all
-# Coder services and user environments. The optional ingress has its own field
-# for pod security policy as well.
-podSecurityPolicyName: ""
-
-# clusterDomainSuffix -- If you've set a custom default domain for your
-# cluster, you may need to remove or change this DNS suffix for service
-# resolution to work correctly.
-clusterDomainSuffix: ".svc.cluster.local"
-
-# contains configuration for the bundled ingress controller.
-ingress:
-  # ingress.enable -- If set to true, a Coder compatible ingress kind will be
-  # created. You can configure it with `ingress.annotations` below.
-  enable: true
-  # ingress.useDefault -- If set to true, will deploy an nginx ingress that will
-  # allow you to access Coder from an external IP address, but only if your
-  # kubernetes cluster is configured to provision external IP addresses. If you
-  # would like to bring your own ingress and hook Coder into that instead, set
-  # this value to false.
-  useDefault: true
-  # ingress.host -- The hostname to use for accessing the platform. This can
-  # be left blank, and the user can still access the platform from the external
-  # IP or a DNS name that resolves to the external IP address.
-  host: ""
-  # ingress.loadBalancerIP -- sets the external IP address of the ingress to the
-  # provided value.
-  loadBalancerIP: ""
-  # ingress.loadBalancerSourceRanges -- If specified and supported by the
-  # platform, the traffic through the cloud-provider load-balancer will be
-  # restricted to the specified client IPs. This field will be ignored if the
-  # cloud-provider does not support the feature.
-  loadBalancerSourceRanges: []
-  # ingress.podSecurityPolicyName -- The name of the pod security policy the
-  # built-in ingress controller should abide. It should be noted that the
-  # ingress controller requires the `NET_BIND_SERVICE` capability, privilege
-  # escalation, and access to privileged ports to successfully deploy. Ignored
-  # if `ingress.useDefault` is false.
-  podSecurityPolicyName: ""
-  # ingress.additionalAnnotations -- Deprecated. Please use `ingress.annotations`.
-  additionalAnnotations: []
-  # ingress.annotations -- Additional annotations to be used when creating the
-  # ingress. These only apply to the Ingress Kubernetes kind. The annotations
-  # can be used to specify certificate issuers or other cloud provider-specific
-  # integrations.
-  annotations: {}
-  # ingress.tls -- TLS options for the ingress. The hosts used for the tls
-  # configuration come from the ingress.host and the devurls.host variables. If
-  # those don't exist, then the TLS configuration will be ignored.
-  tls:
-    # ingress.tls.enable -- Enables the tls configuration.
-    enable: false
-    # ingress.tls.hostSecretName -- The secret to use for the ingress.host
-    # hostname.
-    hostSecretName: ""
-    # ingress.tls.devurlsHostSecretName -- The secret to use for the
-    # devurls.host hostname.
-    devurlsHostSecretName: ""
-  # ingress.service -- Options used to configure the LoadBalancer Service used
-  # in the default ingress controller.
-  service:
-    # ingress.service.annotations -- Additional annotations to add to the Service
-    # object. For example, to make the ingress spawn an internal load balancer:
-    # annotations:
-    #  cloud.google.com/load-balancer-type: "Internal"
-    annotations: {}
-    # ingress.service.externalTrafficPolicy -- Denotes whether to route external
-    # traffic to node-local or cluster-wide endpoints. "Local" routes external
-    # traffic directly to the correct node, while "Cluster" evenly distributes
-    # traffic across all nodes, but masks source IPs.
+# coderd -- Primary service responsible for all things Coder!
+coderd:
+  # coderd.image -- Injected by Coder during release.
+  image: ""
+  # coderd.replicas -- The number of Kubernetes Pod replicas.
+  replicas: 1
+  # coderd.serviceSpec -- Specification to inject for the coderd service. See:
+  # https://kubernetes.io/docs/concepts/services-networking/service/
+  serviceSpec:
+    # coderd.serviceSpec.type -- Set the type of Service. See:
+    # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    type: LoadBalancer
+    # coderd.serviceSpec.externalTrafficPolicy -- Set the traffic policy for the service. See:
+    # https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     externalTrafficPolicy: Local
-  # ingress.deployment -- Options used to configure the Deployment of the
-  # default ingress controller.
-  deployment:
-  # ingress.deployment.kind -- How to deploy the built-in ingress. Can be
-  # "Deployment" or "DaemonSet".
-    kind: Deployment
+    # coderd.serviceSpec.loadBalancerIP -- Set the external IP address of the
+    # Ingress service.
+    loadBalancerIP: ""
+    # coderd.serviceSpec.loadBalancerSourceRanges -- Traffic through the LoadBalancer
+    # will be restricted to the specified client IPs. This field will be ignored if
+    # the cloud provider does not support this feature.
+    loadBalancerSourceRanges: []
 
-devurls:
-  # devurls.host -- Should be a wildcard hostname to allow matching against
-  # custom-created dev URLs. Leaving as an empty string results in devurls
-  # being disabled. Example: "*.devurls.coder.com".
-  host: ""
+  # coderd.devurlsHost -- Wildcard hostname to allow matching against custom-created
+  # dev URLs. Leaving as an empty string results in DevURLs being disabled.
+  devurlsHost: ""
+
+  # coderd.tls -- TLS configuration for coderd.
+  # These options will override dashboard configuration.
+  tls:
+    # coderd.tls.hostSecretName -- The secret to use for TLS.
+    hostSecretName: ""
+    # coderd.tls.devurlsHostSecretName -- The secret to use for DevURL TLS.
+    devurlsHostSecretName: ""
+  # coderd.replica -- Deploy a replica to geodistribute access to
+  # workspaces for lower latency.
+  replica:
+    # coderd.replica.enable -- Run coderd as a replica pointing to a primary deployment.
+    # Replicas enable low-latency access to workspaces all over the world. Read more:
+    # TODO: Link to docs.
+    enable: false
+    # coderd.replica.primaryURL -- URL of the primary deployment.
+    # eg. https://coder.myorg.com
+    primaryURL: ""
+  # coderd.securityContext -- Fields related to the container's security
+  # context (as opposed to the pod).
+  securityContext:
+    # coderd.securityContext.readonlyRootFilesystem -- Sets the root filesystem
+    # of the container to read-only. It is recommended to leave this setting enabled
+    # in production.
+    readOnlyRootFilesystem: true
+  # coderd.resources -- Kubernetes resource specification for coderd pods.
+  # To unset a value, set it to "". To unset all values, set resources to nil.
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+  # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
+  # provider service account.
+  builtinProviderServiceAccount:
+    # coderd.builtinProviderServiceAccount.annotations -- A KV mapping of annotations. See:
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
+    # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
+    # used for the built-in provider.
+    labels: {}
+# envbox -- Required for running Docker inside containers. See requirements:
+# https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
+envbox:
+  # envbox.image -- Injected by Coder during release.
+  image: ""
 
 # Contains fields related to the Postgres backend. If providing your own
 # instance, a minimum version of Postgres 11 is required with the contrib
 # package installed.
 postgres:
-  # postgres.useDefault -- Deploys an internal Postgres instance alongside the.
-  # platform. We don't recommend running the internal Postgres instance in
-  # production.
-  # If true, all other values are ignored.
-  useDefault: true
-  # postgres.host -- The host of the external postgres instance.
+  # postgres.host -- Host of the external PostgreSQL instance.
   host: ""
-  # postgres.port -- The port of the external postgres instance.
+  # postgres.port -- Port of the external PostgreSQL instance.
   port: ""
-  # postgres.user -- the user of the external postgres instance.
+  # postgres.user -- User of the external PostgreSQL instance.
   user: ""
-  # postgres.database -- The name of the database that coder will use. It must
-  # exist before Coder is installed.
+  # postgres.database -- Name of the database that Coder will use.
+  # You must create this database first.
   database: ""
-  # postgres.passwordSecret -- The name of an existing secret in the current
-  # namespace with the password to the Postgres instance. The password must be
-  # contained in the secret field `password`. This should be set to an empty
-  # string if the database does not require a password to connect.
+  # postgres.passwordSecret -- Name of an existing secret in the
+  # current namespace with the password of the PostgreSQL instance.
+  # The password must be contained in the secret field `password`.
+  # This should be set to an empty string if the database does not
+  # require a password to connect.
   passwordSecret: ""
-  # postgres.sslMode -- Determines how the connection is made to the database.
-  # The acceptable values are: `disable`, `allow`, `prefer`, `require`,
-  # `verify-ca`, and `verify-full`.
+  # postgres.sslMode -- Provides variable levels of protection for
+  # the PostgreSQL connection. For acceptable values, see:
+  #  https://www.postgresql.org/docs/9.1/libpq-ssl.html
   sslMode: "require"
 
-# imagePullPolicy -- Sets the policy for pulling a container image across all
-# services.
-imagePullPolicy: Always
+  # postgres.default -- Configure a built-in PostgreSQL deployment.
+  default:
+    # postgres.default.enable -- Deploys a PostgreSQL instance. We recommend
+    # using an external PostgreSQL instance in production.
+    # If true, all other values are ignored.
+    enable: true
+    # postgres.default.image -- Injected by Coder during release.
+    image: ""
+    # postgres.default.storageClassName -- Set the storageClass to store
+    # the database.
+    storageClassName: ""
+    # postgres.default.resources -- Kubernetes resource specification for the PostgreSQL pod.
+    # To unset a value, set it to "". To unset all values, set resources to nil.
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "1Gi"
+        # postgres.default.resources.requests.storage -- Specifies the size of the volume claim
+        # for persisting the database.
+        storage: "10Gi"
+      limits:
+        cpu: "250m"
+        memory: "1Gi"
 
-# Contains configuration the REST API handling CRUD operations to
-# the platform.
-cemanager:
-  # cemanager.accessURL -- The cemanager access URL that the envproxy will use
-  # to communicate with the cemanager. This should be a full URL complete with
-  # protocol and no trailing slash. Uses internal cluster URL if not set.
-  # e.g., https://manager.coder.com
-  accessURL: ""
-  # cemanager.replicas -- The number of replicas to run of the manager.
-  replicas: 1
-  # cemanager.image -- Injected during releases.
-  image: ""
-  # cemanager.securityContext -- Contains fields related to the cemanager
-  # container's security context (as opposed to the pod).
-  securityContext:
-    # cemanager.securityContext.readonlyRootFilesystem -- Sets the root filesystem
-    # of the cemanager container to read-only. It is recommended to leave this setting enabled
-    # in production.
-    readOnlyRootFilesystem: true
-  # cemanager.resources -- Kubernetes resource request and limits for cemanager
-  # pods.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # cemanager:
-  #   # This will cause all values to be unset.
-  #   resources:
-  #   replica: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "250m"
-      memory: "512Mi"
-
-# `dashboard` is deprecated as of v1.20.
-# Contains the user interface of the platform.
-dashboard:
-  # dashboard.replicas -- The number of replicas to run of the dashboard.
-  replicas: 1
-  # dashboard.image -- Injected during releases.
-  image: ""
-  # dashboard.securityContext -- Contains fields related to the dashboard
-  # container's security context (as opposed to the pod).
-  securityContext:
-    # dashboard.securityContext.readonlyRootFilesystem -- Sets the root filesystem
-    # of the dashboard container to read-only. It is recommended to leave this setting enabled
-    # in production.
-    readOnlyRootFilesystem: true
-  # dashboard.resources -- Kubernetes resource request and limits for dashboard
-  # pods.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # dashboard:
-  #   # This will cause all values to be unset.
-  #   resources:
-  #   replica: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "250m"
-      memory: "512Mi"
-
-# `envproxy` is deprecated as of v1.20.
-# envproxy contains configuration for the service handling long-lived
-# connections to environments such as IDE or shell sessions.
-envproxy:
-  # envproxy.accessURL -- The URL reported to cemanager. Must be accessible by
-  # cemanager and all users who can use this workspace provider. This should be
-  # a full URL, complete with protocol and trailing "/proxy" (no trailing
-  # slash). This is derived from the ingress.host or the access URL set during
-  # cemanager setup if not set.
-  # e.g. "https://proxy.coder.com/proxy"
-  accessURL: ""
-  # envproxy.clusterAddress -- The address of the K8s cluster, must be reachable
-  # from the cemanager. Defaults to
-  # "https://kubernetes.default.$clusterDomainSuffix:443" if not set.
-  clusterAddress: ""
-  # envproxy.replicas -- The number of replicas to run of the envproxy.
-  replicas: 1
-  # envproxy.image -- Injected during releases.
-  image: ""
-  # envproxy.securityContext -- Contains fields related to the envproxy
-  # container's security context (as opposed to the pod).
-  securityContext:
-    # envproxy.securityContext.readonlyRootFilesystem -- Sets the root filesystem
-    # of the envproxy container to read-only. It is recommended to leave this setting enabled
-    # in production.
-    readOnlyRootFilesystem: true
-  # envproxy.resources -- Kubernetes resource request and limits for envproxy
-  # pods.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # envproxy:
-  #   # This will cause all values to be unset.
-  #   resources:
-  #   replica: 1
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "512Mi"
-    limits:
-      cpu: "250m"
-      memory: "512Mi"
-  # envproxy.terminationGracePeriodSeconds -- Amount of seconds to wait before
-  # shutting down the environment proxy if there are still open connections.
-  # This is set very long intentionally so developers do not deal with
-  # disconnects during deployments.
-  terminationGracePeriodSeconds: 14400
-
-# timescale -- Contains configuration for the internal database. We don't
-# recommend running this service in production. See the `postgres` section for
-# connecting to an external Postgres database.
-timescale:
-  # timescale.image -- Injected during releases.
-  image: ""
-  # timescale.resources -- Kubernetes resource request and limits for the
-  # timescale pod.
-  # To unset a value, set it to "".
-  # To unset all values, you can provide a values.yaml file which sets resources
-  # to nil. See values.yaml for an example.
-  #
-  # e.g:
-  # timescale:
-  #   # This will cause all values to be unset.
-  #   resources:
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "1Gi"
-      # timescale.resources.requests.storage -- Specifies the size of the
-      # volume claim for persisting the database.
-      storage: "10Gi"
-    limits:
-      cpu: "250m"
-      memory: "1Gi"
-
-envbox:
-  # envbox.image -- Injected during releases.
-  image: ""
-
-# environments defines configuration that is applied to all
-# user environments.
-environments:
-  # environments.tolerations -- Tolerations are applied to all user
-  # environments. Each element is a regular pod toleration object. To set
-  # service tolerations see serviceTolerations. See values.yaml for an example.
-  #
-  # e.g.
-  # tolerations:
-  # - key: "my key"
-  #   operator: "Exists"
-  #   effect: "NoExecute"
-  #   tolerationSeconds: 6000
-  tolerations: []
-
-  # environments.nodeSelector -- nodeSelector is applied to all user
-  # environments to specify eligible nodes for environments to run on.
-  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
-  # 
-  # eg.
-  # nodeSelector:
-  #   disktype: ssd
-  nodeSelector: {}
-
-# certs -- Describes CAs that should be added to Coder services. These certs
-# are NOT added to environments.
-certs:
-  secret:
-    # certs.secret.name -- The name of the secret.
-    name: ""
-    # certs.secret.key -- The key in the secret pointing to the certificate
-    # bundle.
-    key: ""
-
-# namespaceWhitelist -- DEPRECATED: A list of additional namespaces to which
-# environments may be deployed. Use multiple workspace providers instead.
-# Existing environments within these namespaces will continue to function, but
-# new environments cannot be created within these namespaces.
-#
-# If you used this value before 1.17, you must keep it set to the same value
-# until all environments within these namespaces are deleted, then you can set
-# it back to [].
-namespaceWhitelist: []
-
-ssh:
-  # ssh.enable -- Enables accessing environments via SSH.
-  enable: true
-
-# serviceTolerations -- Tolerations are applied to all Coder managed services.
-# Each element is a toleration object. To set user environment tolerations see
-# environments.tolerations. See values.yaml for an example.
-#
-# e.g.
-# serviceTolerations:
-# - key: "my key"
-#   operator: "Exists"
-#   effect: "NoExecute"
-#   tolerationSeconds: 6000
-serviceTolerations: []
-
-# Services contains global configuration that applies to all Coder managed
-# services.
+# services -- Kubernetes Service configuration that applies to Coder services. 
 services:
-  # services.nodeSelector -- Node selectors that will be applied to all Coder
-  # managed services.
-  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  # services.annotations -- A KV mapping of annotations. See:
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+  # services.clusterDomainSuffix -- Custom domain suffix for DNS resolution in your cluster. See:
+  # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
+  clusterDomainSuffix: ".svc.cluster.local"
+  # services.tolerations -- Each element is a toleration object. See:
+  # https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+  tolerations: []
+  # services.nodeSelector -- See:
+  # https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
   nodeSelector:
     kubernetes.io/os: linux
     kubernetes.io/arch: amd64
+  # services.type -- See the following for configurable types:
+  # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: "ClusterIP"
 
-# logging configures the logging format of Coder services. Specify one
-# or more targets for logging output. If you have multiple output
-# targets configured, coder will write output to multiple targets.
+# logging -- Configures the logging format and output of Coder.
 logging:
-  # logging.human -- Where to send logs that are formatted for readability by a
-  # human. Set to an empty string to disable.
+  # logging.human -- Location to send logs that are formatted for readability.
+  # Set to an empty string to disable.
   human: /dev/stderr
-  # logging.stackdriver -- Where to send logs that are formatted for Google
+  # logging.stackdriver -- Location to send logs that are formatted for Google
   # Stackdriver. Set to an empty string to disable.
   stackdriver: ""
-  # logging.json -- Where to send logs that are formatted as JSON. Set to an
-  # empty string to disable.
+  # logging.json -- Location to send logs that are formatted as JSON.
+  # Set to an empty string to disable.
   json: ""
 
-  # logging.splunk -- Coder can send logs directly to Splunk, in
-  # addition to file-based output, if these values are configured. The
-  # channel is optional, and this logging is disabled if either the
-  # URL and Token are set to the empty string.
+  # logging.splunk -- Coder can send logs directly to Splunk
+  # in addition to file-based output.
   splunk:
-    # logging.splunk.url -- The Splunk HEC collector endpoint.
+    # logging.splunk.url -- Splunk HEC collector endpoint.
     url: ""
-    # logging.splunk.token -- The Splunk HEC collector token.
+    # logging.splunk.token -- Splunk HEC collector token.
     token: ""
-    # logging.splunk_channel -- Optional. Specify the channel that you'd
-    # like to associate with all messages.
+    # logging.splunk_channel -- Optional. Specify the channel
+    # to associate messages with.
     channel: ""
-
-# serviceAccount configures the service account used for all Coder deployed
-# services.
-serviceAccount:
-  # serviceAccount.annotations -- Adds annotations to the service account used
-  # for all Coder deployed services.
-  annotations: {}
-  # serviceAccount.labels -- Adds labels to the service account used for all
-  # Coder deployed services.
-  labels: {}
-
-deploymentAnnotations: {}
-
-# coderd is the coder enterprise application server
-coderd:
-  # coderd.replica -- Configuration for deployment a coder replica to geodistrubute access to workspaces
-  replica:
-    # coderd.replica.enable -- Runs a coderd replica instead of the primary application if true
-    enable: false
-    # coderd.replica.primaryURL -- (required for coderd replica) The url of the primary coder deployment
-    primaryURL: ""
