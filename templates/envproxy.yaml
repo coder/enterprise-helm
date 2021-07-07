@@ -1,5 +1,4 @@
-{{- /* Envproxy is being removed in v1.22 */}}
-{{- if hasKey .Values "envproxy" }}
+{{- if eq (include "coder.useServiceNext" .) "false" }}
 {{- /* Don't deploy envproxy on replica */}}
 {{- if not .Values.coderd.replica.enable }}
 ---
@@ -30,7 +29,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  replicas: {{ .Values.envproxy.replicas }}
+  replicas: {{ merge .Values dict | dig "envproxy" "replicas" 1 }}
   strategy:
     rollingUpdate:
       maxSurge: "25%"
@@ -51,7 +50,7 @@ spec:
         runAsNonRoot: true
       restartPolicy: Always
       # 4 hours
-      terminationGracePeriodSeconds: {{ .Values.envproxy.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ merge .Values dict | dig "envproxy" "terminationGracePeriodSeconds" 30 }}
       # envproxy itself doesn't use this service account, but instead forwards
       # the account token to the cemanager.
       serviceAccountName: coder
@@ -59,7 +58,7 @@ spec:
 {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: envproxy
-          image: {{ .Values.envproxy.image | quote }}
+          image: {{ merge .Values dict | dig "envproxy" "image" "" | quote }}
           imagePullPolicy: Always
           ports:
             - name: tcp-envproxy
@@ -131,7 +130,7 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- include "coder.resources" .Values.envproxy.resources | indent 10 }}
+{{- include "coder.resources" (merge .Values dict | dig "envproxy" "resources" dict) | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
 
