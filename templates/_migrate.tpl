@@ -71,7 +71,7 @@
     {{- if $found }}
       {{- toYaml $values }}
     {{- else }}
-      {{- if .Default }}
+      {{- if and (not .Nested) .Default }}
         {{- toYaml .Default }}
       {{- end }}
     {{- end }}
