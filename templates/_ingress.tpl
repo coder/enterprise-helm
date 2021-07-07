@@ -11,10 +11,12 @@
       - {{ .Values.ingress.host | quote }}
       secretName: {{ .Values.ingress.tls.hostSecretName }}
     {{- end }}
+    {{- if .Values.devurls }}
     {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
     - hosts:
       - {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
       secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
+    {{- end }}
     {{- end }}
 {{- end }}
 {{- end }}
@@ -23,7 +25,7 @@
 {{- define "coder.hasNginxIngress" }}
 {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
 true
-{{- else if .Values.envproxy -}}
+{{- else if (lookup "v1" "Service" .Release.Namespace "envproxy") -}}
 true
 {{- else -}}
 false

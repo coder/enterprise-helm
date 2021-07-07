@@ -125,7 +125,7 @@ spec:
             - name: VERBOSE
               value: "true"
             {{- if not .Values.coderd.replica.enable }}
-            {{- if .Values.envproxy }}
+            {{- if eq (include "coder.useServiceNext" .) "false" }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:

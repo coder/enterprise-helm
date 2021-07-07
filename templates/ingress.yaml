@@ -353,7 +353,7 @@ metadata:
     # push an image.
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   {{- end }}
-  {{- range $key, $value := fromYaml (merge .Values dict | dig "ingress" "annotations" "{}") }}
+  {{- range $key, $value := merge .Values dict | dig "ingress" "annotations" dict }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
@@ -383,7 +383,6 @@ spec:
     http:
       paths:
     {{- if (merge .Values dict | dig "ingress" "useDefault" true) }}
-      {{- if hasKey .Values "envproxy" }}
       - path: /proxy/
         pathType: Prefix
         backend:
@@ -391,7 +390,6 @@ spec:
             name: envproxy
             port:
               number: 8080
-      {{- end }}
       - path: /api
         pathType: Prefix
         backend:
@@ -427,17 +425,10 @@ spec:
       - path: /
         pathType: Prefix
         backend:
-          {{- if hasKey .Values "envproxy" }}
           service:
             name: envproxy
             port:
               number: 8080
-          {{- else }}
-          service:
-            name: {{ include "coder.serviceName" . }}
-            port:
-              number: 8080
-          {{- end }}
     {{- end }}
     {{- end }}
   {{- end }}

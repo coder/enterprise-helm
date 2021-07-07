@@ -33,7 +33,7 @@ Deprecated: The Helm values below should be updated to avoid breaking in a futur
 {{ end }}
 
 {{- if eq (include "coder.useServiceNext" .) "true" }}
-{{- if .Values.dashboard }}
+{{- if gt (len (keys (.Values.dashboard | dict))) 1 }}
 Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
   ✗ All "dashboard.*" values can be safely removed.
 {{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }}    
@@ -41,7 +41,7 @@ Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
 {{- end }}
 {{ end }}
 
-{{- if .Values.envproxy }}
+{{- if gt (len (keys (.Values.envproxy | dict))) 1 }}
 Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
   ✗ All "envproxy.*" values can be safely removed.
   ✗ Workspaces will need to be rebuilt after this change.
