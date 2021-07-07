@@ -125,7 +125,7 @@ spec:
             - name: VERBOSE
               value: "true"
             {{- if not .Values.coderd.replica.enable }}
-            {{- if .Values.envproxy }}
+            {{- if (lookup "v1" "Service" .Release.Namespace "envproxy") }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
                 secretKeyRef:

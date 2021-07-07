@@ -353,7 +353,7 @@ metadata:
     # push an image.
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   {{- end }}
-  {{- range $key, $value := fromYaml (merge .Values dict | dig "ingress" "annotations" "{}") }}
+  {{- range $key, $value := merge .Values dict | dig "ingress" "annotations" dict }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
