@@ -22,14 +22,16 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
-| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"image":"","replica":{"enable":false,"primaryURL":""},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","replica":{"accessURL":"","enable":false,"primaryURL":""},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
 | coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
 | coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
+| coderd.devurlsHost | string | Wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in DevURLs being disabled. | `""` |
 | coderd.image | string | Injected by Coder during release. | `""` |
-| coderd.replica | object | Deploy a replica to geodistribute access to workspaces for lower latency. | `{"enable":false,"primaryURL":""}` |
+| coderd.replica | object | Deploy a replica to geodistribute access to workspaces for lower latency. | `{"accessURL":"","enable":false,"primaryURL":""}` |
+| coderd.replica.accessURL | string | URL of the replica that clients will connect to. e.g. https://sydney.coder.myorg.com | `""` |
 | coderd.replica.enable | bool | Run coderd as a replica pointing to a primary deployment. Replicas enable low-latency access to workspaces all over the world. Read more: TODO: Link to docs. | `false` |
-| coderd.replica.primaryURL | string | URL of the primary deployment. eg. https://coder.myorg.com | `""` |
+| coderd.replica.primaryURL | string | URL of the primary Coder deployment. Must be accessible from the replica and clients. eg. https://coder.myorg.com | `""` |
 | coderd.replicas | int | The number of Kubernetes Pod replicas. | `1` |
 | coderd.resources | object | Kubernetes resource specification for coderd pods. To unset a value, set it to "". To unset all values, set resources to nil. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | coderd.securityContext | object | Fields related to the container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
