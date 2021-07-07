@@ -84,9 +84,9 @@ volumeMounts:
   coder-managed services.
 */}}
 {{- define "coder.serviceTolerations" }}
-{{- if .Values.serviceTolerations }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "services.tolerations")) "" }}
 tolerations:
-{{ toYaml .Values.serviceTolerations }}
+{{ include "movedValue" (dict "Values" .Values "Key" "services.tolerations") }}
 {{- end }}
 {{- end }}
 {{/*
