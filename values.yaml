@@ -39,7 +39,12 @@ coderd:
     # Replicas enable low-latency access to workspaces all over the world. Read more:
     # TODO: Link to docs.
     enable: false
-    # coderd.replica.primaryURL -- URL of the primary deployment.
+    # coderd.replica.accessURL -- URL of the replica that clients will connect
+    # to.
+    # e.g. https://sydney.coder.myorg.com
+    accessURL: ""
+    # coderd.replica.primaryURL -- URL of the primary Coder deployment. Must be
+    # accessible from the replica and clients.
     # eg. https://coder.myorg.com
     primaryURL: ""
   # coderd.securityContext -- Fields related to the container's security

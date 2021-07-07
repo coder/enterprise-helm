@@ -1,75 +1,9 @@
 {{- if .Values.dashboard }}
-{{- if not .Values.coderd.replica.enable }}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    coder.deployment: dashboard
-  name: dashboard
-  namespace: {{ .Release.Namespace | quote }}
-  annotations:
-  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
-spec:
-  replicas: {{ .Values.dashboard.replicas }}
-  strategy:
-    rollingUpdate:
-      maxSurge: "25%"
-      maxUnavailable: "25%"
-  selector:
-    matchLabels:
-      coder.deployment: dashboard
-  template:
-    metadata:
-      labels:
-        coder.deployment: dashboard
-      annotations:
-      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
-    spec:
-      restartPolicy: Always
-      serviceAccountName: dashboard
-      securityContext:
-        runAsNonRoot: true
-{{- include "coder.services.nodeSelector" . | indent 6 }}
-{{- include "coder.serviceTolerations" . | indent 6 }}
-      containers:
-        - name: dashboard
-          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
-          imagePullPolicy: Always
-          ports:
-            - name: tcp-dashboard
-              containerPort: 3000
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ merge .Values dict | dig "dashboard" "securityContext" "readOnlyRootFilesystem" true }}
-          tty: false
-          env:
-            - name: CODERD_HOST
-              value: "http://{{ include "coder.serviceName" . }}.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080"
-          command:
-            - /bin/bash
-            - -c
-            - |
-              exec coderd replica --bind 0.0.0.0:3000 --main-url $CODERD_HOST 
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 3000
-            initialDelaySeconds: 10
-            failureThreshold: 7
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 3000
-            initialDelaySeconds: 10
-            failureThreshold: 7
-            periodSeconds: 10
-{{- include "coder.resources" .Values.dashboard.resources | indent 10 }}
+{{/*
+  The dashboard service only exists for compatibility with custom ingresses.
+  Dashboard is no longer needed, so we point it's traffic directly at the coderd
+  pods now.
+*/}}
 ---
 apiVersion: v1
 kind: Service
@@ -79,16 +13,10 @@ metadata:
 spec:
   type: {{ .Values.serviceType | quote }}
   selector:
-    coder.deployment: dashboard
+    coder.deployment: {{ include "coder.serviceName" . }}
   ports:
     - name: tcp-dashboard
       port: 3000
+      targetPort: 8080
       protocol: TCP
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: {{ .Release.Namespace | quote }}
-  name: dashboard
-{{- end }}
 {{- end }}
