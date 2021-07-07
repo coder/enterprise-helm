@@ -139,6 +139,8 @@ spec:
                 secretKeyRef:
                   name: coder-replica-private-key
                   key: privateKey
+            - name: CODER_REPLICA_ACCESS_URL
+              value: {{ .Values.coderd.replica.accessURL | quote }}
             {{- end }}
             {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
             - name: SSL_SERVER_CERT_FILE
