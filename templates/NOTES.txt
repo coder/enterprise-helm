@@ -6,9 +6,8 @@
   {{- $found := true }}
   {{- range $_, $keypart := splitList "." $key }}
     {{- if $found }}
-      {{- if index $values $keypart  }}
-        {{- $values = index $values $keypart }}
-      {{- else }}
+      {{- $values = index $values $keypart }}
+      {{- if kindIs "invalid" $values  }}
         {{- $found = false }}
       {{- end }}
     {{- end }}
