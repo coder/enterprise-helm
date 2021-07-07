@@ -45,6 +45,8 @@
   {{- $oldvalue := "" }}
   {{- if $oldkey }}
     {{- $oldvalue = include "movedValue" (dict "Values" .Values "Key" $oldkey "Default" .Default "Nested" true) }}
+  {{- else if not .Nested }}
+    {{ fail "Developer Error: 'movedValue' is used for deprecated values only. Reference the value directly instead!" }}
   {{- end }}
 
   {{- if ne $oldvalue "" }}
@@ -57,8 +59,11 @@
       {{- /* If not found once, we know the chain is broken */}}
       {{- if $found }}
         {{- $values = index $values $keypart }}
-        {{- if kindIs "invalid" $values }}
+        {{- if not $values }}
           {{- $found = false }}
+        {{- end }}
+        {{- if kindIs "bool" $values }}
+          {{- $found = true }}
         {{- end }}
       {{- end }}
     {{- end }}
@@ -66,9 +71,6 @@
     {{- if $found }}
       {{- toYaml $values }}
     {{- else }}
-      {{- if not .Nested }}
-        {{ fail "Developer Error: 'movedValue' is used for deprecated values only. Reference the value directly instead!" }}
-      {{- end }}
       {{- if .Default }}
         {{- toYaml .Default }}
       {{- end }}
