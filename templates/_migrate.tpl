@@ -42,9 +42,13 @@
 
   {{- $moved := fromJson (include "moved" .) }}
   {{- $oldkey := index $moved $key }}
+  {{- $oldvalue := "" }}
   {{- if $oldkey }}
-    {{- /* We can use this function to check for the key again! */}}
-    {{- include "movedValue" (dict "Values" .Values "Key" $oldkey "Default" .Default "Nested" true) }}
+    {{- $oldvalue = include "movedValue" (dict "Values" .Values "Key" $oldkey "Default" .Default "Nested" true) }}
+  {{- end }}
+
+  {{- if ne $oldvalue "" }}
+    {{- $oldvalue }}
   {{- else }}
     {{- /* Iterate through the provided key split by "." */}}
     {{- /* eg. "some.kinda.key" is ["some", "kinda", "key"] */}}
