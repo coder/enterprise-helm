@@ -354,7 +354,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
   {{- end }}
   {{- range $key, $value := fromYaml (merge .Values dict | dig "ingress" "annotations" "{}") }}
-    {{ $key }}: {{ $value | quote }}
+    {{ $key | quote }}: {{ $value | quote }}
   {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
