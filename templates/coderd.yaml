@@ -139,6 +139,8 @@ spec:
                 secretKeyRef:
                   name: coder-replica-private-key
                   key: privateKey
+            - name: CODER_PRIMARY_ACCESS_URL
+              value: {{ .Values.coderd.replica.primaryURL | quote }}
             - name: CODER_REPLICA_ACCESS_URL
               value: {{ .Values.coderd.replica.accessURL | quote }}
             {{- end }}
@@ -164,7 +166,7 @@ spec:
               {{- else }}
               echo Starting replica;
               # Pass signals down to the envmanager.
-              exec /entrypoint.sh coderd replica --main-url {{ .Values.coderd.replica.primaryURL | quote }}
+              exec /entrypoint.sh coderd replica
               {{- end }}
           readinessProbe:
             httpGet:
