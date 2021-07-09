@@ -114,6 +114,8 @@ spec:
               # such as dockerd and kubernetes.
             - name: ENVBOX_IMAGE
               value: {{ .Values.envbox.image | quote }}
+            - name: CLUSTER_ADDRESS
+              value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
