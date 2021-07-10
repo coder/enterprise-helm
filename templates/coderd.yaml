@@ -30,6 +30,8 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -76,6 +78,8 @@ spec:
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
           securityContext:
+            seccompProfile:
+              type: RuntimeDefault
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
       {{- end }}
@@ -91,6 +95,8 @@ spec:
             - name: tcp-t-{{ include "coder.serviceName" . }}
               containerPort: 5349
           securityContext:
+            seccompProfile:
+              type: RuntimeDefault
             allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
             readOnlyRootFilesystem: {{ merge .Values dict | dig "cemanager" "securityContext" "readOnlyRootFilesystem" true }}
