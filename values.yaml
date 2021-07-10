@@ -47,13 +47,30 @@ coderd:
     # accessible from the replica and clients.
     # eg. https://coder.myorg.com
     primaryURL: ""
+  # coderd.podSecurityContext -- Fields related to the pod's security context
+  # (as opposed to the container). Some fields are also present in the
+  # container security context, which will take precedence over these values.
+  podSecurityContext:
+    # coderd.podSecurityContext.runAsUser -- Sets the user id of the pod.
+    # This must not be set to root (uid 0).
+    runAsUser: 1000
+    # coderd.podSecurityContext.seccompProfile -- Sets the seccomp profile
+    # for the pod. If set, the container security context setting will take
+    # precedence over this value.
+    seccompProfile:
+      type: RuntimeDefault
   # coderd.securityContext -- Fields related to the container's security
-  # context (as opposed to the pod).
+  # context (as opposed to the pod). Some fields are also present in the pod
+  # security context, in which case these values will take precedence.
   securityContext:
-    # coderd.securityContext.readonlyRootFilesystem -- Sets the root filesystem
-    # of the container to read-only. It is recommended to leave this setting enabled
-    # in production.
+    # coderd.securityContext.readOnlyRootFilesystem -- Mounts the container's
+    # root filesystem as read-only. It is recommended to leave this setting
+    # enabled in production. This will override the same setting in the pod
     readOnlyRootFilesystem: true
+    # coderd.securityContext.seccompProfile -- Sets the seccomp profile for
+    # the migration and runtime containers.
+    seccompProfile:
+      type: RuntimeDefault
   # coderd.resources -- Kubernetes resource specification for coderd pods.
   # To unset a value, set it to "". To unset all values, set resources to nil.
   resources:

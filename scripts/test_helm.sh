@@ -15,15 +15,16 @@ PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 
 EXAMPLES=(
   kind
+  openshift
 )
 
 BUILD="$PROJECT_ROOT/build"
 mkdir -p "$BUILD"
 
 for example in "${EXAMPLES[@]}"; do
-  run_trace false helm template "$PROJECT_ROOT" \
+  run_trace false helm template "$example" "$PROJECT_ROOT" \
+    --create-namespace \
     --release-name \
-    --name-template="$example" \
     --values="$PROJECT_ROOT/examples/images.yaml" \
     --values="$PROJECT_ROOT/examples/$example/$example.values.yaml" \
     --output-dir="$BUILD" \| indent

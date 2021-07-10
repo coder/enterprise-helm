@@ -30,8 +30,11 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
+        {{- if hasKey .Values "cemanager" }}
+        {{- toYaml .Values.cemanager.podSecurityContext | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.coderd.podSecurityContext | nindent 8 }}
+        {{- end }}
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -78,8 +81,11 @@ spec:
               echo Starting entrypoint.sh;
               exec /entrypoint.sh coderd migrate up
           securityContext:
-            seccompProfile:
-              type: RuntimeDefault
+            {{- if hasKey .Values "cemanager" }}
+            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
+            {{- end }}
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
       {{- end }}
@@ -95,14 +101,12 @@ spec:
             - name: tcp-t-{{ include "coder.serviceName" . }}
               containerPort: 5349
           securityContext:
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
-            readOnlyRootFilesystem: {{ merge .Values dict | dig "cemanager" "securityContext" "readOnlyRootFilesystem" true }}
+            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
             {{- else }}
-            readOnlyRootFilesystem: {{ merge .Values dict | dig "coderd" "securityContext" "readOnlyRootFilesystem" true }}
+            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
             {{- end }}
+            allowPrivilegeEscalation: false
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
           env:

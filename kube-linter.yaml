@@ -1,4 +1,5 @@
 checks:
+  doNotAutoAddDefaults: true
   include:
     - cluster-admin-role-binding
     - dangling-service
