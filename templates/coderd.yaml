@@ -29,7 +29,11 @@ spec:
       {{- end }}
     spec:
       securityContext:
-        runAsNonRoot: true
+        {{- if hasKey .Values "cemanager" }}
+        {{- toYaml .Values.cemanager.podSecurityContext | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.coderd.podSecurityContext | nindent 8 }}
+        {{- end }}
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -73,8 +77,11 @@ spec:
             - migrate
             - up
           securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            {{- if hasKey .Values "cemanager" }}
+            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
+            {{- end }}
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
@@ -88,11 +95,10 @@ spec:
             - name: tcp-t-{{ include "coder.serviceName" . }}
               containerPort: 5349
           securityContext:
-            allowPrivilegeEscalation: false
             {{- if hasKey .Values "cemanager" }}
-            readOnlyRootFilesystem: {{ merge .Values dict | dig "cemanager" "securityContext" "readOnlyRootFilesystem" true }}
+            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
             {{- else }}
-            readOnlyRootFilesystem: {{ merge .Values dict | dig "coderd" "securityContext" "readOnlyRootFilesystem" true }}
+            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
             {{- end }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false

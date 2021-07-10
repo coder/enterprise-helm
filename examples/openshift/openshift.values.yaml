@@ -2,22 +2,14 @@ coderd:
   serviceSpec:
     type: ClusterIP
   replicas: 1
-  resources:
-    requests:
-      cpu: "0m"
-      memory: "32Mi"
   turn:
     enable: true
   podSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
+    runAsUser: null
+    seccompProfile: null
   securityContext:
-    seccompProfile:
-      type: RuntimeDefault
     readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
+    seccompProfile: null
 
 postgres:
   default:

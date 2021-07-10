@@ -22,19 +22,26 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
-| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"readOnlyRootFilesystem":true},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
 | coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
 | coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
 | coderd.devurlsHost | string | Wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in DevURLs being disabled. | `""` |
 | coderd.image | string | Injected by Coder during release. | `""` |
+| coderd.podSecurityContext | object | Fields related to the pod's security context (as opposed to the container). Some fields are also present in the container security context, which will take precedence over these values. | `{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| coderd.podSecurityContext.runAsNonRoot | bool | Requires that containers in the pod run as a non-privileged user. | `true` |
+| coderd.podSecurityContext.runAsUser | int | Sets the user id of the pod. This must not be set to root (uid 0). | `1000` |
+| coderd.podSecurityContext.seccompProfile | object | Sets the seccomp profile for the pod. If set, the container security context setting will take precedence over this value. | `{"type":"RuntimeDefault"}` |
 | coderd.replicas | int | The number of Kubernetes Pod replicas. | `1` |
 | coderd.resources | object | Kubernetes resource specification for coderd pods. To unset a value, set it to "". To unset all values, set resources to nil. | `{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
 | coderd.satellite | object | Deploy a satellite to geodistribute access to workspaces for lower latency. | `{"accessURL":"","enable":false,"primaryURL":""}` |
 | coderd.satellite.accessURL | string | URL of the satellite that clients will connect to. e.g. https://sydney.coder.myorg.com | `""` |
 | coderd.satellite.enable | bool | Run coderd as a satellite pointing to a primary deployment. Satellite enable low-latency access to workspaces all over the world. Read more: TODO: Link to docs. | `false` |
 | coderd.satellite.primaryURL | string | URL of the primary Coder deployment. Must be accessible from the satellite and clients. eg. https://coder.myorg.com | `""` |
-| coderd.securityContext | object | Fields related to the container's security context (as opposed to the pod). | `{"readOnlyRootFilesystem":true}` |
+| coderd.securityContext | object | Fields related to the container's security context (as opposed to the pod). Some fields are also present in the pod security context, in which case these values will take precedence. | `{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| coderd.securityContext.allowPrivilegeEscalation | bool | Controls whether the container can gain additional privileges, such as escalating to root. It is recommended to leave this setting disabled in production. | `false` |
+| coderd.securityContext.readOnlyRootFilesystem | bool | Mounts the container's root filesystem as read-only. It is recommended to leave this setting enabled in production. This will override the same setting in the pod | `true` |
+| coderd.securityContext.seccompProfile | object | Sets the seccomp profile for the migration and runtime containers. | `{"type":"RuntimeDefault"}` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
 | coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
 | coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
