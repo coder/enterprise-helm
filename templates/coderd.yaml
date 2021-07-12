@@ -34,12 +34,12 @@ spec:
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
       terminationGracePeriodSeconds: 300
-      {{- if not .Values.coderd.replica.enable }}
+      {{- if not .Values.coderd.satellite.enable }}
       serviceAccountName: coder
       {{- end }}
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
-      {{- if not .Values.coderd.replica.enable }}
+      {{- if not .Values.coderd.satellite.enable }}
       initContainers:
         - name: migrations
           image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
@@ -123,7 +123,7 @@ spec:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
-            {{- if not .Values.coderd.replica.enable }}
+            {{- if not .Values.coderd.satellite.enable }}
             {{- if eq (include "coder.useServiceNext" .) "false" }}
             - name: BUILT_IN_ENVPROXY_TOKEN
               valueFrom:
@@ -132,16 +132,16 @@ spec:
                   key: token
             {{- end }}
             {{- end }}
-            {{- if .Values.coderd.replica.enable }}
-            - name: CODER_REPLICA_PRIVATE_KEY
+            {{- if .Values.coderd.satellite.enable }}
+            - name: CODER_SATELLITE_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
                   name: coder-replica-private-key
                   key: privateKey
             - name: CODER_PRIMARY_ACCESS_URL
-              value: {{ .Values.coderd.replica.primaryURL | quote }}
-            - name: CODER_REPLICA_ACCESS_URL
-              value: {{ .Values.coderd.replica.accessURL | quote }}
+              value: {{ .Values.coderd.satellite.primaryURL | quote }}
+            - name: CODER_SATELLITE_ACCESS_URL
+              value: {{ .Values.coderd.satellite.accessURL | quote }}
             {{- end }}
             {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
             - name: SSL_SERVER_CERT_FILE
@@ -155,7 +155,7 @@ spec:
             - /entrypoint.sh
           args:
             - coderd
-            {{- if not .Values.coderd.replica.enable }}
+            {{- if not .Values.coderd.satellite.enable }}
             - run
             {{- else }}
             - replica
@@ -177,7 +177,7 @@ spec:
 {{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.resources"))) | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
-{{- if .Values.coderd.replica.enable }}
+{{- if .Values.coderd.satellite.enable }}
 ---
 apiVersion: v1
 kind: Secret

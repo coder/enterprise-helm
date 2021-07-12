@@ -1,4 +1,4 @@
-{{- if not .Values.coderd.replica.enable }}
+{{- if not .Values.coderd.satellite.enable }}
 ---
 # The service account that the envproxy passes to cemanager on startup.
 apiVersion: v1

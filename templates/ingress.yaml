@@ -363,7 +363,7 @@ spec:
       name: {{ include "coder.serviceName" . }}
       port:
         number: 8080
-  {{- if .Values.coderd.replica.enable }}
+  {{- if .Values.coderd.satellite.enable }}
   {{- if (merge .Values dict | dig "ingress" "useDefault" true) }}
   rules:
   - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}

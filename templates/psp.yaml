@@ -1,4 +1,4 @@
-{{- if not .Values.coderd.replica.enable }}
+{{- if not .Values.coderd.satellite.enable }}
 {{- if ne (.Values.podSecurityPolicyName | default "") "" }}
 ---
 # The coder-restricted role adds the pod security policy if one is specified.
