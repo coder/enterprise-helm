@@ -67,14 +67,11 @@ spec:
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
-            # Bash is needed to pass signals correctly.
-            - /bin/bash
-            - -c
-            - |
-              echo Waiting on db;
-              /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
-              echo Starting entrypoint.sh;
-              exec /entrypoint.sh coderd migrate up
+            - /entrypoint.sh
+          args:
+            - coderd
+            - migrate
+            - up
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -155,21 +152,14 @@ spec:
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
-            # Bash is needed to pass signals correctly.
-            - /bin/bash
-            - -c
-            - |
-              {{- if not .Values.coderd.replica.enable }}
-              echo Waiting on db;
-              PGSSLMODE="${DB_SSL_MODE:-prefer}" /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
-              echo Starting entrypoint.sh;
-              # Pass signals down to the envmanager.
-              exec /entrypoint.sh coderd run
-              {{- else }}
-              echo Starting replica;
-              # Pass signals down to the envmanager.
-              exec /entrypoint.sh coderd replica
-              {{- end }}
+            - /entrypoint.sh
+          args:
+            - coderd
+            {{- if not .Values.coderd.replica.enable }}
+            - run
+            {{- else }}
+            - replica
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /cem-healthz
