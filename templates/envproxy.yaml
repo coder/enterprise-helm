@@ -1,6 +1,6 @@
 {{- if eq (include "coder.useServiceNext" .) "false" }}
 {{- /* Don't deploy envproxy on replica */}}
-{{- if not .Values.coderd.replica.enable }}
+{{- if not .Values.coderd.satellite.enable }}
 ---
 apiVersion: v1
 kind: Secret

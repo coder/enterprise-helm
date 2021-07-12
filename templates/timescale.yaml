@@ -1,5 +1,5 @@
 {{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" "false")) "true"}}
-{{- if not .Values.coderd.replica.enable }}
+{{- if not .Values.coderd.satellite.enable }}
 ---
 apiVersion: v1
 kind: Service

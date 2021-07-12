@@ -32,21 +32,24 @@ coderd:
     hostSecretName: ""
     # coderd.tls.devurlsHostSecretName -- The secret to use for DevURL TLS.
     devurlsHostSecretName: ""
-  # coderd.replica -- Deploy a replica to geodistribute access to
+
+  # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
-  replica:
-    # coderd.replica.enable -- Run coderd as a replica pointing to a primary deployment.
-    # Replicas enable low-latency access to workspaces all over the world. Read more:
+  satellite:
+    # coderd.satellite.enable -- Run coderd as a satellite pointing to a primary
+    # deployment. Satellite enable low-latency access to workspaces all over the
+    # world. Read more:
     # TODO: Link to docs.
     enable: false
-    # coderd.replica.accessURL -- URL of the replica that clients will connect
-    # to.
+    # coderd.satellite.accessURL -- URL of the satellite that clients will
+    # connect to.
     # e.g. https://sydney.coder.myorg.com
     accessURL: ""
-    # coderd.replica.primaryURL -- URL of the primary Coder deployment. Must be
-    # accessible from the replica and clients.
+    # coderd.satellite.primaryURL -- URL of the primary Coder deployment. Must
+    # be accessible from the satellite and clients.
     # eg. https://coder.myorg.com
     primaryURL: ""
+
   # coderd.securityContext -- Fields related to the container's security
   # context (as opposed to the pod).
   securityContext:
