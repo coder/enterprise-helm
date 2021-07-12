@@ -117,6 +117,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: DEVURL_HOST
+              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
