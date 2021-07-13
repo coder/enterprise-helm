@@ -144,11 +144,23 @@ spec:
             - name: CODER_REPLICA_ACCESS_URL
               value: {{ .Values.coderd.replica.accessURL | quote }}
             {{- end }}
+            {{- $serverCerts := list }}
+            {{- $serverKeys := list }}
             {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+              {{ $serverCerts = append $serverCerts "/etc/ssl/certs/host/tls.crt" }}
+              {{ $serverKeys = append $serverKeys "/etc/ssl/certs/host/tls.key" }}
+            {{- end }}
+            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
+              {{- $serverCerts = append $serverCerts "/etc/ssl/certs/devurls/tls.crt" }}
+              {{- $serverKeys = append $serverKeys "/etc/ssl/certs/devurls/tls.key" }}
+            {{- end }}
+            {{- if gt (len $serverCerts) 0 }}
             - name: SSL_SERVER_CERT_FILE
-              value: /etc/ssl/certs/host/tls.crt
+              value: {{ join ":" $serverCerts }}
+            {{- end }}
+            {{- if gt (len $serverKeys) 0 }}
             - name: SSL_SERVER_KEY_FILE
-              value: /etc/ssl/certs/host/tls.key
+              value: {{ join ":" $serverKeys }}
             {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
