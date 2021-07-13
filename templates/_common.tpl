@@ -59,6 +59,11 @@ volumes:
     secret:
       secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName") }}
 {{- end }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+  - name: devurltls
+    secret:
+      secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName") }}
+{{- end }}
 {{- end }}
 
 {{/* 
@@ -76,6 +81,11 @@ volumeMounts:
 {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
   - name: tls
     mountPath: /etc/ssl/certs/host
+    readOnly: true
+{{- end }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
+  - name: devurltls
+    mountPath: /etc/ssl/certs/devurls
     readOnly: true
 {{- end }}
 {{- end }}
