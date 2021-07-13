@@ -168,3 +168,11 @@ logging:
     # logging.splunk_channel -- Optional. Specify the channel
     # to associate messages with.
     channel: ""
+
+# certs -- Certificate that will be mounted inside Coder services.
+certs:
+  secret:
+    # certs.secret.name -- Name of the secret.
+    name: ""
+    # certs.secret.key -- Key pointing to a certificate in the secret.
+    key: ""
