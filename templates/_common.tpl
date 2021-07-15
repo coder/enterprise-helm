@@ -40,6 +40,8 @@ storageClassName: {{ $storageClass | default "" | quote }}
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
   value: {{ .Values.postgres.database | quote }}
+- name: DB_IDLE_CONNECTIONS
+  value: {{ .Values.postgres.idleConnections | quote }}
 {{- end }}
 {{- end }}
 {{/*

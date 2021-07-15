@@ -132,6 +132,9 @@ postgres:
   # the PostgreSQL connection. For acceptable values, see:
   #  https://www.postgresql.org/docs/9.1/libpq-ssl.html
   sslMode: "require"
+  # postgres.idleConnections -- Sets the number of maximum idle connections allowed
+  # in the connection pool. For most deployments, this should be ignored.
+  idleConnections: ""
 
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
