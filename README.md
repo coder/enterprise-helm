@@ -22,7 +22,10 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 | Key                 | Type | Description | Default                         |
 | ------------------- | ---- | ----------- | ------------------------------- |
-| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""}}` |
+| certs | object | Certificate that will be mounted inside Coder services. | `{"secret":{"key":"","name":""}}` |
+| certs.secret.key | string | Key pointing to a certificate in the secret. | `""` |
+| certs.secret.name | string | Name of the secret. | `""` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""},"trustProxyIP":false}` |
 | coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
 | coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
@@ -50,6 +53,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.tls | object | TLS configuration for coderd. These options will override dashboard configuration. | `{"devurlsHostSecretName":"","hostSecretName":""}` |
 | coderd.tls.devurlsHostSecretName | string | The secret to use for DevURL TLS. | `""` |
 | coderd.tls.hostSecretName | string | The secret to use for TLS. | `""` |
+| coderd.trustProxyIP | bool | Whether Coder should trust X-Real-IP and/or X-Forwarded-For headers from your reverse proxy. This should only be turned on if you're using a reverse proxy that sets both of these headers. This is always enabled if the Nginx ingress is deployed. | `false` |
 | envbox | object | Required for running Docker inside containers. See requirements: https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms | `{"image":""}` |
 | envbox.image | string | Injected by Coder during release. | `""` |
 | logging | object | Configures the logging format and output of Coder. | `{"human":"/dev/stderr","json":"","splunk":{"channel":"","token":"","url":""},"stackdriver":""}` |

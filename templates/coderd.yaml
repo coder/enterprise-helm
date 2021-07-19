@@ -131,6 +131,13 @@ spec:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
+            {{- if and (eq (include "coder.hasNginxIngress" .) "true") (eq (merge .Values dict | dig "coderd" "serviceNext" false) false) (merge .Values dict | dig "ingress" "enable" true) (merge .Values dict | dig "ingress" "useDefault" true) }}
+            - name: TRUST_PROXY_IP
+              value: "true"
+            {{- else }}
+            - name: TRUST_PROXY_IP
+              value: {{ .Values.coderd.trustProxyIP | quote }}
+            {{- end }}
             {{- if not .Values.coderd.satellite.enable }}
             {{- if eq (include "coder.useServiceNext" .) "false" }}
             - name: BUILT_IN_ENVPROXY_TOKEN
