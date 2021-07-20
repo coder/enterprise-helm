@@ -2,8 +2,6 @@ coderd:
   serviceSpec:
     type: ClusterIP
   replicas: 1
-  turn:
-    enable: true
   podSecurityContext:
     runAsUser: null
     seccompProfile: null

@@ -6,8 +6,6 @@ coderd:
     requests:
       cpu: "0m"
       memory: "32Mi"
-  turn:
-    enable: true
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault

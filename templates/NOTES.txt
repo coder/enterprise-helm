@@ -45,9 +45,6 @@ Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
 Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
   ✗ All "envproxy.*" values can be safely removed.
   ✗ Workspaces will need to be rebuilt after this change.
-{{- if eq (merge .Values dict | dig "ingress" "useDefault" true) false }} 
-  ✗ Custom ingress detected; ensure port 5349 directs to "coderd".
-{{- end }}
 {{ end }}
 {{- else }}
 {{- if eq (include "coder.hasNginxIngress" .) "true" }}
@@ -61,7 +58,6 @@ Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into 
   ↪ Route traffic from "envproxy" to "coderd"
   ↪ Move TCP port from 8080 to 80
   ↪ Move TCP port from 8443 to 443
-  ↪ Expose TCP port 5349
   ⚠ The "coderd" Kubernetes Service will be type "LoadBalancer" by default. Adjust options using "coderd.serviceSpec".
   ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
 {{- end }}
