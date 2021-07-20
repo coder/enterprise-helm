@@ -90,10 +90,6 @@ spec:
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
-              # This name cannot be longer than 15 chars.
-              # This is exposed for TURNS.
-            - name: tcp-t-{{ include "coder.serviceName" . }}
-              containerPort: 5349
           securityContext:
             {{- if hasKey .Values "cemanager" }}
             {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
@@ -252,10 +248,6 @@ spec:
       targetPort: 8443
       protocol: TCP
       appProtocol: https
-    - name: tcp-{{ include "coder.serviceName" . }}-turns
-      port: 5349
-      protocol: TCP
-      appProtocol: turns
 {{- else }}
 ---
 apiVersion: v1
@@ -273,8 +265,5 @@ spec:
       protocol: TCP
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 8443
-      protocol: TCP
-    - name: tcp-{{ include "coder.serviceName" . }}-turns
-      port: 5349
       protocol: TCP
 {{- end }}

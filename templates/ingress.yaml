@@ -35,7 +35,6 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
 data:
   22: "{{ .Release.Namespace }}/envproxy:2222"
-  5349: "{{ .Release.Namespace }}/{{ include "coder.serviceName" . }}:5349"
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -335,9 +334,6 @@ spec:
       targetPort: 22
       protocol: TCP
 {{- end }}
-    - name: turns
-      port: 5349
-      targetPort: 5349
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
