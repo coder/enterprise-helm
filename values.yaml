@@ -21,6 +21,12 @@ coderd:
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
 
+  # coderd.trustProxyIP -- Whether Coder should trust X-Real-IP and/or
+  # X-Forwarded-For headers from your reverse proxy. This should only be turned
+  # on if you're using a reverse proxy that sets both of these headers. This is
+  # always enabled if the Nginx ingress is deployed.
+  trustProxyIP: false
+
   # coderd.devurlsHost -- Wildcard hostname to allow matching against custom-created
   # dev URLs. Leaving as an empty string results in DevURLs being disabled.
   devurlsHost: ""
