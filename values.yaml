@@ -109,6 +109,18 @@ coderd:
     # used for the built-in provider.
     labels: {}
 
+  # Temporary options for opting in to the new OIDC refresh feature, which
+  # allows Coder-issued API keys to inherit session timing limits and uses
+  # refresh tokens to ensure continued access. These are purposefully not
+  # documented in the README since they will be moved into the OIDC config on
+  # the dashboard.
+  oidc:
+    # enableRefresh enables the new OIDC refresh feature.
+    enableRefresh: false
+    # redirectOptions controls which query parameters are set when redirecting
+    # the user to the OIDC provider.
+    redirectOptions: {}
+
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
 envbox:

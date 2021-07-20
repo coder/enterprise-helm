@@ -176,6 +176,12 @@ spec:
             - name: SSL_SERVER_KEY_FILE
               value: {{ join ":" $serverKeys }}
             {{- end }}
+            {{- if .Values.coderd.oidc.enableRefresh }}
+            - name: OIDC_ENABLE_REFRESH
+              value: "true"
+            {{- end }}
+            - name: OIDC_REDIRECT_OPTIONS
+              value: {{ toJson .Values.coderd.oidc.redirectOptions | quote }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
