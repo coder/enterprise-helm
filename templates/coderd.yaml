@@ -177,7 +177,7 @@ spec:
               value: {{ join ":" $serverKeys }}
             {{- end }}
             {{- if .Values.coderd.oidc.enableRefresh }}
-            - name: ENABLE_OIDC_REFRESH
+            - name: OIDC_ENABLE_REFRESH
               value: "true"
             {{- end }}
             - name: OIDC_REDIRECT_OPTIONS
