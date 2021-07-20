@@ -59,7 +59,7 @@ volumes:
     secret:
       secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName") }}
 {{- end }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
   - name: devurltls
     secret:
       secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName") }}
