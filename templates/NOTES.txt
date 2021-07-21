@@ -52,8 +52,7 @@ Deprecated: The "nginx" ingress controller will be removed in a future release.
   🌍 The "coderd" Kubernetes Service now serves TLS certificates.
   ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
 {{ else }}
-Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into
-"coderd" in a future release. To update your custom ingress:
+Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into "coderd" in a future release. To update your custom ingress:
   ↪ Rename "cemanager" to "coderd"
   ↪ Route traffic from "dashboard" to "coderd"
   ↪ Route traffic from "envproxy" to "coderd"
