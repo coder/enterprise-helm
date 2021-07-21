@@ -41,13 +41,19 @@ Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
 {{- end }}
 {{ end }}
 
+{{- if gt (len (keys (.Values.envproxy | dict))) 1 }}
+Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
+  ✗ All "envproxy.*" values can be safely removed.
+  ✗ Ensure that workspaces are rebuilt after this change.
+{{ end }}
 {{- else }}
 {{- if eq (include "coder.hasNginxIngress" .) "true" }}
 Deprecated: The "nginx" ingress controller will be removed in a future release.
   🌍 The "coderd" Kubernetes Service now serves TLS certificates.
   ⤴ Upgrade now by setting the Helm value "coderd.serviceNext=true".
 {{ else }}
-Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into "coderd" in a future release. Update your custom ingress:
+Deprecated: The "envproxy" and "dashboard" Kubernetes Services are merging into
+"coderd" in a future release. To update your custom ingress:
   ↪ Rename "cemanager" to "coderd"
   ↪ Route traffic from "dashboard" to "coderd"
   ↪ Route traffic from "envproxy" to "coderd"
