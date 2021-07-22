@@ -183,7 +183,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
-                  key: {{ .Values.coderd.superAdmin.passwordSecret.key }}
+                  key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
             {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
