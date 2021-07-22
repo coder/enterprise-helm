@@ -121,6 +121,21 @@ coderd:
     # the user to the OIDC provider.
     redirectOptions: {}
 
+  # Options for customizing the built-in super admin account for managing a
+  # Coder installation.
+  superAdmin:
+    # Options for configuring the secret used to specify the passwod for the
+    # built-in super admin account.
+    passwordSecret:
+      # coderd.superAdmin.passwordSecret.name -- Name of a secret that should
+      # be used to determine the password for the super admin account. The
+      # password should be contained in the field `password`, or the manually
+      # specified one.
+      name: ""
+      # coderd.superAdmin.passwordSecret.key -- The key of the secret that
+      # contains the super admin password.
+      key: "password"
+
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
 envbox:
