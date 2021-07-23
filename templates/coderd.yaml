@@ -178,6 +178,13 @@ spec:
             {{- end }}
             - name: OIDC_REDIRECT_OPTIONS
               value: {{ toJson .Values.coderd.oidc.redirectOptions | quote }}
+            {{- if ne .Values.coderd.superAdmin.passwordSecret.name "" }}
+            - name: SUPER_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
+                  key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
+            {{- end }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
