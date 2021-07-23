@@ -124,7 +124,7 @@ coderd:
   # Options for customizing the built-in super admin account for managing a
   # Coder installation.
   superAdmin:
-    # Options for configuring the secret used to specify the passwod for the
+    # Options for configuring the secret used to specify the password for the
     # built-in super admin account.
     passwordSecret:
       # coderd.superAdmin.passwordSecret.name -- Name of a secret that should
