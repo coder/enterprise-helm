@@ -233,6 +233,10 @@ metadata:
   name: {{ include "coder.serviceName" . }}
   {{- end }}
   namespace: {{ .Release.Namespace | quote }}
+  annotations:
+  {{- range $key, $value := .Values.coderd.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
 {{ toYaml .Values.coderd.serviceSpec | indent 2 }}
   selector:
