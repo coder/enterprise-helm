@@ -1,5 +1,13 @@
 {{- if not .Values.coderd.satellite.enable }}
 ---
+# The service account used by environments. It has no permissions and is only 
+# used to bind a pod security policy (if one is provided).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }} 
+  name: environments
+---
 # The service account that the envproxy passes to cemanager on startup.
 apiVersion: v1
 kind: ServiceAccount
