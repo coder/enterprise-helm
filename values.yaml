@@ -4,6 +4,7 @@ coderd:
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   replicas: 1
+
   # coderd.serviceSpec -- Specification to inject for the coderd service. See:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
@@ -20,6 +21,8 @@ coderd:
     # will be restricted to the specified client IPs. This field will be ignored if
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
+  # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
+  serviceAnnotations: {}
 
   # coderd.trustProxyIP -- Whether Coder should trust X-Real-IP and/or
   # X-Forwarded-For headers from your reverse proxy. This should only be turned
@@ -190,7 +193,7 @@ postgres:
         cpu: "250m"
         memory: "1Gi"
 
-# services -- Kubernetes Service configuration that applies to Coder services. 
+# services -- Kubernetes Service configuration that applies to Coder services.
 services:
   # services.annotations -- A KV mapping of annotations. See:
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/

@@ -240,6 +240,10 @@ metadata:
   name: {{ include "coder.serviceName" . }}
   {{- end }}
   namespace: {{ .Release.Namespace | quote }}
+  annotations:
+  {{- range $key, $value := .Values.coderd.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
 {{ toYaml .Values.coderd.serviceSpec | indent 2 }}
   selector:
@@ -249,12 +253,10 @@ spec:
       port: 80
       targetPort: 8080
       protocol: TCP
-      appProtocol: http
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 443
       targetPort: 8443
       protocol: TCP
-      appProtocol: https
 {{- else }}
 ---
 apiVersion: v1

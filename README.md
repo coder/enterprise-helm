@@ -25,7 +25,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | certs | object | Certificate that will be mounted inside Coder services. | `{"secret":{"key":"","name":""}}` |
 | certs.secret.key | string | Key pointing to a certificate in the secret. | `""` |
 | certs.secret.name | string | Name of the secret. | `""` |
-| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"tls":{"devurlsHostSecretName":"","hostSecretName":""},"trustProxyIP":false}` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","oidc":{"enableRefresh":false,"redirectOptions":{}},"podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceAnnotations":{},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"superAdmin":{"passwordSecret":{"key":"password","name":""}},"tls":{"devurlsHostSecretName":"","hostSecretName":""},"trustProxyIP":false}` |
 | coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
 | coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
@@ -45,11 +45,14 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.securityContext.allowPrivilegeEscalation | bool | Controls whether the container can gain additional privileges, such as escalating to root. It is recommended to leave this setting disabled in production. | `false` |
 | coderd.securityContext.readOnlyRootFilesystem | bool | Mounts the container's root filesystem as read-only. It is recommended to leave this setting enabled in production. This will override the same setting in the pod | `true` |
 | coderd.securityContext.seccompProfile | object | Sets the seccomp profile for the migration and runtime containers. | `{"type":"RuntimeDefault"}` |
+| coderd.serviceAnnotations | object | Extra annotations to apply to the coderd service. | `{}` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
 | coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
 | coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
 | coderd.serviceSpec.loadBalancerSourceRanges | list | Traffic through the LoadBalancer will be restricted to the specified client IPs. This field will be ignored if the cloud provider does not support this feature. | `[]` |
 | coderd.serviceSpec.type | string | Set the type of Service. See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types | `"LoadBalancer"` |
+| coderd.superAdmin.passwordSecret.key | string | The key of the secret that contains the super admin password. | `"password"` |
+| coderd.superAdmin.passwordSecret.name | string | Name of a secret that should be used to determine the password for the super admin account. The password should be contained in the field `password`, or the manually specified one. | `""` |
 | coderd.tls | object | TLS configuration for coderd. These options will override dashboard configuration. | `{"devurlsHostSecretName":"","hostSecretName":""}` |
 | coderd.tls.devurlsHostSecretName | string | The secret to use for DevURL TLS. | `""` |
 | coderd.tls.hostSecretName | string | The secret to use for TLS. | `""` |
@@ -75,7 +78,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
 | postgres.sslMode | string | Provides variable levels of protection for the PostgreSQL connection. For acceptable values, see:  https://www.postgresql.org/docs/9.1/libpq-ssl.html | `"require"` |
 | postgres.user | string | User of the external PostgreSQL instance. | `""` |
-| services | object | Kubernetes Service configuration that applies to Coder services.  | `{"annotations":{},"clusterDomainSuffix":".svc.cluster.local","nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
+| services | object | Kubernetes Service configuration that applies to Coder services. | `{"annotations":{},"clusterDomainSuffix":".svc.cluster.local","nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
 | services.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | services.clusterDomainSuffix | string | Custom domain suffix for DNS resolution in your cluster. See: https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/ | `".svc.cluster.local"` |
 | services.nodeSelector | object | See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector | `{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"}` |
