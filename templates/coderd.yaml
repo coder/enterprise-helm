@@ -254,10 +254,12 @@ spec:
       port: 80
       targetPort: 8080
       protocol: TCP
+      nodePort: 30080
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 443
       targetPort: 8443
       protocol: TCP
+      nodePort: 30443
 {{- else }}
 ---
 apiVersion: v1
