@@ -70,6 +70,7 @@ spec:
             - name: VERBOSE
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
+{{- include "coder.environments.configMapEnv" . | indent 12 }}
           command:
             - /entrypoint.sh
           args:
