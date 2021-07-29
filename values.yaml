@@ -26,10 +26,12 @@ coderd:
   # This is only helpful if static ports are required, and usually should be left alone.
   # By default these are dynamically chosen.
   serviceNodePorts:
-    # coderd.serviceNodePorts.coderd -- Sets a static 'coderd' service non-TLS nodePort
-    coderd: 30081
+    # coderd.serviceNodePorts.coderd -- Sets a static 'coderd' service non-TLS nodePort.
+    # This should usually be omitted.
+    coderd: 30080
     # coderd.serviceNodePorts.coderdTLS -- Sets a static 'coderd' service TLS nodePort
-    coderdTLS: 30444
+    # This should usually be omitted.
+    coderdTLS: 30443
 
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
   serviceAnnotations: {}
