@@ -27,7 +27,7 @@ coderd:
   serviceNodePorts:
     # coderd.serviceNodePorts.coderd -- 'coderd' service non-TLS nodePort
     coderd: 30081
-    # coderd.serviceNodePorts.coderd -- 'coderd' service TLS nodePort
+    # coderd.serviceNodePorts.coderdTLS -- 'coderd' service TLS nodePort
     coderdTLS: 30444
 
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.

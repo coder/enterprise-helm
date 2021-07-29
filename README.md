@@ -1,4 +1,4 @@
-<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
+-e <!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
 
 # Coder Helm Chart
 
@@ -25,7 +25,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | certs | object | Certificate that will be mounted inside Coder services. | `{"secret":{"key":"","name":""}}` |
 | certs.secret.key | string | Key pointing to a certificate in the secret. | `""` |
 | certs.secret.name | string | Name of the secret. | `""` |
-| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","oidc":{"enableRefresh":false,"redirectOptions":{}},"podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceAnnotations":{},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"superAdmin":{"passwordSecret":{"key":"password","name":""}},"tls":{"devurlsHostSecretName":"","hostSecretName":""},"trustProxyIP":false}` |
+| coderd | object | Primary service responsible for all things Coder! | `{"builtinProviderServiceAccount":{"annotations":{},"labels":{}},"devurlsHost":"","image":"","oidc":{"enableRefresh":false,"redirectOptions":{}},"podSecurityContext":{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"replicas":1,"resources":{"limits":{"cpu":"250m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}},"satellite":{"accessURL":"","enable":false,"primaryURL":""},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"seccompProfile":{"type":"RuntimeDefault"}},"serviceAnnotations":{},"serviceNodePorts":{"coderd":30081,"coderdTLS":30444},"serviceSpec":{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"},"superAdmin":{"passwordSecret":{"key":"password","name":""}},"tls":{"devurlsHostSecretName":"","hostSecretName":""},"trustProxyIP":false}` |
 | coderd.builtinProviderServiceAccount | object | Customize the built-in Kubernetes provider service account. | `{"annotations":{},"labels":{}}` |
 | coderd.builtinProviderServiceAccount.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
 | coderd.builtinProviderServiceAccount.labels | object | Add labels to the service account used for the built-in provider. | `{}` |
@@ -46,6 +46,9 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.securityContext.readOnlyRootFilesystem | bool | Mounts the container's root filesystem as read-only. It is recommended to leave this setting enabled in production. This will override the same setting in the pod | `true` |
 | coderd.securityContext.seccompProfile | object | Sets the seccomp profile for the migration and runtime containers. | `{"type":"RuntimeDefault"}` |
 | coderd.serviceAnnotations | object | Extra annotations to apply to the coderd service. | `{}` |
+| coderd.serviceNodePorts | object | Allows manually setting node ports for the coderd service. This is only helpful if static ports are required, and usually should be left alone. | `{"coderd":30081,"coderdTLS":30444}` |
+| coderd.serviceNodePorts.coderd | int | 'coderd' service non-TLS nodePort | `30081` |
+| coderd.serviceNodePorts.coderdTLS | int | 'coderd' service TLS nodePort | `30444` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
 | coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
 | coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
