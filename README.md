@@ -46,9 +46,9 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.securityContext.readOnlyRootFilesystem | bool | Mounts the container's root filesystem as read-only. It is recommended to leave this setting enabled in production. This will override the same setting in the pod | `true` |
 | coderd.securityContext.seccompProfile | object | Sets the seccomp profile for the migration and runtime containers. | `{"type":"RuntimeDefault"}` |
 | coderd.serviceAnnotations | object | Extra annotations to apply to the coderd service. | `{}` |
-| coderd.serviceNodePorts | object | Allows manually setting node ports for the coderd service. This is only helpful if static ports are required, and usually should be left alone. | `{"coderd":30081,"coderdTLS":30444}` |
-| coderd.serviceNodePorts.coderd | int | 'coderd' service non-TLS nodePort | `30081` |
-| coderd.serviceNodePorts.coderdTLS | int | 'coderd' service TLS nodePort | `30444` |
+| coderd.serviceNodePorts | object | Allows manually setting static node ports for the coderd service. This is only helpful if static ports are required, and usually should be left alone. By default these are dynamically chosen. | `{"coderd":30081,"coderdTLS":30444}` |
+| coderd.serviceNodePorts.coderd | int | Sets a static 'coderd' service non-TLS nodePort | `30081` |
+| coderd.serviceNodePorts.coderdTLS | int | Sets a static 'coderd' service TLS nodePort | `30444` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
 | coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
 | coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |

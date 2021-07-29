@@ -22,12 +22,13 @@ coderd:
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
 
-  # coderd.serviceNodePorts -- Allows manually setting node ports for the coderd service.
+  # coderd.serviceNodePorts -- Allows manually setting static node ports for the coderd service.
   # This is only helpful if static ports are required, and usually should be left alone.
+  # By default these are dynamically chosen.
   serviceNodePorts:
-    # coderd.serviceNodePorts.coderd -- 'coderd' service non-TLS nodePort
+    # coderd.serviceNodePorts.coderd -- Sets a static 'coderd' service non-TLS nodePort
     coderd: 30081
-    # coderd.serviceNodePorts.coderdTLS -- 'coderd' service TLS nodePort
+    # coderd.serviceNodePorts.coderdTLS -- Sets a static 'coderd' service TLS nodePort
     coderdTLS: 30444
 
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
