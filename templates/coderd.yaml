@@ -254,12 +254,16 @@ spec:
       port: 80
       targetPort: 8080
       protocol: TCP
-      nodePort: 30080
+      {{ if .Values.coderd.serviceNodePorts }}
+      nodePort: {{  .Values.coderd.serviceNodePorts.coderd  }}
+      {{ end }}
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 443
       targetPort: 8443
       protocol: TCP
-      nodePort: 30443
+      {{ if .Values.coderd.serviceNodePorts }}
+      nodePort: {{ .Values.coderd.serviceNodePorts.coderdTLS }}
+      {{ end }}
 {{- else }}
 ---
 apiVersion: v1

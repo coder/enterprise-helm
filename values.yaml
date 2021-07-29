@@ -21,6 +21,15 @@ coderd:
     # will be restricted to the specified client IPs. This field will be ignored if
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
+
+  # coderd.serviceNodePorts -- Allows manually setting node ports for the coderd service.
+  # This is only helpful if static ports are required, and usually should be left alone.
+  serviceNodePorts:
+    # coderd.serviceNodePorts.coderd -- 'coderd' service non-TLS nodePort
+    coderd: 30081
+    # coderd.serviceNodePorts.coderd -- 'coderd' service TLS nodePort
+    coderdTLS: 30444
+
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
   serviceAnnotations: {}
 
