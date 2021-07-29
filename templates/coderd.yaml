@@ -230,7 +230,7 @@ data:
   privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
   {{- end }}
 {{- end }}
-{{- if and ( eq (include "coder.useServiceNext" .) "true"  ) ) ( eq (merge .Values dict | dig "ingress" "enable" false) ) }}
+{{- if and ( eq (include "coder.useServiceNext" .) "true"  ) ) (merge .Values dict | dig "ingress" "enable" false) }}
 ---
 apiVersion: v1
 kind: Service
