@@ -1,4 +1,4 @@
--e <!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
+<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
 
 # Coder Helm Chart
 
