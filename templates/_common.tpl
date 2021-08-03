@@ -120,8 +120,8 @@ tolerations:
 {{/*
   coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
 */}}
-{{- define "coder.cluster.accessURL" }}
-    https://kubernetes.default{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:443
+{{- define "coder.cluster.accessURL" -}}
+https://kubernetes.default{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:443
 {{- end }}
 
 {{/*
