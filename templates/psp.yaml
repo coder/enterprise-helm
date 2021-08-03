@@ -30,9 +30,6 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "coder.serviceName" }}
     namespace: {{ .Release.Namespace | quote }}
-  - kind: ServiceAccount
-    name: envproxy
-    namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: coder-restricted

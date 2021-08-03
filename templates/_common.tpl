@@ -118,30 +118,10 @@ tolerations:
 {{- end }}
 {{- end }}
 {{/*
-  coder.envproxy.accessURL is a URL for accessing the envproxy.
-*/}}
-{{- define "coder.envproxy.accessURL" }}
-{{- if ne (merge .Values dict | dig "envproxy" "accessURL" "") "" }}
-{{- .Values.envproxy.accessURL -}}
-{{- else if ne (merge .Values dict | dig "ingress" "host" "") "" }}
-    {{- if .Values.ingress.tls.enable -}}
-    https://
-    {{- else -}}
-    http://
-    {{- end -}}
-    {{- .Values.ingress.host }}
-{{- else }}
-{{- end }}
-{{- end }}
-{{/*
   coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
 */}}
 {{- define "coder.cluster.accessURL" }}
-{{- if ne (merge .Values dict | dig "envproxy" "clusterAddress" "") "" }}
-{{- .Values.envproxy.clusterAddress -}}
-{{- else -}}
     https://kubernetes.default{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:443
-{{- end }}
 {{- end }}
 
 {{/*

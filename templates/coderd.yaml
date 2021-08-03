@@ -135,15 +135,6 @@ spec:
             - name: TRUST_PROXY_IP
               value: {{ .Values.coderd.trustProxyIP | quote }}
             {{- end }}
-            {{- if not .Values.coderd.satellite.enable }}
-            {{- if eq (include "coder.useServiceNext" .) "false" }}
-            - name: BUILT_IN_ENVPROXY_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: built-in-envproxy-token
-                  key: token
-            {{- end }}
-            {{- end }}
             {{- if .Values.coderd.satellite.enable }}
             - name: CODER_SATELLITE_PRIVATE_KEY
               valueFrom:

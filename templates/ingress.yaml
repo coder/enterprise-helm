@@ -33,8 +33,6 @@ metadata:
   labels:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-data:
-  22: "{{ .Release.Namespace }}/envproxy:2222"
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -379,13 +377,6 @@ spec:
     http:
       paths:
     {{- if (merge .Values dict | dig "ingress" "useDefault" true) }}
-      - path: /proxy/
-        pathType: Prefix
-        backend:
-          service:
-            name: envproxy
-            port:
-              number: 8080
       - path: /api
         pathType: Prefix
         backend:
@@ -414,18 +405,6 @@ spec:
             port:
               number: 8080
           {{- end }}
-    {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost")) "" }}
-  - host: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: envproxy
-            port:
-              number: 8080
-    {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
