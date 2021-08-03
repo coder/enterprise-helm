@@ -28,10 +28,10 @@ coderd:
   serviceNodePorts:
     # coderd.serviceNodePorts.http -- Sets a static 'coderd' service non-TLS nodePort.
     # This should usually be omitted.
-    http: 30080
+    http: null
     # coderd.serviceNodePorts.https -- Sets a static 'coderd' service TLS nodePort
     # This should usually be omitted.
-    https: 30443
+    https: null
 
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
   serviceAnnotations: {}
