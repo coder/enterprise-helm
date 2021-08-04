@@ -25,8 +25,6 @@
 {{- define "coder.hasNginxIngress" }}
 {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
 true
-{{- else if (lookup "v1" "Service" .Release.Namespace "envproxy") -}}
-true
 {{- else -}}
 false
 {{- end }}

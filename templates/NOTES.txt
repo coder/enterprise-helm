@@ -41,11 +41,6 @@ Deprecated: The "dashboard" Kubernetes Service has been merged with "coderd".
 {{- end }}
 {{ end }}
 
-{{- if gt (len (keys (.Values.envproxy | dict))) 1 }}
-Deprecated: The "envproxy" Kubernetes Service has been merged with "coderd".
-  ✗ All "envproxy.*" values can be safely removed.
-  ✗ Workspaces will need to be rebuilt after this change.
-{{ end }}
 {{- else }}
 {{- if eq (include "coder.hasNginxIngress" .) "true" }}
 Deprecated: The "nginx" ingress controller will be removed in a future release.
