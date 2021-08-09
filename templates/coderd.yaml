@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/name: {{ include "coder.serviceName" . }}
+    app.kubernetes.io/part-of: coder
     app: {{ include "coder.serviceName" . }}
     coder.deployment: {{ include "coder.serviceName" . }}
   name: {{ include "coder.serviceName" . }}
@@ -23,6 +25,8 @@ spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/name: {{ include "coder.serviceName" . }}
+        app.kubernetes.io/part-of: coder
         app: {{ include "coder.serviceName" . }}
         coder.deployment: {{ include "coder.serviceName" . }}
       annotations:
