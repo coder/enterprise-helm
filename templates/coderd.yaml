@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: {{ include "coder.serviceName" . }}
     coder.deployment: {{ include "coder.serviceName" . }}
   name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
@@ -22,6 +23,7 @@ spec:
   template:
     metadata:
       labels:
+        app: {{ include "coder.serviceName" . }}
         coder.deployment: {{ include "coder.serviceName" . }}
       annotations:
       {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
