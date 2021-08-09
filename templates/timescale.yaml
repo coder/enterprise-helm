@@ -7,6 +7,8 @@ metadata:
   name: timescale
   namespace: {{ .Release.Namespace }}
   labels:
+    app.kubernetes.io/name: timescale
+    app.kubernetes.io/part-of: coder
     app: timescale
     coder.deployment: timescale
 spec:
@@ -34,6 +36,8 @@ spec:
   template:
     metadata:
       labels:
+        app.kubernetes.io/name: timescale
+        app.kubernetes.io/part-of: coder
         app: timescale
         coder.deployment: timescale
       annotations:
