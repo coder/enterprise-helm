@@ -36,6 +36,11 @@ coderd:
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
   serviceAnnotations: {}
 
+  # coderd.httpsToHttp -- eliminates the external http port and routes traffic from
+  # the external https port to the internal http port. Useful for when the load balancer
+  # performs TLS termination (like Amazon's ACM)
+  httpsToHttp: false
+
   # coderd.trustProxyIP -- Whether Coder should trust X-Real-IP and/or
   # X-Forwarded-For headers from your reverse proxy. This should only be turned
   # on if you're using a reverse proxy that sets both of these headers. This is
