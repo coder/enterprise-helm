@@ -409,3 +409,32 @@ spec:
   {{- end }}
 {{- end }}
 ---
+{{- if and (merge .Values dict | dig "coderd" "serviceNext" true) (merge .Values dict | dig "ingress" "enable" true) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: coderd-ingress
+spec:
+{{- include "coder.ingress.tls" . }}
+  rules:
+  - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 80
+  - host: {{ merge .Values dict | dig "coderd" "devurlsHost" "" | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "coder.serviceName" . }}
+            port:
+              number: 80
+{{- end }}

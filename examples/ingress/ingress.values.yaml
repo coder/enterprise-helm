@@ -4,6 +4,7 @@
 # by creating a LoadBalancer service
 coderd:
   serviceNext: true
+  devurlsHost: '*.devurls.coderhost.com'
   serviceSpec:
     type: ClusterIP
     # The values.yaml file in the chart includes LoadBalancer
@@ -12,6 +13,12 @@ coderd:
     loadBalancerIP: null
     externalTrafficPolicy: null
     loadBalancerSourceRanges: null
-# Add your own ingress spec based on the type of ingress you
-# have deployed in your cluster. Send all traffic to the 
-# coderd service on ports 80, and 443.
+# Add the ingress values section to enable the ingress resource
+# without the controller
+ingress:
+  # Enable set to true creates the ingress resource
+  enable: true
+  # Ingress needs a host name so it can share a controller
+  host: 'coder.coderhost.com'
+  # useDefault set to false disables creation of the ingress controller
+  useDefault: false
