@@ -247,21 +247,19 @@ spec:
   selector:
     coder.deployment: {{ include "coder.serviceName" . }}
   ports:
-    - name: tcp-{{ include "coder.serviceName" . }}-https
-      port: 443
-      {{- if .Values.coderd.httpsToHttp }}¬
-      targetPort: 8443
-      protocol: TCP
-      {{ if .Values.coderd.serviceNodePorts.https }}
-      nodePort: {{ .Values.coderd.serviceNodePorts.https }}
-      {{ end }}
     - name: tcp-{{ include "coder.serviceName" . }}
       port: 80
-      {{- end }}
       targetPort: 8080
       protocol: TCP
       {{ if .Values.coderd.serviceNodePorts.http }}
       nodePort: {{  .Values.coderd.serviceNodePorts.http  }}
+      {{ end }}
+    - name: tcp-{{ include "coder.serviceName" . }}-https
+      port: 443
+      targetPort: 8443
+      protocol: TCP
+      {{ if .Values.coderd.serviceNodePorts.https }}
+      nodePort: {{ .Values.coderd.serviceNodePorts.https }}
       {{ end }}
 {{- else }}
 ---
