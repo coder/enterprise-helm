@@ -1,0 +1,17 @@
+# Using coder with ingress in versions from 1.21 and newer
+# Coder's built-in ingress controller is no longer packaged
+# the coderd pod does not require a fanout so it is exposed
+# by creating a LoadBalancer service
+coderd:
+  serviceNext: true
+  serviceSpec:
+    type: ClusterIP
+    # The values.yaml file in the chart includes LoadBalancer
+    # specs which need to have the keys removed using null
+    # this does not work as a sub-chart
+    loadBalancerIP: null
+    externalTrafficPolicy: null
+    loadBalancerSourceRanges: null
+# Add your own ingress spec based on the type of ingress you
+# have deployed in your cluster. Send all traffic to the 
+# coderd service on ports 80, and 443.
