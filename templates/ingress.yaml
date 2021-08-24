@@ -414,6 +414,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: coderd-ingress
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  {{- range $key, $value := merge .Values dict | dig "ingress" "annotations" dict }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
 {{- include "coder.ingress.tls" . }}
   rules:

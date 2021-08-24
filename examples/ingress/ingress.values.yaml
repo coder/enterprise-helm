@@ -22,3 +22,5 @@ ingress:
   host: 'coder.coderhost.com'
   # useDefault set to false disables creation of the ingress controller
   useDefault: false
+  # add annotations for TLS issuers and such
+  annotations: {}
