@@ -1,0 +1,26 @@
+# Using coder with ingress in versions from 1.21 and newer
+# Coder's built-in ingress controller is no longer packaged
+# the coderd pod does not require a fanout so it is exposed
+# by creating a LoadBalancer service
+coderd:
+  serviceNext: true
+  devurlsHost: '*.devurls.coderhost.com'
+  serviceSpec:
+    type: ClusterIP
+    # The values.yaml file in the chart includes LoadBalancer
+    # specs which need to have the keys removed using null
+    # this does not work as a sub-chart
+    loadBalancerIP: null
+    externalTrafficPolicy: null
+    loadBalancerSourceRanges: null
+# Add the ingress values section to enable the ingress resource
+# without the controller
+ingress:
+  # Enable set to true creates the ingress resource
+  enable: true
+  # Ingress needs a host name so it can share a controller
+  host: 'coder.coderhost.com'
+  # useDefault set to false disables creation of the ingress controller
+  useDefault: false
+  # add annotations for TLS issuers and such
+  annotations: {}
