@@ -248,6 +248,11 @@ logging:
     # to associate messages with.
     channel: ""
 
+# metrics -- Configure various metrics to gain observability into Coder.
+metrics:
+  # metrics.amplitudeKey -- Enables telemetry pushing to Amplitude. Keep empty to disable
+  amplitudeKey: ""
+
 # certs -- Certificate that will be mounted inside Coder services.
 certs:
   secret:
