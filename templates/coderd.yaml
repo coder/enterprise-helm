@@ -115,6 +115,8 @@ spec:
               value: {{ .Values.logging.json | quote }}
             - name: STACKDRIVER_LOG
               value: {{ .Values.logging.stackdriver | quote }}
+            - name: AMPLITUDE_API_KEY
+              value: {{ .Values.metrics.amplitudeKey | quote }}
               # ENVBOX_IMAGE describes the image used to provide
               # additional features to users for running applications
               # such as dockerd and kubernetes.
