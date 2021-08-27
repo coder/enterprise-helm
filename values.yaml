@@ -250,7 +250,10 @@ logging:
 
 # metrics -- Configure various metrics to gain observability into Coder.
 metrics:
-  # metrics.amplitudeKey -- Enables telemetry pushing to Amplitude. Keep empty to disable
+  # metrics.amplitudeKey -- Enables telemetry pushing to Amplitude. Amplitude records how users
+  # interact with Coder, which is used to improve the product. No events store any personal
+  # information. Amplitude can be found here: https://amplitude.com/
+  # Keep empty to disable.
   amplitudeKey: ""
 
 # certs -- Certificate that will be mounted inside Coder services.
