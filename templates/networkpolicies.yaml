@@ -1,0 +1,15 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-deny-all
+  namespace: {{ .Release.Namespace }}
+spec:
+  # Deny all ingress traffic for workspace pods. The coder agent initiates
+  # all network traffic (TURN-over-HTTPS or STUN)
+  podSelector:
+    matchLabels:
+      com.coder.resource: "true"
+  policyTypes:
+    - Ingress
+  ingress: []
