@@ -225,6 +225,23 @@ services:
   # https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   type: "ClusterIP"
 
+# ingress -- Optional configuration to create an ingress object
+ingress:
+  # ingress.enable -- If set to true (along with the coderd.serviceNext) it will create an
+  # ingress object. 
+  enable: false
+  # ingress.useDefault -- Enables an ingress controller. This should not be set to true.
+  useDefault: false
+  # ingress.host -- set to the string value for the coderd hostname
+  host: ""
+  # devurls host is under the coderd section: devurlsHost
+
+  # ingress.tls -- if the ingress is terminating the TLS connection use this section
+  tls:
+    # ingress.tls.enable -- If using the ingress object, use enable to add the TLS block
+    enable: false
+    # Secrets for TLS certificates are in coderd.tls section
+
 # logging -- Configures the logging format and output of Coder.
 logging:
   # logging.human -- Location to send logs that are formatted for readability.
