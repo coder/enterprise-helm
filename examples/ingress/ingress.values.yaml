@@ -13,6 +13,10 @@ coderd:
     loadBalancerIP: null
     externalTrafficPolicy: null
     loadBalancerSourceRanges: null
+  # The ingress controller will reference the secrets from these values
+  tls:
+    hostSecretName: "certificate-secret-coder"
+    devurlsHostSecretName: "certificate-secret-devurls"
 # Add the ingress values section to enable the ingress resource
 # without the controller
 ingress:
@@ -24,3 +28,8 @@ ingress:
   useDefault: false
   # add annotations for TLS issuers and such
   annotations: {}
+
+  # Enabling TLS in the ingress section still uses the secrets from 
+  # the coderd section
+  tls:
+    enable: true
