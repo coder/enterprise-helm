@@ -21,6 +21,28 @@
 {{- end }}
 {{- end }}
 
+{{/*
+  coder.coderd.tls configures the tls settings
+  for any ingress using serviceNext with clusterIP
+*/}}
+{{- define "coder.coderd.tls" }}
+{{- if (merge .Values dict | dig "coderd" "tls" "enable" false) }}
+  tls:
+    {{- if and .Values.ingress.host .Values.coderd.tls.hostSecretName }}
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      secretName: {{ .Values.coderd.tls.hostSecretName }}
+    {{- end }}
+    {{- if .Values.coderd.devurlsHost }}
+    {{- if and .Values.coderd.devurlsHost .Values.coderd.tls.devurlsHostSecretName }}
+    - hosts:
+      - {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
+      secretName: {{ .Values.coderd.tls.devurlsHostSecretName }}
+    {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
+
 {{/* */}}
 {{- define "coder.hasNginxIngress" }}
 {{- if (lookup "v1" "Service" .Release.Namespace "ingress-nginx") -}}
