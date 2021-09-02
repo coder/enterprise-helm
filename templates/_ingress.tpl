@@ -26,7 +26,7 @@
   for any ingress using serviceNext with clusterIP
 */}}
 {{- define "coder.coderd.tls" }}
-{{- if (merge .Values dict | dig "coderd" "tls" "enable" false) }}
+{{- if .Values.ingress.tls.enable  }}
   tls:
     {{- if and .Values.ingress.host .Values.coderd.tls.hostSecretName }}
     - hosts:
