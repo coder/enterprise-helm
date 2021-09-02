@@ -409,7 +409,7 @@ spec:
   {{- end }}
 {{- end }}
 ---
-{{- if and (merge .Values dict | dig "coderd" "serviceNext" true) (merge .Values dict | dig "ingress" "enable" true) }}
+{{- if and (merge .Values dict | dig "coderd" "serviceNext" true) ( .Values.ingress.enable ) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -421,7 +421,7 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-{{- include "coder.ingress.tls" . }}
+{{- include "coder.coderd.tls" . }}
   rules:
   - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}
     http:
