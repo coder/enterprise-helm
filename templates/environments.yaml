@@ -4,6 +4,11 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  # From 1.22 onward this chart is meant to be uninstalled after upgrade
+  # This annotation allows the resource to stay even after uninstall has been ran
+  # So the existing workspaces do not experience down time
+  annotations:
+    "helm.sh/resource-policy": keep
   namespace: {{ .Release.Namespace | quote }}
   # This name is includes the release name to avoid overlapping with deprecated
   # namespaceWhitelist-era service accounts from the built-in workspace
