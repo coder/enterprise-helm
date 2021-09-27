@@ -432,7 +432,7 @@ spec:
           service:
             name: {{ include "coder.serviceName" . }}
             port:
-              number: 8080
+              name: tcp-{{ include "coder.serviceName" . }}
   - host: {{ merge .Values dict | dig "coderd" "devurlsHost" "" | quote }}
     http:
       paths:
@@ -442,5 +442,5 @@ spec:
           service:
             name: {{ include "coder.serviceName" . }}
             port:
-              number: 8080
+              name: tcp-{{ include "coder.serviceName" . }}
 {{- end }}
