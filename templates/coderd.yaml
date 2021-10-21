@@ -47,6 +47,7 @@ spec:
       {{- if not .Values.coderd.satellite.enable }}
       serviceAccountName: coder
       {{- end }}
+      {{- if hasKey .Values.coderd "antiAffinity" }}
       {{- $replicas := include "movedValue" (dict "Values" .Values "Key" "coderd.replicas" 1) | int }}
       {{- $enabled := .Values.coderd.antiAffinity.enable | default false }}
       {{- if and (gt $replicas 1) ($enabled) }}
@@ -62,6 +63,7 @@ spec:
                   - {{ include "coder.serviceName" . }}
               topologyKey: "kubernetes.io/hostname"
             weight: {{ .Values.coderd.antiAffinity.weight | default 100 }}
+      {{- end }}
       {{- end }}
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
