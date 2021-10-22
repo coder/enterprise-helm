@@ -151,11 +151,13 @@ coderd:
       # contains the super admin password.
       key: "password"
 
-  # coderd.affinity -- allows specifying an affinity rule for the coderd
-  # deployment. If you set coderd.replicas to a value higher than 1, you
+  # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
+  # deployment. If you set `coderd.replicas` to a value higher than 1, you
   # may wish to also add a pod anti-affinity definition to ensure that
   # multiple coderd pods are not scheduled on the same node.
+  affinity: {}
   # Example:
+  # ```
   # affinity:
   #   podAntiAffinity:
   #     preferredDuringSchedulingIgnoredDuringExecution:
@@ -168,7 +170,7 @@ coderd:
   #                   - "coderd"
   #           topologyKey: kubernetes.io/hostname
   #         weight: 1
-  affinity: {}
+  # ```
 
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
