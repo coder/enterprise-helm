@@ -47,6 +47,9 @@ spec:
       {{- if not .Values.coderd.satellite.enable }}
       serviceAccountName: coder
       {{- end }}
+      {{- if .Values.coderd.affinity }}
+      affinity: {{- include "coder.template.render" ( dict "value" .Values.coderd.affinity "context" $) | nindent 8 }}
+      {{- end }}
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       {{- if not .Values.coderd.satellite.enable }}

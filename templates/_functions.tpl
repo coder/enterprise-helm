@@ -25,3 +25,16 @@ resources:
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+coder.template.render -- renders a value that contains template.
+Usage:
+{{ include "coder.template.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "coder.template.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
