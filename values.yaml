@@ -151,16 +151,24 @@ coderd:
       # contains the super admin password.
       key: "password"
 
-  # coderd.antiAffinity -- Enables adding a anti-affinity of type
-  # preferredDuringSchedulingIgnoredDuringExecution to coderd
-  # if more than one replica is present. This is recommended to ensure that
+  # coderd.affinity -- allows specifying an affinity rule for the coderd
+  # deployment. If you set coderd.replicas to a value higher than 1, you
+  # may wish to also add a pod anti-affinity definition to ensure that
   # multiple coderd pods are not scheduled on the same node.
-  # See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#more-practical-use-cases
-  antiAffinity:
-    # coderd.antiAffinity.enable -- Should an anti-affinity rule ever be added?
-    enable: false
-    # coderd.antiAffinity.weight -- Weight for the anti-affinity rule, if added.
-    weight: 100
+  # Example:
+  # affinity:
+  #   podAntiAffinity:
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #       - podAffinityTerm:
+  #           labelSelector:
+  #             matchExpressions:
+  #               - key: app
+  #                 operator: In
+  #                 values:
+  #                   - "coderd"
+  #           topologyKey: kubernetes.io/hostname
+  #         weight: 1
+  affinity: {}
 
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
