@@ -8,3 +8,4 @@ kube-linter.yaml
 Makefile
 README.md.gotmpl
 scripts
+tests
