@@ -1,14 +1,26 @@
 version: 2
 updates:
-- package-ecosystem: "github-actions"
-  directory: "/"
-  schedule:
-    interval: "daily"
-    time: "06:00"
-    timezone: "America/Chicago"
-  commit-message:
-    prefix: "chore"
-  ignore:
-    # These actions deliver the latest versions by updating the
-    # major release tag, so handle updates manually
-    - dependency-name: "actions/*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "America/Chicago"
+    commit-message:
+      prefix: "chore"
+    ignore:
+      # These actions deliver the latest versions by updating the major
+      # release tag, so ignore minor and patch versions
+      - dependency-name: "actions/*"
+        update-types:
+          - version-update:semver-minor
+          - version-update:semver-patch
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "America/Chicago"
+    commit-message:
+      prefix: "chore"
