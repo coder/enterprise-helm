@@ -38,21 +38,23 @@ jobs:
 
       - name: Lint Helm Chart
         run: make lint/helm
-        # TODO(jawnsy): fix linter warnings and remove this
-        continue-on-error: true
 
       - name: Check formatting and docs
-        if: always()
         run: ./scripts/fmt.sh
 
       - name: Lint Shell Scripts
-        if: always()
         run: make lint/shellcheck
 
       - name: Lint Kubernetes Templates
-        if: always()
         run: make lint/kubernetes
 
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17'
+
+      - name: Unit tests
+        run: ./scripts/test_go.sh
+
       - name: Package Helm Chart
-        if: always()
         run: ./scripts/package.sh
