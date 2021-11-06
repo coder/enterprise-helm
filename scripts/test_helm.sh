@@ -24,6 +24,7 @@ mkdir -p "$BUILD"
 for example in "${EXAMPLES[@]}"; do
   run_trace false helm template "$example" "$PROJECT_ROOT" \
     --create-namespace \
+    --namespace=coder-test \
     --release-name \
     --values="$PROJECT_ROOT/examples/images.yaml" \
     --values="$PROJECT_ROOT/examples/$example/$example.values.yaml" \
