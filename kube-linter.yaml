@@ -12,6 +12,7 @@ checks:
     - host-ipc
     - host-network
     - host-pid
+    - latest-tag
     - mismatching-selector
     - no-anti-affinity
     - no-extensions-v1beta
@@ -22,14 +23,26 @@ checks:
     - privilege-escalation-container
     - privileged-container
     - privileged-ports
+    - read-secret-from-env-var
     - run-as-non-root
     - sensitive-host-mounts
     - ssh-port
     - unsafe-proc-mount
     - unsafe-sysctls
+    - unset-memory-requirements
+    - use-namespace
+    - wildcard-in-rules
     - writable-host-mount
   exclude:
+    # Coder needs to create pods for workspaces
+    - access-to-create-pods
+    - access-to-secrets
+    # TODO: evaluate high availability by default
+    - minimum-three-replicas
+    # TODO: add update strategy
+    - no-rolling-update-strategy
+    # TODO: add network policy for coderd and timescale pods
+    - non-isolated-pod
     - required-annotation-email
     - required-label-owner
     - unset-cpu-requirements
-    - unset-memory-requirements
