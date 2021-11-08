@@ -15,7 +15,7 @@ check_dependencies \
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
 mapfile -t EXAMPLES < <(
-  find $PROJECT_ROOT/examples/ -mindepth 1 -type d -printf "%f\n"
+  find "$PROJECT_ROOT/examples/" -mindepth 1 -type d -printf "%f\n"
 )
 
 BUILD="$PROJECT_ROOT/build"
