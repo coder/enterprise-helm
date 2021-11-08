@@ -76,6 +76,26 @@ func TestSecurityContext(t *testing.T) {
 			require.True(t, found, "expected coderd deployment in manifests")
 		})
 	}
+
+}
+
+// TODO@jsjoeio
+// there has to be a better way to do this.
+type Postgres struct {
+	Default Default
+}
+
+type Default struct {
+	Resources Resources
+}
+
+type Resources struct {
+	Requests Requests
+}
+
+type Requests struct {
+	CPU    string
+	Memory string
 }
 
 func TestPostgresValues(t *testing.T) {
@@ -89,12 +109,12 @@ func TestPostgresValues(t *testing.T) {
 	tests := []struct {
 		Name     string
 		Values   *CoderValues
-		Postgres *corev1.Postgres
+		Postgres Postgres
 	}{
 		{
 			Name:   "openshift",
 			Values: exampleOpenShift,
-			Postgres: &any{
+			Postgres: &Postgres{
 				Default: &any{
 					Resources: &any{
 						Requests: &any{

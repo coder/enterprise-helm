@@ -40,6 +40,23 @@ type CoderdValues struct {
 	SecurityContext    *CoderdSecurityContext    `json:"securityContext" yaml:"securityContext"`
 }
 
+// PostgresValues are values that apply to postgres.
+type PostgresValues struct {
+	// TODO@jsjoeio
+	// There is something called NamespaceDefault in the corev1 type/s
+	// but I can't figure out how to import or use it.
+	Default *PostgresDefaultValues `json:"default" yaml:"default"`
+}
+
+type PostgresDefaultValues struct {
+	Resources corev1.ResourceList
+}
+
+type PostgresRequestsValues struct {
+	CPU    string
+	Memory string
+}
+
 type CoderdServiceSpecValues struct {
 	Type                  *string `json:"type" yaml:"type"`
 	ExternalTrafficPolicy *string `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
