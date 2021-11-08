@@ -103,4 +103,8 @@ jobs:
 
       - name: Get running info
         if: always()
-        run: kubectl describe all
+        run: |
+          set -x
+          kubectl --namespace=coder-test describe all
+          kubectl --namespace=coder-test logs statefulset/timescale
+          kubectl --namespace=coder-test logs deployment/coderd
