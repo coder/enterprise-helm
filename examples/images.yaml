@@ -1,9 +1,10 @@
+# Dummy image tags
 coderd:
-  image: docker.io/coderenvs/coder-service:latest
+  image: gcr.io/coder/coder-service:2.0.0
 
 postgres:
   default:
-    image: docker.io/coderenvs/timescale:latest
+    image: gcr.io/coder/timescale:2.0.0
 
 envbox:
-  image: docker.io/coderenvs/envbox:latest
+  image: gcr.io/coder/envbox:2.0.0
