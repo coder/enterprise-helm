@@ -92,7 +92,6 @@ jobs:
           helm install coder-test . \
             --create-namespace \
             --namespace=coder-test \
-            --atomic \
             --wait \
             --debug \
             --values=examples/kind/kind.values.yaml \
@@ -103,9 +102,5 @@ jobs:
             --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
 
       - name: Get running info
-        run: |
-          set -x
-          docker ps -a
-          printenv
-          kubectl cluster-info
-          kubectl config view
+        if: always()
+        run: kubectl describe all
