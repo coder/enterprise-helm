@@ -76,5 +76,4 @@ func TestSecurityContext(t *testing.T) {
 			require.True(t, found, "expected coderd deployment in manifests")
 		})
 	}
-
 }
