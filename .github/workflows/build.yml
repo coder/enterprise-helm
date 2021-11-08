@@ -28,24 +28,26 @@ jobs:
   quick:
     runs-on: ubuntu-20.04
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.1
+        if: github.event_type == 'pull_request'
 
-      - uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: ./scripts/install_deps.sh
 
-      - name: Lint Helm Chart
+      - name: Lint Helm chart
         run: make lint/helm
 
       - name: Check formatting and docs
         run: ./scripts/fmt.sh
 
-      - name: Lint Shell Scripts
+      - name: Lint shell scripts
         run: make lint/shellcheck
 
-      - name: Lint Kubernetes Templates
+      - name: Lint Kubernetes templates
         run: make lint/kubernetes
 
       - name: Install Go
@@ -56,5 +58,54 @@ jobs:
       - name: Unit tests
         run: ./scripts/test_go.sh
 
-      - name: Package Helm Chart
+      - name: Package Helm chart
         run: ./scripts/package.sh
+
+  # Integration test: deploy into a local kind cluster
+  integration-kind:
+    runs-on: ubuntu-20.04
+    name: "integration/kind"
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        if: github.event_type == 'pull_request'
+
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: ./scripts/install_deps.sh
+
+      - name: Start kind cluster
+        uses: container-tools/kind-action@v1
+
+      - name: Show environment data
+        run: |
+          set -x
+          docker ps -a
+          printenv
+          kubectl cluster-info
+          kubectl config view
+
+      - name: Install Coder
+        run: |
+          helm install coder-test . \
+            --create-namespace \
+            --namespace=coder-test \
+            --wait \
+            --debug \
+            --values=examples/kind/kind.values.yaml \
+            --values=examples/images.yaml \
+            --set=coderd.image=docker.io/coderenvs/coder-service:1.24.0 \
+            --set=coderd.serviceSpec.type=ClusterIP \
+            --set=coderd.serviceSpec.externalTrafficPolicy="" \
+            --set=postgres.default.image=docker.io/coderenvs/timescale:1.24.0 \
+            --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
+
+      - name: Get running info
+        if: always()
+        run: |
+          set -x
+          kubectl --namespace=coder-test describe all
+          kubectl --namespace=coder-test logs statefulset/timescale
+          kubectl --namespace=coder-test logs deployment/coderd

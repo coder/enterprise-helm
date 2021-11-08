@@ -1,7 +1,10 @@
 # Dummy image tags
 coderd:
   image: gcr.io/coder/coder-service:2.0.0
+
 postgres:
-  image: gcr.io/coder/timescale:2.0.0
+  default:
+    image: gcr.io/coder/timescale:2.0.0
+
 envbox:
   image: gcr.io/coder/envbox:2.0.0
