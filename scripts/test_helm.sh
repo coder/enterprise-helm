@@ -14,10 +14,8 @@ check_dependencies \
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
-EXAMPLES=(
-  ingress
-  kind
-  openshift
+mapfile -t EXAMPLES < <(
+  find $PROJECT_ROOT/examples/ -mindepth 1 -type d -printf "%f\n"
 )
 
 BUILD="$PROJECT_ROOT/build"
