@@ -10,7 +10,7 @@ check_dependencies \
   git \
   helm
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
 BUILD="$PROJECT_ROOT/build"
 mkdir -p "$BUILD"

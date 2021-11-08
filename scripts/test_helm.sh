@@ -9,17 +9,19 @@ source "./lib.sh"
 
 check_dependencies \
   git \
-  helm
+  helm \
+  kube-linter
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
 
 EXAMPLES=(
+  ingress
   kind
   openshift
 )
 
 BUILD="$PROJECT_ROOT/build"
-mkdir -p "$BUILD"
+mkdir --parents "$BUILD"
 
 for example in "${EXAMPLES[@]}"; do
   run_trace false helm template "$example" "$PROJECT_ROOT" \
@@ -28,7 +30,7 @@ for example in "${EXAMPLES[@]}"; do
     --release-name \
     --values="$PROJECT_ROOT/examples/images.yaml" \
     --values="$PROJECT_ROOT/examples/$example/$example.values.yaml" \
-    --output-dir="$BUILD" \| indent
+    --output-dir="$BUILD"
 done
 
 run_trace false kube-linter lint --config="$PROJECT_ROOT/kube-linter.yaml" "$BUILD"
