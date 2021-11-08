@@ -51,6 +51,8 @@ func TestOverwriteReplica(t *testing.T) {
 	}
 
 	objs, err := RenderChart(chart, ValuesToOverwrite, nil, nil)
+	// TODO@jsjoeio - getting an error here
+	// error deserializing "coder/templates/coderd.yaml": yaml: line 9: mapping values are not allowed in this context
 	require.NoError(t, err, "failed to render chart")
 
 	// Find the coderd Deployment
