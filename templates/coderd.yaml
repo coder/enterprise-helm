@@ -9,12 +9,9 @@ metadata:
     coder.deployment: {{ include "coder.serviceName" . }}
   name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
-  annotations:
-  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  annotations: {{- toYaml .Values.services.annotations | nindent 4 }}
 spec:
-  replicas: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.replicas" 1) }}
+  replicas: {{ default 1 .Values.coderd.replicas }}
   strategy:
     rollingUpdate:
       maxSurge: "25%"
@@ -29,17 +26,9 @@ spec:
         app.kubernetes.io/part-of: coder
         app: {{ include "coder.serviceName" . }}
         coder.deployment: {{ include "coder.serviceName" . }}
-      annotations:
-      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+      annotations: {{- toYaml .Values.services.annotations | nindent 8 }}
     spec:
-      securityContext:
-        {{- if hasKey .Values "cemanager" }}
-        {{- toYaml .Values.cemanager.podSecurityContext | nindent 8 }}
-        {{- else }}
-        {{- toYaml .Values.coderd.podSecurityContext | nindent 8 }}
-        {{- end }}
+      securityContext: {{- toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -48,14 +37,14 @@ spec:
       serviceAccountName: coder
       {{- end }}
       {{- if .Values.coderd.affinity }}
-      affinity: {{- include "coder.template.render" ( dict "value" .Values.coderd.affinity "context" $) | nindent 8 }}
+      affinity: {{- include "coder.template.render" (dict "value" .Values.coderd.affinity "context" $) | nindent 8 }}
       {{- end }}
 {{- include "coder.services.nodeSelector" . | indent 6 }}
 {{- include "coder.serviceTolerations" . | indent 6 }}
       {{- if not .Values.coderd.satellite.enable }}
       initContainers:
         - name: migrations
-          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          image: {{ .Values.coderd.image | quote }}
           imagePullPolicy: Always
           env:
             - name: HUMAN_LOG
@@ -75,11 +64,11 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DEVURL_HOST
-              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
+              value: {{ .Values.coderd.devurlsHost | quote }}
             - name: VERBOSE
               value: "true"
 {{- include "coder.postgres.env" . | indent 12 }}
-{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.workspaces.configMapEnv" . | indent 12 }}
           command:
             - coderd
             - migrate
@@ -94,17 +83,12 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
-          image: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.image") }}
+          image: {{ .Values.coderd.image | quote }}
           imagePullPolicy: Always
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
-          securityContext:
-            {{- if hasKey .Values "cemanager" }}
-            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
-            {{- else }}
-            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
-            {{- end }}
+          securityContext: {{ toYaml .Values.coderd.securityContext | nindent 12 }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
           env:
@@ -131,14 +115,14 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: DEVURL_HOST
-              value: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.devurlsHost") }}
+              value: {{ .Values.coderd.devurlsHost | quote }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
-            {{- if and (eq (include "coder.hasNginxIngress" .) "true") (eq (merge .Values dict | dig "coderd" "serviceNext" false) false) (merge .Values dict | dig "ingress" "enable" true) (merge .Values dict | dig "ingress" "useDefault" true) }}
+            {{- if .Values.ingress.enable }}
             - name: TRUST_PROXY_IP
               value: "true"
             {{- else }}
@@ -158,11 +142,11 @@ spec:
             {{- end }}
             {{- $serverCerts := list }}
             {{- $serverKeys := list }}
-            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+            {{- if ne .Values.coderd.tls.hostSecretName "" }}
               {{ $serverCerts = append $serverCerts "/etc/ssl/certs/host/tls.crt" }}
               {{ $serverKeys = append $serverKeys "/etc/ssl/certs/host/tls.key" }}
             {{- end }}
-            {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
+            {{- if ne .Values.coderd.tls.devurlsHostSecretName "" }}
               {{- $serverCerts = append $serverCerts "/etc/ssl/certs/devurls/tls.crt" }}
               {{- $serverKeys = append $serverKeys "/etc/ssl/certs/devurls/tls.key" }}
             {{- end }}
@@ -187,7 +171,7 @@ spec:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
                   key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
             {{- end }}
-{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.workspaces.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
             - coderd
@@ -210,7 +194,7 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "coderd.resources"))) | indent 10 }}
+{{- include "coder.resources" .Values.coderd.resources | indent 10 }}
 {{- include "coder.volumeMounts" . | indent 10 }}
 {{- include "coder.volumes" . | indent 6 }}
 {{- if .Values.coderd.satellite.enable }}
@@ -229,7 +213,6 @@ data:
   privateKey: {{ genPrivateKey "ecdsa" | b64enc }}
   {{- end }}
 {{- end }}
-{{ if eq (include "coder.useServiceNext" .) "true" }}
 ---
 apiVersion: v1
 kind: Service
@@ -240,12 +223,11 @@ metadata:
   name: {{ include "coder.serviceName" . }}
   {{- end }}
   namespace: {{ .Release.Namespace | quote }}
-  annotations:
-  {{- range $key, $value := .Values.coderd.serviceAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
 spec:
-{{ toYaml .Values.coderd.serviceSpec | indent 2 }}
+  {{- if .Values.coderd.serviceSpec }}
+  {{- toYaml .Values.coderd.serviceSpec | nindent 2 }}
+  {{- end }}
   selector:
     coder.deployment: {{ include "coder.serviceName" . }}
   ports:
@@ -253,32 +235,13 @@ spec:
       port: 80
       targetPort: 8080
       protocol: TCP
-      {{ if .Values.coderd.serviceNodePorts.http }}
-      nodePort: {{  .Values.coderd.serviceNodePorts.http  }}
-      {{ end }}
+      {{- if .Values.coderd.serviceNodePorts.http }}
+      nodePort: {{ .Values.coderd.serviceNodePorts.http }}
+      {{- end }}
     - name: tcp-{{ include "coder.serviceName" . }}-https
       port: 443
       targetPort: 8443
       protocol: TCP
-      {{ if .Values.coderd.serviceNodePorts.https }}
+      {{- if .Values.coderd.serviceNodePorts.https }}
       nodePort: {{ .Values.coderd.serviceNodePorts.https }}
-      {{ end }}
-{{- else }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "coder.serviceName" . }}
-  namespace: {{ .Release.Namespace | quote }}
-spec:
-  type: {{ include "movedValue" (dict "Values" .Values "Key" "services.type") | quote}}
-  selector:
-    coder.deployment: {{ include "coder.serviceName" . }}
-  ports:
-    - name: tcp-{{ include "coder.serviceName" . }}
-      port: 8080
-      protocol: TCP
-    - name: tcp-{{ include "coder.serviceName" . }}-https
-      port: 8443
-      protocol: TCP
-{{- end }}
+      {{- end }}

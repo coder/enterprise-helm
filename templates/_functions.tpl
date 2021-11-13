@@ -1,7 +1,5 @@
-{{/*
-  coder.resources accepts a resource stanza as its scope and returns
-  resource configuration if any of the values are set.
-*/}}
+# coder.resources accepts a resource stanza as its scope and returns
+# resource configuration if any of the values are set.
 {{- define "coder.resources" }}
 {{- if . }}
 resources:
@@ -26,11 +24,7 @@ resources:
 {{- end }}
 {{- end }}
 
-{{/*
-coder.template.render -- renders a value that contains template.
-Usage:
-{{ include "coder.template.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
-*/}}
+# coder.template.render -- renders a value that contains template.
 {{- define "coder.template.render" -}}
     {{- if typeIs "string" .value }}
         {{- tpl .value .context }}
