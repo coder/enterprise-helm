@@ -19,6 +19,9 @@ func TestSecurityContext(t *testing.T) {
 	exampleOpenShift, err := ReadValues("../examples/openshift/openshift.values.yaml")
 	require.NoError(t, err, "failed to load OpenShift example values")
 
+	exampleKind, err := ReadValues(("../examples/kind/kind.values.yaml"))
+	require.NoError(t, err, "failed to load Kind example values")
+
 	tests := []struct {
 		Name                     string
 		Values                   *CoderValues
@@ -47,6 +50,15 @@ func TestSecurityContext(t *testing.T) {
 				SeccompProfile: &corev1.SeccompProfile{
 					Type:             corev1.SeccompProfileTypeRuntimeDefault,
 					LocalhostProfile: nil,
+				},
+			},
+		},
+		{
+			Name:   "kind",
+			Values: exampleKind,
+			PodSecurityContext: &corev1.PodSecurityContext{
+				SeccompProfile: &corev1.SeccompProfile{
+					Type: corev1.SeccompProfileTypeRuntimeDefault,
 				},
 			},
 		},
