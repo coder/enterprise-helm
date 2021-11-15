@@ -114,3 +114,52 @@ jobs:
           kubectl --namespace=coder-test describe all
           kubectl --namespace=coder-test logs statefulset/timescale
           kubectl --namespace=coder-test logs deployment/coderd
+
+  # Integration test: deploy into a local MicroShift cluster
+  integration-microshift:
+    runs-on: ubuntu-20.04
+    name: "integration/microshift"
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        if: github.event_type == 'pull_request'
+
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: ./scripts/install_deps.sh
+
+      - name: Start MicroShift cluster
+        uses: container-tools/microshift-action@v0.2
+
+      - name: Show environment data
+        run: |
+          set -x
+          docker ps -a
+          printenv
+          kubectl cluster-info
+          kubectl config view
+
+      - name: Install Coder
+        run: |
+          helm install coder-test . \
+            --create-namespace \
+            --namespace=coder-test \
+            --wait \
+            --debug \
+            --values=examples/openshift/openshift.values.yaml \
+            --values=examples/images.yaml \
+            --set=coderd.image=docker.io/coderenvs/coder-service:1.24.0 \
+            --set=coderd.serviceSpec.type=ClusterIP \
+            --set=coderd.serviceSpec.externalTrafficPolicy="" \
+            --set=postgres.default.image=docker.io/coderenvs/timescale:1.24.0 \
+            --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
+
+      - name: Get running info
+        if: always()
+        run: |
+          set -x
+          kubectl --namespace=coder-test describe all
+          kubectl --namespace=coder-test logs statefulset/timescale
+          kubectl --namespace=coder-test logs deployment/coderd
