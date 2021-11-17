@@ -433,7 +433,8 @@ spec:
             name: {{ include "coder.serviceName" . }}
             port:
               name: tcp-{{ include "coder.serviceName" . }}
-  - host: {{ merge .Values dict | dig "coderd" "devurlsHost" "" | quote }}
+          {{ $devURLHost := merge .Values dict | dig "coderd" "devurlsHost" "" }}
+  - host: {{ regexReplaceAll "\\*[^.]*(\\..*)" $devURLHost "*${1}" | quote }}
     http:
       paths:
       - path: /
