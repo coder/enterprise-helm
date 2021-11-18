@@ -434,7 +434,8 @@ spec:
             port:
               name: tcp-{{ include "coder.serviceName" . }}
           {{ $devURLHost := merge .Values dict | dig "coderd" "devurlsHost" "" }}
-          # Regex docs on '*-suffix.example.com'
+          # Regex docs on '*-suffix.example.com'. This is required as the original input including the suffix is
+          # not a legal ingress host. We need to remove the suffic, and keep the wildcard '*'.
           #   - '\\*'     Starts with '*'
           #   - '[^.]*'   Suffix is 0 or more characters, '-suffix'
           #   - '('       Start domain capture grp
