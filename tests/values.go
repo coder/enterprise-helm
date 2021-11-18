@@ -34,7 +34,7 @@ type CoderValues struct {
 // CoderdValues are values that apply to coderd.
 type CoderdValues struct {
 	Image              *string                   `json:"image" yaml:"image"`
-	Replicas           *int                      `json:"replicas" yaml:"replicas"`
+	Replicas           *int32                    `json:"replicas" yaml:"replicas"`
 	ServiceSpec        *CoderdServiceSpecValues  `json:"serviceSpec" yaml:"serviceSpec"`
 	PodSecurityContext *CoderdPodSecurityContext `json:"podSecurityContext" yaml:"podSecurityContext"`
 	SecurityContext    *CoderdSecurityContext    `json:"securityContext" yaml:"securityContext"`
