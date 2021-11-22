@@ -49,11 +49,6 @@ type Chart struct {
 	// is intended to be read-only and should not be modified
 	// by callers. Instead, modify the Values field.
 	OriginalValues *CoderValues
-
-	// Values contains the effective chart values. This is a
-	// deep copy of OriginalValues, and callers can modify
-	// the values.
-	Values *CoderValues
 }
 
 // CoderValues is a typed Go representation of Coder's values
@@ -306,17 +301,12 @@ func LoadChart(t *testing.T) *Chart {
 	originalValues, err := ConvertMapToCoderValues(chart.Values, true)
 	require.NoError(t, err, "error parsing original values")
 
-	// Create another copy for users to modify
-	values, err := ConvertMapToCoderValues(chart.Values, true)
-	require.NoError(t, err, "error parsing original values")
-
 	return &Chart{
 		chart:          chart,
 		Metadata:       chart.Metadata,
 		Files:          chart.Files,
 		Templates:      chart.Templates,
 		OriginalValues: originalValues,
-		Values:         values,
 	}
 }
 
@@ -340,13 +330,13 @@ func (c *Chart) Validate() error {
 	return c.chart.Validate()
 }
 
-// RenderChart applies the CoderValues to the chart, and returns a list
+// Render applies the CoderValues to the chart, and returns a list
 // of Kubernetes runtime objects, or an error.
 //
 // values, options, and capabilities may be nil, in which case the
 // function will simulate a fresh install to the "coder" namespace
 // using the "coder" release, default values, and capabilities.
-func RenderChart(chrt *chart.Chart, values *CoderValues, options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) ([]runtime.Object, error) {
+func (c *Chart) Render(values *CoderValues, options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) ([]runtime.Object, error) {
 	vals, err := ConvertCoderValuesToMap(values)
 	if err != nil {
 		return nil, fmt.Errorf("failed to convert values to map: %w", err)
@@ -354,13 +344,7 @@ func RenderChart(chrt *chart.Chart, values *CoderValues, options *chartutil.Rele
 
 	var opts chartutil.ReleaseOptions
 	if options == nil {
-		opts = chartutil.ReleaseOptions{
-			Name:      "coder",
-			Namespace: "coder",
-			Revision:  1,
-			IsInstall: true,
-			IsUpgrade: false,
-		}
+		opts = DefaultReleaseOptions()
 	} else {
 		opts = *options
 	}
@@ -369,12 +353,12 @@ func RenderChart(chrt *chart.Chart, values *CoderValues, options *chartutil.Rele
 		capabilities = chartutil.DefaultCapabilities.Copy()
 	}
 
-	vals, err = chartutil.ToRenderValues(chrt, vals, opts, capabilities)
+	vals, err = chartutil.ToRenderValues(c.chart, vals, opts, capabilities)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create render values: %w", err)
 	}
 
-	manifests, err := engine.Render(chrt, vals)
+	manifests, err := engine.Render(c.chart, vals)
 	if err != nil {
 		return nil, fmt.Errorf("failed to render Chart: %w", err)
 	}
