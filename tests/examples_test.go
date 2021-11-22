@@ -125,7 +125,7 @@ func TestExamples(t *testing.T) {
 			require.NoError(t, err, "failed to render chart")
 
 			objs, err := LoadObjectsFromManifests(manifests)
-			require.NoError(t, err, "failed to render chart")
+			require.NoError(t, err, "failed to convert manifests to objects")
 
 			// Find the coderd Deployment
 			var found bool
