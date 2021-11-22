@@ -8,9 +8,12 @@ import (
 	"io"
 	"os"
 	"strings"
+	"testing"
 
+	"github.com/stretchr/testify/require"
 	"golang.org/x/xerrors"
 	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"
 	appsv1 "k8s.io/api/apps/v1"
@@ -24,36 +27,208 @@ import (
 
 var _ = fmt.Stringer(CoderValues{})
 
-// CoderValues is a typed Go representation of Coder's values file,
-// suitable for writing tests. This provides code completion for Go
-// tests.
+// Chart wraps the default Helm chart, preserving default values.
+//
+// This technique has the side effect of requiring that all values
+// be defined in the Values struct to behave correctly.
+type Chart struct {
+	// chart is the original Helm chart. Callers should not need
+	// to access this directly.
+	chart *chart.Chart
+
+	// Metadata is the Helm chart Metadata field.
+	Metadata *chart.Metadata
+
+	// Templates for this chart.
+	Templates []*chart.File
+
+	// Files are other miscellaneous files included in the chart.
+	Files []*chart.File
+
+	// OriginalValues contains the original chart values. This
+	// is intended to be read-only and should not be modified
+	// by callers. Instead, modify the Values field.
+	OriginalValues *CoderValues
+
+	// Values contains the effective chart values. This is a
+	// deep copy of OriginalValues, and callers can modify
+	// the values.
+	Values *CoderValues
+}
+
+// CoderValues is a typed Go representation of Coder's values
+// file, suitable for writing tests.
+//
+// This technique provides code completion for Go tests, and has
+// the side effect of requiring that all values be defined in the
+// struct to behave correctly.
+//
+// TODO: generate these structs from a values.schema.json
 type CoderValues struct {
-	Coderd *CoderdValues `json:"coderd" yaml:"coderd"`
+	Coderd   *CoderdValues   `json:"coderd" yaml:"coderd"`
+	Certs    *CertsValues    `json:"certs" yaml:"certs"`
+	Envbox   *EnvboxValues   `json:"envbox" yaml:"envbox"`
+	Logging  *LoggingValues  `json:"logging" yaml:"logging"`
+	Metrics  *MetricsValues  `json:"metrics" yaml:"metrics"`
+	Postgres *PostgresValues `json:"postgres" yaml:"postgres"`
+	Services *ServicesValues `json:"services" yaml:"services"`
 }
 
-// CoderdValues are values that apply to coderd.
+// CoderdValues reflect values from coderd.
 type CoderdValues struct {
-	Image              *string                   `json:"image" yaml:"image"`
-	Replicas           *int                      `json:"replicas" yaml:"replicas"`
-	ServiceSpec        *CoderdServiceSpecValues  `json:"serviceSpec" yaml:"serviceSpec"`
-	PodSecurityContext *CoderdPodSecurityContext `json:"podSecurityContext" yaml:"podSecurityContext"`
-	SecurityContext    *CoderdSecurityContext    `json:"securityContext" yaml:"securityContext"`
+	Image                         *string                                    `json:"image" yaml:"image"`
+	Replicas                      *int                                       `json:"replicas" yaml:"replicas"`
+	ServiceSpec                   *CoderdServiceSpecValues                   `json:"serviceSpec" yaml:"serviceSpec"`
+	ServiceNodePorts              *CoderdServiceNodePortsValues              `json:"serviceNodePorts" yaml:"serviceNodePorts"`
+	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
+	TrustProxyIP                  *bool                                      `json:"trustProxyIP" yaml:"trustProxyIP"`
+	DevURLsHost                   *string                                    `json:"devurlsHost" yaml:"devurlsHost"`
+	TLS                           *CoderdTLSValues                           `json:"tls" yaml:"tls"`
+	Satellite                     *CoderdSatelliteValues                     `json:"satellite" yaml:"satellite"`
+	PodSecurityContext            *CoderdPodSecurityContextValues            `json:"podSecurityContext" yaml:"podSecurityContext"`
+	SecurityContext               *CoderdSecurityContextValues               `json:"securityContext" yaml:"securityContext"`
+	Resources                     *corev1.ResourceRequirements               `json:"resources" yaml:"resources"`
+	BuiltinProviderServiceAccount *CoderdBuiltinProviderServiceAccountValues `json:"builtinProviderServiceAccount" yaml:"builtinProviderServiceAccount"`
+	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
+	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
+	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
 }
 
+// CoderdServiceNodePortsValues reflect values from
+// coderd.serviceNodePorts.
+type CoderdServiceNodePortsValues struct {
+	HTTP  *int32 `json:"http" yaml:"http"`
+	HTTPS *int32 `json:"https" yaml:"https"`
+}
+
+// CoderdSuperAdminValues reflect values from
+// coderd.superAdmin.
+type CoderdSuperAdminValues struct {
+	PasswordSecret *CoderdSuperAdminPasswordSecretValues `json:"passwordSecret" yaml:"passwordSecret"`
+}
+
+// CoderdSuperAdminPasswordSecretValues reflect values from
+// coderd.superAdmin.passwordSecret.
+type CoderdSuperAdminPasswordSecretValues struct {
+	Name *string `json:"name" yaml:"name"`
+	Key  *string `json:"key" yaml:"key"`
+}
+
+// CoderdTLSValues reflect values from coderd.tls.
+type CoderdTLSValues struct {
+	HostSecretName        *string `json:"hostSecretName" yaml:"hostSecretName"`
+	DevURLsHostSecretName *string `json:"devurlsHostSecretName" yaml:"devurlsHostSecretName"`
+}
+
+// CoderdBuiltinProviderServiceAccountValues reflect values from
+// coderd.builtinProviderServiceAccount.
+type CoderdBuiltinProviderServiceAccountValues struct {
+	// Labels is the same type as metav1.ObjectMeta.Labels
+	Labels map[string]string `json:"labels" yaml:"labels"`
+	// Annotations is the same type as metav1.ObjectMeta.Annotations
+	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+}
+
+// CoderdOIDCValues reflect values from coderd.oidc.
+type CoderdOIDCValues struct {
+	EnableRefresh   *bool             `json:"enableRefresh" yaml:"enableRefresh"`
+	RedirectOptions map[string]string `json:"redirectOptions" yaml:"redirectOptions"`
+}
+
+// CoderdSatelliteValues reflect values from coderd.satellite.
+type CoderdSatelliteValues struct {
+	Enable     *bool   `json:"enable" yaml:"enable"`
+	AccessURL  *string `json:"accessURL" yaml:"accessURL"`
+	PrimaryURL *string `json:"primaryURL" yaml:"primaryURL"`
+}
+
+// CoderdServiceSpecValues reflect values from coderd.serviceSpec.
 type CoderdServiceSpecValues struct {
-	Type                  *string `json:"type" yaml:"type"`
-	ExternalTrafficPolicy *string `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
-	LoadBalancerIP        *string `json:"loadBalancerIP" yaml:"loadBalancerIP"`
+	Type                     *string                                  `json:"type" yaml:"type"`
+	ExternalTrafficPolicy    *corev1.ServiceExternalTrafficPolicyType `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
+	LoadBalancerIP           *string                                  `json:"loadBalancerIP" yaml:"loadBalancerIP"`
+	LoadBalancerSourceRanges *[]string                                `json:"loadBalancerSourceRanges" yaml:"loadBalancerSourceRanges"`
 }
 
-type CoderdPodSecurityContext struct {
-	RunAsNonRoot *bool `json:"runAsNonRoot" yaml:"runAsNonRoot"`
-	RunAsUser    *int  `json:"runAsUser" yaml:"runAsUser"`
+// CoderdPodSecurityContextValues reflect values from
+// coderd.podSecurityContext.
+type CoderdPodSecurityContextValues struct {
+	RunAsNonRoot   *bool                  `json:"runAsNonRoot" yaml:"runAsNonRoot"`
+	RunAsUser      *int                   `json:"runAsUser" yaml:"runAsUser"`
+	SeccompProfile *corev1.SeccompProfile `json:"seccompProfile" yaml:"seccompProfile"`
 }
 
-type CoderdSecurityContext struct {
-	ReadOnlyRootFilesystem   *bool `json:"readOnlyRootFilesystem" yaml:"readOnlyRootFilesystem"`
-	AllowPrivilegeEscalation *bool `json:"allowPrivilegeEscalation" yaml:"allowPrivilegeEscalation"`
+// CoderdSecurityContextValues reflect values from
+// coderd.securityContext.
+type CoderdSecurityContextValues struct {
+	ReadOnlyRootFilesystem   *bool                  `json:"readOnlyRootFilesystem" yaml:"readOnlyRootFilesystem"`
+	AllowPrivilegeEscalation *bool                  `json:"allowPrivilegeEscalation" yaml:"allowPrivilegeEscalation"`
+	SeccompProfile           *corev1.SeccompProfile `json:"seccompProfile" yaml:"seccompProfile"`
+}
+
+// EnvboxValues reflect values from envbox.
+type EnvboxValues struct {
+	Image *string `json:"image" yaml:"image"`
+}
+
+// LoggingValues reflect values from logging.
+type LoggingValues struct {
+	Human       *string              `json:"human" yaml:"human"`
+	Stackdriver *string              `json:"stackdriver" yaml:"stackdriver"`
+	JSON        *string              `json:"json" yaml:"json"`
+	Splunk      *LoggingSplunkValues `json:"splunk" yaml:"splunk"`
+}
+
+// LoggingSplunkValues reflect values from logging.splunk.
+type LoggingSplunkValues struct {
+	URL     *string `json:"url" yaml:"url"`
+	Token   *string `json:"token" yaml:"token"`
+	Channel *string `json:"channel" yaml:"channel"`
+}
+
+// MetricsValues reflect values from metrics.
+type MetricsValues struct {
+	AmplitudeKey *string `json:"amplitudeKey" yaml:"amplitudeKey"`
+}
+
+// CertsValues reflect the values from certs.
+type CertsValues struct {
+	Secret *CertsSecretValues `json:"secret" yaml:"secret"`
+}
+
+// CertsSecretValues reflect the values from certs.secret.
+type CertsSecretValues struct {
+	Name *string `json:"name" yaml:"name"`
+	Key  *string `json:"key" yaml:"key"`
+}
+
+// PostgresValues reflect the values from postgres.
+type PostgresValues struct {
+	Host           *string                `json:"host" yaml:"host"`
+	Port           *string                `json:"port" yaml:"port"`
+	User           *string                `json:"user" yaml:"user"`
+	SSLMode        *string                `json:"sslMode" yaml:"sslMode"`
+	Database       *string                `json:"database" yaml:"database"`
+	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
+	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
+}
+
+// PostgresDefaultValues reflect the values from
+// postgres.default.
+type PostgresDefaultValues struct {
+	Enable           *bool                        `json:"enable" yaml:"enable"`
+	Image            *string                      `json:"image" yaml:"image"`
+	StorageClassName *string                      `json:"storageClassName" yaml:"storageClassName"`
+	Resources        *corev1.ResourceRequirements `json:"resources" yaml:"resources"`
+}
+
+// ServicesValues reflect the values from services.
+type ServicesValues struct {
+	Annotations         map[string]string    `json:"annotations" yaml:"annotations"`
+	ClusterDomainSuffix *string              `json:"clusterDomainSuffix" yaml:"clusterDomainSuffix"`
+	Tolerations         *[]corev1.Toleration `json:"tolerations" yaml:"tolerations"`
+	NodeSelector        map[string]string    `json:"nodeSelector" yaml:"nodeSelector"`
+	Type                *corev1.ServiceType  `json:"type" yaml:"type"`
 }
 
 // String returns the string representation of the values.
@@ -119,6 +294,52 @@ func ConvertMapToCoderValues(v map[string]interface{}, strict bool) (*CoderValue
 	return values, nil
 }
 
+// LoadChart is a utility function that loads the chart from the
+// unpacked source directory.
+func LoadChart(t *testing.T) *Chart {
+	chart, err := loader.LoadDir("..")
+	require.NoError(t, err, "loaded chart successfully")
+	require.NotNil(t, chart, "chart must be non-nil")
+	require.True(t, chart.IsRoot(), "chart must be a root chart")
+
+	// Load original values so that users can override them.
+	originalValues, err := ConvertMapToCoderValues(chart.Values, true)
+	require.NoError(t, err, "error parsing original values")
+
+	// Create another copy for users to modify
+	values, err := ConvertMapToCoderValues(chart.Values, true)
+	require.NoError(t, err, "error parsing original values")
+
+	return &Chart{
+		chart:          chart,
+		Metadata:       chart.Metadata,
+		Files:          chart.Files,
+		Templates:      chart.Templates,
+		OriginalValues: originalValues,
+		Values:         values,
+	}
+}
+
+// Name returns the name of the chart.
+func (c *Chart) Name() string {
+	return c.chart.Name()
+}
+
+// IsRoot is true if this is not a subchart and has no parents.
+func (c *Chart) IsRoot() bool {
+	return c.chart.IsRoot()
+}
+
+// AppVersion returns the chart appversion.
+func (c *Chart) AppVersion() string {
+	return c.chart.AppVersion()
+}
+
+// Validate checks that the chart metadata is valid.
+func (c *Chart) Validate() error {
+	return c.chart.Validate()
+}
+
 // RenderChart applies the CoderValues to the chart, and returns a list
 // of Kubernetes runtime objects, or an error.
 //
@@ -158,6 +379,25 @@ func RenderChart(chrt *chart.Chart, values *CoderValues, options *chartutil.Rele
 		return nil, fmt.Errorf("failed to render Chart: %w", err)
 	}
 
+	objs, err := LoadObjectsFromManifests(manifests)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load objects: %w", err)
+	}
+
+	return objs, nil
+}
+
+func DefaultReleaseOptions() chartutil.ReleaseOptions {
+	return chartutil.ReleaseOptions{
+		Name:      "coder",
+		Namespace: "coder",
+		Revision:  1,
+		IsInstall: true,
+		IsUpgrade: false,
+	}
+}
+
+func LoadObjectsFromManifests(manifests map[string]string) ([]runtime.Object, error) {
 	deserializer := NewDeserializer()
 
 	var objs []runtime.Object
@@ -242,4 +482,21 @@ func ReadValues(path string) (*CoderValues, error) {
 	}
 
 	return &values, nil
+}
+
+// ReadValuesAsMap reads the values.yaml from a file
+func ReadValuesAsMap(path string) (map[string]interface{}, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open %q: %w", path, err)
+	}
+
+	var values map[string]interface{}
+	decoder := yaml.NewYAMLToJSONDecoder(file)
+	err = decoder.Decode(&values)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding yaml %q: %w", path, err)
+	}
+
+	return values, nil
 }
