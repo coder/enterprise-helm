@@ -81,8 +81,6 @@ spec:
 {{- include "coder.postgres.env" . | indent 12 }}
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
           command:
-            - /entrypoint.sh
-          args:
             - coderd
             - migrate
             - up
@@ -191,8 +189,6 @@ spec:
 {{- include "coder.environments.configMapEnv" . | indent 12 }}
 {{- include "coder.postgres.env" . | indent 12 }}
           command:
-            - /entrypoint.sh
-          args:
             - coderd
             {{- if not .Values.coderd.satellite.enable }}
             - run
