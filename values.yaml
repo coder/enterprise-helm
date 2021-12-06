@@ -172,6 +172,23 @@ coderd:
   #         weight: 1
   # ```
 
+# ingress -- Configure an Ingress to route traffic to Coder services.
+ingress:
+  # ingress.enable -- A boolean controlling whether to create an Ingress.
+  enable: false
+  # ingress.host -- The hostname to proxy to the Coder installation.
+  # The cluster Ingress Controller typically uses server name indication
+  # or the HTTP Host header to route traffic.
+  host: ""
+  # ingress.annotations -- Additional annotations to add to the Ingress
+  # object. The behavior is typically dependent on the Ingress Controller
+  # implementation, and useful for managing features like TLS termination.
+  annotations: {}
+  # ingress.tls -- Configures TLS settings for the Ingress.
+  tls:
+    # ingress.tls.enable -- Determines whether the Ingress handles TLS.
+    enable: false
+
 # envbox -- Required for running Docker inside containers. See requirements:
 # https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
 envbox:
