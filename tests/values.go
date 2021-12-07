@@ -60,9 +60,10 @@ type Chart struct {
 //
 // TODO: generate these structs from a values.schema.json
 type CoderValues struct {
-	Coderd   *CoderdValues   `json:"coderd" yaml:"coderd"`
 	Certs    *CertsValues    `json:"certs" yaml:"certs"`
+	Coderd   *CoderdValues   `json:"coderd" yaml:"coderd"`
 	Envbox   *EnvboxValues   `json:"envbox" yaml:"envbox"`
+	Ingress  *IngressValues  `json:"ingress" yaml:"ingress"`
 	Logging  *LoggingValues  `json:"logging" yaml:"logging"`
 	Metrics  *MetricsValues  `json:"metrics" yaml:"metrics"`
 	Postgres *PostgresValues `json:"postgres" yaml:"postgres"`
@@ -164,6 +165,19 @@ type CoderdSecurityContextValues struct {
 // EnvboxValues reflect values from envbox.
 type EnvboxValues struct {
 	Image *string `json:"image" yaml:"image"`
+}
+
+// IngressValues reflect values from ingress.
+type IngressValues struct {
+	Enable      *bool             `json:"enable" yaml:"enable"`
+	Host        *string           `json:"host" yaml:"host"`
+	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+	TLS         *IngressTLSValues `json:"tls" yaml:"tls"`
+}
+
+// IngressTLSValues reflect values from ingress.tls.
+type IngressTLSValues struct {
+	Enable *bool `json:"enable" yaml:"enable"`
 }
 
 // LoggingValues reflect values from logging.
