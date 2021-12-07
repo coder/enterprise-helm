@@ -13,9 +13,35 @@ import (
 func TestIngress(t *testing.T) {
 	chart := LoadChart(t)
 
+	pathTypePrefix := netv1.PathTypePrefix
+	coderdIngressRule := netv1.IngressRuleValue{
+		HTTP: &netv1.HTTPIngressRuleValue{
+			Paths: []netv1.HTTPIngressPath{
+				{
+					Path:     "/",
+					PathType: &pathTypePrefix,
+					Backend: netv1.IngressBackend{
+						Service: &netv1.IngressServiceBackend{
+							Name: "coderd",
+							Port: netv1.ServiceBackendPort{
+								Name: "tcp-coderd",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
 	tests := []struct {
-		Name       string
+		Name string
+		// ValuesFunc is called to configure the values used in this test.
+		// The function should override the CoderValues as appropriate for
+		// the test in question.
 		ValuesFunc func(v *CoderValues)
+		// AssertFunc is called after rendering the chart, with the resulting
+		// Ingress object. You can use it to assert properties about the
+		// Ingress object.
 		AssertFunc func(t *testing.T, ingress *netv1.Ingress)
 	}{
 		{
@@ -30,49 +56,15 @@ func TestIngress(t *testing.T) {
 					"nginx.ingress.kubernetes.io/proxy-body-size": "0",
 				}
 				require.Equal(t, defaultAnnotations, ingress.Annotations)
-				pathTypePrefix := netv1.PathTypePrefix
+
 				expectedRules := []netv1.IngressRule{
 					{
-						Host: "install.coder.com",
-						IngressRuleValue: netv1.IngressRuleValue{
-							HTTP: &netv1.HTTPIngressRuleValue{
-								Paths: []netv1.HTTPIngressPath{
-									{
-										Path:     "/",
-										PathType: &pathTypePrefix,
-										Backend: netv1.IngressBackend{
-											Service: &netv1.IngressServiceBackend{
-												Name: "coderd",
-												Port: netv1.ServiceBackendPort{
-													Name: "tcp-coderd",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
+						Host:             "install.coder.com",
+						IngressRuleValue: coderdIngressRule,
 					},
 					{
-						Host: "*.install.coder.app",
-						IngressRuleValue: netv1.IngressRuleValue{
-							HTTP: &netv1.HTTPIngressRuleValue{
-								Paths: []netv1.HTTPIngressPath{
-									{
-										Path:     "/",
-										PathType: &pathTypePrefix,
-										Backend: netv1.IngressBackend{
-											Service: &netv1.IngressServiceBackend{
-												Name: "coderd",
-												Port: netv1.ServiceBackendPort{
-													Name: "tcp-coderd",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
+						Host:             "*.install.coder.app",
+						IngressRuleValue: coderdIngressRule,
 					},
 				}
 				require.Equal(t, expectedRules, ingress.Spec.Rules, "expected ingress spec to match")
@@ -90,49 +82,14 @@ func TestIngress(t *testing.T) {
 					"nginx.ingress.kubernetes.io/proxy-body-size": "0",
 				}
 				require.Equal(t, defaultAnnotations, ingress.Annotations)
-				pathTypePrefix := netv1.PathTypePrefix
 				expectedRules := []netv1.IngressRule{
 					{
-						Host: "install.coder.com",
-						IngressRuleValue: netv1.IngressRuleValue{
-							HTTP: &netv1.HTTPIngressRuleValue{
-								Paths: []netv1.HTTPIngressPath{
-									{
-										Path:     "/",
-										PathType: &pathTypePrefix,
-										Backend: netv1.IngressBackend{
-											Service: &netv1.IngressServiceBackend{
-												Name: "coderd",
-												Port: netv1.ServiceBackendPort{
-													Name: "tcp-coderd",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
+						Host:             "install.coder.com",
+						IngressRuleValue: coderdIngressRule,
 					},
 					{
-						Host: "*.install.coder.app",
-						IngressRuleValue: netv1.IngressRuleValue{
-							HTTP: &netv1.HTTPIngressRuleValue{
-								Paths: []netv1.HTTPIngressPath{
-									{
-										Path:     "/",
-										PathType: &pathTypePrefix,
-										Backend: netv1.IngressBackend{
-											Service: &netv1.IngressServiceBackend{
-												Name: "coderd",
-												Port: netv1.ServiceBackendPort{
-													Name: "tcp-coderd",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
+						Host:             "*.install.coder.app",
+						IngressRuleValue: coderdIngressRule,
 					},
 				}
 				require.Equal(t, expectedRules, ingress.Spec.Rules, "expected ingress spec to match")
