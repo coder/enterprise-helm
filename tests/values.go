@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jinzhu/copier"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/xerrors"
 	"helm.sh/helm/v3/pkg/chart"
@@ -220,6 +221,13 @@ type PostgresValues struct {
 	Database       *string                `json:"database" yaml:"database"`
 	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
 	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
+	SSL            *PostgresSSLValues     `json:"ssl" yaml:"ssl"`
+}
+
+type PostgresSSLValues struct {
+	CertSecret     *CertsSecretValues `json:"certSecret" yaml:"certSecret"`
+	KeySecret      *CertsSecretValues `json:"keySecret" yaml:"keySecret"`
+	RootCertSecret *CertsSecretValues `json:"rootCertSecret" yaml:"rootCertSecret"`
 }
 
 // PostgresDefaultValues reflect the values from
@@ -305,7 +313,7 @@ func ConvertMapToCoderValues(v map[string]interface{}, strict bool) (*CoderValue
 
 // LoadChart is a utility function that loads the chart from the
 // unpacked source directory.
-func LoadChart(t *testing.T) *Chart {
+func LoadChart(t testing.TB) *Chart {
 	chart, err := loader.LoadDir("..")
 	require.NoError(t, err, "loaded chart successfully")
 	require.NotNil(t, chart, "chart must be non-nil")
@@ -383,6 +391,19 @@ func (c *Chart) Render(values *CoderValues, options *chartutil.ReleaseOptions, c
 	}
 
 	return objs, nil
+}
+
+// MustRender renders a chart or fails the test. Use `fn` to modify the default
+// chart values.
+func (c *Chart) MustRender(t testing.TB, fn func(*CoderValues)) []runtime.Object {
+	values := &CoderValues{}
+	copier.Copy(values, c.OriginalValues)
+	fn(values)
+
+	objs, err := c.Render(values, nil, nil)
+	require.NoError(t, err, "render chart")
+
+	return objs
 }
 
 func DefaultReleaseOptions() chartutil.ReleaseOptions {
@@ -465,7 +486,7 @@ func NewScheme() *runtime.Scheme {
 	return scheme
 }
 
-// ReadValues reads the values.yaml from a file
+// ReadValues reads the values.yaml from a file.
 func ReadValues(path string) (*CoderValues, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -482,8 +503,8 @@ func ReadValues(path string) (*CoderValues, error) {
 	return &values, nil
 }
 
-// ReadValuesAsMap reads the values.yaml from a file
-func ReadValuesAsMap(path string) (map[string]interface{}, error) {
+// ReadValuesFileAsMap reads the values.yaml from a file.
+func ReadValuesFileAsMap(path string) (map[string]interface{}, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open %q: %w", path, err)
@@ -497,4 +518,68 @@ func ReadValuesAsMap(path string) (map[string]interface{}, error) {
 	}
 
 	return values, nil
+}
+
+// MustFindDeployment finds a deployment in the given slice of objects with the
+// given name, or fails the test.
+func MustFindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv1.Deployment {
+	names := []string{}
+	for _, obj := range objs {
+		if deployment, ok := obj.(*appsv1.Deployment); ok {
+			if deployment.Name == name {
+				return deployment
+			}
+			names = append(names, deployment.Name)
+		}
+	}
+
+	t.Fatalf("failed to find deployment %q, found %v", name, names)
+	return nil
+}
+
+// AssertVolume asserts that a volume exists of the given name in the given
+// slice of volumes. If it exists, it also runs fn against the named volume.
+func AssertVolume(t testing.TB, vols []corev1.Volume, name string, fn func(t testing.TB, v corev1.Volume)) {
+	names := []string{}
+	for _, v := range vols {
+		if v.Name == name {
+			fn(t, v)
+			return
+		}
+		names = append(names, v.Name)
+	}
+
+	t.Fatalf("failed to find volume %q, found %v", name, names)
+}
+
+// AssertVolumeMount asserts that a volume mount exists of the given name in the
+// given slice of volume mounts. If it exists, it also runs fn against the named
+// volume mount.
+func AssertVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string, fn func(t testing.TB, v corev1.VolumeMount)) {
+	names := []string{}
+	for _, v := range vols {
+		if v.Name == name {
+			fn(t, v)
+			return
+		}
+		names = append(names, v.Name)
+	}
+
+	t.Fatalf("failed to find volume mount %q, found %v", name, names)
+}
+
+// AssertContainer asserts that a container exists of the given name in the
+// given slice of containers. If it exists, it also runs fn against the named
+// container.
+func AssertContainer(t testing.TB, cnts []corev1.Container, name string, fn func(t testing.TB, v corev1.Container)) {
+	names := []string{}
+	for _, c := range cnts {
+		if c.Name == name {
+			fn(t, c)
+			return
+		}
+		names = append(names, c.Name)
+	}
+
+	t.Fatalf("failed to find container %q, found %v", name, names)
 }

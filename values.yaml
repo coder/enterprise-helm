@@ -216,8 +216,29 @@ postgres:
   passwordSecret: ""
   # postgres.sslMode -- Provides variable levels of protection for
   # the PostgreSQL connection. For acceptable values, see:
-  #  https://www.postgresql.org/docs/9.1/libpq-ssl.html
+  #  https://www.postgresql.org/docs/11/libpq-ssl.html
   sslMode: "require"
+  # postgres.ssl -- Options for configuring the SSL cert, key, and root cert
+  # when connecting to Postgres.
+  ssl:
+    # postgres.ssl.certSecret -- Secret containing a PEM encoded cert file.
+    certSecret:
+      # postgres.ssl.certSecret.name -- Name of the secret.
+      name: ""
+      # postgres.ssl.certSecret.key -- Key pointing to a certificate in the secret.
+      key: ""
+    # postgres.ssl.keySecret -- Secret containing a PEM encoded key file.
+    keySecret:
+      # postgres.ssl.keytSecret.name -- Name of the secret.
+      name: ""
+      # postgres.ssl.keySecret.key -- Key pointing to a certificate in the secret.
+      key: ""
+    # postgres.ssl.rootCertSecret -- Secret containing a PEM encoded root cert file.
+    rootCertSecret:
+      # postgres.ssl.rootCertSecret.name -- Name of the secret.
+      name: ""
+      # postgres.ssl.rootCertSecret.key -- Key pointing to a certificate in the secret.
+      key: ""
 
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:

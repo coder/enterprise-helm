@@ -40,15 +40,27 @@ storageClassName: {{ $storageClass | default "" | quote }}
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
   value: {{ .Values.postgres.database | quote }}
+{{- if ne .Values.postgres.ssl.certSecret.name "" }}
+- name: DB_CERT
+  value: "/etc/ssl/certs/pg/cert/{{ .Values.postgres.ssl.certSecret.key }}"
+{{- end }}
+{{- if ne .Values.postgres.ssl.keySecret.name "" }}
+- name: DB_KEY
+  value: "/etc/ssl/certs/pg/key/{{ .Values.postgres.ssl.keySecret.key }}"
+{{- end }}
+{{- if ne .Values.postgres.ssl.rootCertSecret.name "" }}
+- name: DB_ROOT_CERT
+  value: "/etc/ssl/certs/pg/rootcert/{{ .Values.postgres.ssl.rootCertSecret.key }}"
+{{- end }}
 {{- end }}
 {{- end }}
 {{/*
   coder.volumes adds a volumes stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumes" }}
-{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumes:
-{{- end }}
+  - name: tmp-pgcerts
+    emptyDir: {}
 {{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     secret:
@@ -64,15 +76,30 @@ volumes:
     secret:
       secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName") }}
 {{- end }}
+{{- if ne .Values.postgres.ssl.certSecret.name "" }}
+  - name: pgcert
+    secret:
+      secretName: {{ .Values.postgres.ssl.certSecret.name | quote }}
+{{- end }}
+{{- if ne .Values.postgres.ssl.keySecret.name "" }}
+  - name: pgkey
+    secret:
+      secretName: {{ .Values.postgres.ssl.keySecret.name | quote }}
+{{- end }}
+{{- if ne .Values.postgres.ssl.rootCertSecret.name "" }}
+  - name: pgrootcert
+    secret:
+      secretName: {{ .Values.postgres.ssl.rootCertSecret.name | quote }}
+{{- end }}
 {{- end }}
 
 {{/* 
   coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
 */}}
 {{- define "coder.volumeMounts" }}
-{{- if or (merge .Values dict | dig "certs" "secret" "name" false) (ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "") }}
 volumeMounts:
-{{- end }}
+  - name: tmp-pgcerts
+    mountPath: /tmp/pgcerts
 {{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
   - name: {{ .Values.certs.secret.name | quote }}
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
@@ -86,6 +113,21 @@ volumeMounts:
 {{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
   - name: devurltls
     mountPath: /etc/ssl/certs/devurls
+    readOnly: true
+{{- end }}
+{{- if ne .Values.postgres.ssl.certSecret.name "" }}
+  - name: pgcert
+    mountPath: /etc/ssl/certs/pg/cert
+    readOnly: true
+{{- end }}
+{{- if ne .Values.postgres.ssl.keySecret.name "" }}
+  - name: pgkey
+    mountPath: /etc/ssl/certs/pg/key
+    readOnly: true
+{{- end }}
+{{- if ne .Values.postgres.ssl.rootCertSecret.name "" }}
+  - name: pgrootcert
+    mountPath: /etc/ssl/certs/pg/rootcert
     readOnly: true
 {{- end }}
 {{- end }}

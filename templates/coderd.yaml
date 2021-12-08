@@ -90,6 +90,7 @@ spec:
             {{- else }}
             {{- toYaml .Values.coderd.securityContext | nindent 12 }}
             {{- end }}
+{{- include "coder.volumeMounts" . | indent 10 }}
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
