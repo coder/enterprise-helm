@@ -16,33 +16,31 @@ func TestPgSSL(t *testing.T) {
 
 	var (
 		secretName = pointer.String("pg-certs")
-		cv         = &CoderValues{
-			Postgres: &PostgresValues{
-				Default:        &PostgresDefaultValues{Enable: pointer.Bool(false)},
-				Host:           pointer.String("1.1.1.1"),
-				Port:           pointer.String("5432"),
-				User:           pointer.String("postgres"),
-				Database:       pointer.String("postgres"),
-				PasswordSecret: pointer.String("pg-pass"),
-				SSLMode:        pointer.String("require"),
-				SSL: &PostgresSSLValues{
-					CertSecret: &CertsSecretValues{
-						Name: secretName,
-						Key:  pointer.String("cert"),
-					},
-					KeySecret: &CertsSecretValues{
-						Name: secretName,
-						Key:  pointer.String("key"),
-					},
-					RootCertSecret: &CertsSecretValues{
-						Name: secretName,
-						Key:  pointer.String("rootcert"),
-					},
+		pgval      = &PostgresValues{
+			Default:        &PostgresDefaultValues{Enable: pointer.Bool(false)},
+			Host:           pointer.String("1.1.1.1"),
+			Port:           pointer.String("5432"),
+			User:           pointer.String("postgres"),
+			Database:       pointer.String("postgres"),
+			PasswordSecret: pointer.String("pg-pass"),
+			SSLMode:        pointer.String("require"),
+			SSL: &PostgresSSLValues{
+				CertSecret: &CertsSecretValues{
+					Name: secretName,
+					Key:  pointer.String("cert"),
+				},
+				KeySecret: &CertsSecretValues{
+					Name: secretName,
+					Key:  pointer.String("key"),
+				},
+				RootCertSecret: &CertsSecretValues{
+					Name: secretName,
+					Key:  pointer.String("rootcert"),
 				},
 			},
 		}
 
-		objs   = LoadChart(t).MustRender(t, cv)
+		objs   = LoadChart(t).MustRender(t, func(cv *CoderValues) { cv.Postgres = pgval })
 		coderd = MustFindDeployment(t, objs, "coderd")
 	)
 

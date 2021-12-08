@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jinzhu/copier"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/xerrors"
 	"helm.sh/helm/v3/pkg/chart"
@@ -60,14 +61,14 @@ type Chart struct {
 //
 // TODO: generate these structs from a values.schema.json
 type CoderValues struct {
-	Certs    *CertsValues    `json:"certs,omitempty" yaml:"certs,omitempty"`
-	Coderd   *CoderdValues   `json:"coderd,omitempty" yaml:"coderd,omitempty"`
-	Envbox   *EnvboxValues   `json:"envbox,omitempty" yaml:"envbox,omitempty"`
-	Ingress  *IngressValues  `json:"ingress,omitempty" yaml:"ingress,omitempty"`
-	Logging  *LoggingValues  `json:"logging,omitempty" yaml:"logging,omitempty"`
-	Metrics  *MetricsValues  `json:"metrics,omitempty" yaml:"metrics,omitempty"`
-	Postgres *PostgresValues `json:"postgres,omitempty" yaml:"postgres,omitempty"`
-	Services *ServicesValues `json:"services,omitempty" yaml:"services,omitempty"`
+	Certs    *CertsValues    `json:"certs" yaml:"certs"`
+	Coderd   *CoderdValues   `json:"coderd" yaml:"coderd"`
+	Envbox   *EnvboxValues   `json:"envbox" yaml:"envbox"`
+	Ingress  *IngressValues  `json:"ingress" yaml:"ingress"`
+	Logging  *LoggingValues  `json:"logging" yaml:"logging"`
+	Metrics  *MetricsValues  `json:"metrics" yaml:"metrics"`
+	Postgres *PostgresValues `json:"postgres" yaml:"postgres"`
+	Services *ServicesValues `json:"services" yaml:"services"`
 }
 
 // CoderdValues reflect values from coderd.
@@ -392,7 +393,13 @@ func (c *Chart) Render(values *CoderValues, options *chartutil.ReleaseOptions, c
 	return objs, nil
 }
 
-func (c *Chart) MustRender(t testing.TB, values *CoderValues) []runtime.Object {
+// MustRender renders a chart or fails the test. Use `fn` to modify the default
+// chart values.
+func (c *Chart) MustRender(t testing.TB, fn func(*CoderValues)) []runtime.Object {
+	values := &CoderValues{}
+	copier.Copy(values, c.OriginalValues)
+	fn(values)
+
 	objs, err := c.Render(values, nil, nil)
 	require.NoError(t, err, "render chart")
 
