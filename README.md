@@ -1,4 +1,6 @@
-<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->\n\n# Coder Helm Chart
+<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->
+
+# Coder Helm Chart
 
 [![build](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/cdr/enterprise-helm/actions/workflows/build.yml)
 [![Twitter Follow](https://img.shields.io/twitter/follow/CoderHQ?label=%40CoderHQ&style=social)](https://twitter.com/coderhq)
