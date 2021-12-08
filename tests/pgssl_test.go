@@ -46,8 +46,8 @@ func TestPgSSL(t *testing.T) {
 
 	for _, vol := range []string{"pgcert", "pgkey", "pgrootcert"} {
 		AssertVolume(t, coderd.Spec.Template.Spec.Volumes, vol, func(t testing.TB, v corev1.Volume) {
-			require.NotNil(t, v.Secret)
-			assert.Equal(t, "pg-certs", v.Secret.SecretName)
+			require.NotNilf(t, v.Secret, "secret nil for %q", vol)
+			assert.Equalf(t, "pg-certs", v.Secret.SecretName, "secret name incorrect for %q", vol)
 		})
 	}
 
@@ -58,9 +58,9 @@ func TestPgSSL(t *testing.T) {
 		AssertContainer(t, cnts, cnt, func(t testing.TB, c corev1.Container) {
 			for _, vol := range []string{"pgcert", "pgkey", "pgrootcert"} {
 				AssertVolumeMount(t, c.VolumeMounts, vol, func(t testing.TB, v corev1.VolumeMount) {
-					assert.Equal(t, vol, v.Name)
-					assert.True(t, v.ReadOnly)
-					assert.Equal(t, path.Join("/etc/ssl/certs/pg/", strings.TrimPrefix(v.Name, "pg")), v.MountPath)
+					assert.Equalf(t, vol, v.Name, "volume mount name incorrect for %q", vol)
+					assert.Truef(t, v.ReadOnly, "readonly incorrect for %q", vol)
+					assert.Equalf(t, path.Join("/etc/ssl/certs/pg/", strings.TrimPrefix(v.Name, "pg")), v.MountPath, "mount path incorrect for %q", vol)
 				})
 			}
 		})
