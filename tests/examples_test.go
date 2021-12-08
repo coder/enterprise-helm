@@ -3,11 +3,10 @@ package tests
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"
-	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
 )
@@ -17,14 +16,12 @@ import (
 func TestExamples(t *testing.T) {
 	t.Parallel()
 
-	chart, err := loader.LoadDir("..")
-	require.NoError(t, err, "loaded chart successfully")
-	require.NotNil(t, chart, "chart must be non-nil")
+	chart := LoadChart(t)
 
-	exampleOpenShift, err := ReadValuesAsMap("../examples/openshift/openshift.values.yaml")
+	exampleOpenShift, err := ReadValuesFileAsMap("../examples/openshift/openshift.values.yaml")
 	require.NoError(t, err, "failed to load OpenShift example values")
 
-	exampleKind, err := ReadValuesAsMap("../examples/kind/kind.values.yaml")
+	exampleKind, err := ReadValuesFileAsMap("../examples/kind/kind.values.yaml")
 	require.NoError(t, err, "failed to load Kind example values")
 
 	tests := []struct {
@@ -32,35 +29,11 @@ func TestExamples(t *testing.T) {
 		Values                   map[string]interface{}
 		PodSecurityContext       *corev1.PodSecurityContext
 		ContainerSecurityContext *corev1.SecurityContext
+		Postgres                 *PostgresValues
 	}{
 		{
 			Name:   "default",
 			Values: nil,
-			PodSecurityContext: &corev1.PodSecurityContext{
-				RunAsUser:    pointer.Int64(1000),
-				RunAsGroup:   nil,
-				RunAsNonRoot: pointer.Bool(true),
-				SeccompProfile: &corev1.SeccompProfile{
-					Type:             corev1.SeccompProfileTypeRuntimeDefault,
-					LocalhostProfile: nil,
-				},
-			},
-			ContainerSecurityContext: &corev1.SecurityContext{
-				RunAsUser:                nil,
-				RunAsGroup:               nil,
-				RunAsNonRoot:             nil,
-				Capabilities:             nil,
-				Privileged:               nil,
-				SELinuxOptions:           nil,
-				WindowsOptions:           nil,
-				ReadOnlyRootFilesystem:   pointer.Bool(true),
-				AllowPrivilegeEscalation: pointer.Bool(false),
-				ProcMount:                nil,
-				SeccompProfile: &corev1.SeccompProfile{
-					Type:             corev1.SeccompProfileTypeRuntimeDefault,
-					LocalhostProfile: nil,
-				},
-			},
 		}, {
 			Name:   "openshift",
 			Values: exampleOpenShift,
@@ -113,40 +86,58 @@ func TestExamples(t *testing.T) {
 		},
 	}
 
+	var (
+		defaultPsp = &corev1.PodSecurityContext{
+			RunAsUser:    pointer.Int64(1000),
+			RunAsNonRoot: pointer.Bool(true),
+			SeccompProfile: &corev1.SeccompProfile{
+				Type: corev1.SeccompProfileTypeRuntimeDefault,
+			},
+		}
+
+		defaultCsc = &corev1.SecurityContext{
+			ReadOnlyRootFilesystem:   pointer.Bool(true),
+			AllowPrivilegeEscalation: pointer.Bool(false),
+			SeccompProfile: &corev1.SeccompProfile{
+				Type: corev1.SeccompProfileTypeRuntimeDefault,
+			},
+		}
+	)
+
 	for _, test := range tests {
 		test := test
+
+		if test.PodSecurityContext == nil {
+			test.PodSecurityContext = defaultPsp
+		}
+		if test.ContainerSecurityContext == nil {
+			test.ContainerSecurityContext = defaultCsc
+		}
+
 		t.Run(test.Name, func(t *testing.T) {
 			t.Parallel()
 
-			values, err := chartutil.ToRenderValues(chart, test.Values, DefaultReleaseOptions(), chartutil.DefaultCapabilities.Copy())
+			values, err := chartutil.ToRenderValues(chart.chart, test.Values, DefaultReleaseOptions(), chartutil.DefaultCapabilities.Copy())
 			require.NoError(t, err, "failed to generate render values")
 
-			manifests, err := engine.Render(chart, values)
+			manifests, err := engine.Render(chart.chart, values)
 			require.NoError(t, err, "failed to render chart")
 
 			objs, err := LoadObjectsFromManifests(manifests)
 			require.NoError(t, err, "failed to convert manifests to objects")
 
 			// Find the coderd Deployment
-			var found bool
-			for _, obj := range objs {
-				deployment, ok := obj.(*appsv1.Deployment)
-				if ok && deployment.Name == "coderd" {
-					found = true
+			coderd := FindDeployment(t, objs, "coderd")
 
-					require.Equal(t, test.PodSecurityContext,
-						deployment.Spec.Template.Spec.SecurityContext,
-						"expected matching pod securityContext")
-					require.Len(t, deployment.Spec.Template.Spec.Containers, 1,
-						"expected one container")
-					require.Equal(t, test.ContainerSecurityContext,
-						deployment.Spec.Template.Spec.Containers[0].SecurityContext,
-						"expected matching container securityContext")
-
-					break
-				}
-			}
-			require.True(t, found, "expected coderd deployment in manifests")
+			assert.Equal(t, test.PodSecurityContext, coderd.Spec.Template.Spec.SecurityContext,
+				"expected matching pod securityContext",
+			)
+			require.Len(t, coderd.Spec.Template.Spec.Containers, 1,
+				"expected one container",
+			)
+			assert.Equal(t, test.ContainerSecurityContext, coderd.Spec.Template.Spec.Containers[0].SecurityContext,
+				"expected matching container securityContext",
+			)
 		})
 	}
 }
