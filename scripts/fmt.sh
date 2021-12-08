@@ -35,5 +35,7 @@ pushd "$PROJECT_ROOT" >/dev/null
     do
       git --no-pager diff "$file"
     done
+
+    exit 1
   fi
 popd >/dev/null
