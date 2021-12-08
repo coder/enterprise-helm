@@ -392,10 +392,8 @@ func (c *Chart) Render(values *CoderValues, options *chartutil.ReleaseOptions, c
 	return objs, nil
 }
 
-func RenderChart(t testing.TB, values *CoderValues) []runtime.Object {
-	chart := LoadChart(t)
-
-	objs, err := chart.Render(values, nil, nil)
+func (c *Chart) MustRender(t testing.TB, values *CoderValues) []runtime.Object {
+	objs, err := c.Render(values, nil, nil)
 	require.NoError(t, err, "render chart")
 
 	return objs
@@ -515,31 +513,9 @@ func ReadValuesFileAsMap(path string) (map[string]interface{}, error) {
 	return values, nil
 }
 
-// ReadValuesAsMap reads the values.yaml from a string.
-func ReadValuesAsMap(valuesStr string) (map[string]interface{}, error) {
-	var values map[string]interface{}
-	decoder := yaml.NewYAMLToJSONDecoder(strings.NewReader(valuesStr))
-	err := decoder.Decode(&values)
-	if err != nil {
-		return nil, fmt.Errorf("error decoding yaml: %w", err)
-	}
-
-	return values, nil
-}
-
-func ReadChartValues(t testing.TB, chart *chart.Chart, valuesStr string) chartutil.Values {
-	valuesMap, err := ReadValuesAsMap(valuesStr)
-	require.NoError(t, err, "read values as map")
-
-	values, err := chartutil.ToRenderValues(chart, valuesMap, DefaultReleaseOptions(), chartutil.DefaultCapabilities.Copy())
-	require.NoError(t, err, "to render values")
-
-	return values
-}
-
-// FindDeployment finds a deployment in the given slice of objects with the
-// given name.
-func FindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv1.Deployment {
+// MustFindDeployment finds a deployment in the given slice of objects with the
+// given name, or fails the test.
+func MustFindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv1.Deployment {
 	names := []string{}
 	for _, obj := range objs {
 		if deployment, ok := obj.(*appsv1.Deployment); ok {

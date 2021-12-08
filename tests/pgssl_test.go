@@ -42,8 +42,8 @@ func TestPgSSL(t *testing.T) {
 			},
 		}
 
-		objs   = RenderChart(t, cv)
-		coderd = FindDeployment(t, objs, "coderd")
+		objs   = LoadChart(t).MustRender(t, cv)
+		coderd = MustFindDeployment(t, objs, "coderd")
 	)
 
 	for _, vol := range []string{"pgcert", "pgkey", "pgrootcert"} {

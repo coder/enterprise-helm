@@ -127,7 +127,7 @@ func TestExamples(t *testing.T) {
 			require.NoError(t, err, "failed to convert manifests to objects")
 
 			// Find the coderd Deployment
-			coderd := FindDeployment(t, objs, "coderd")
+			coderd := MustFindDeployment(t, objs, "coderd")
 
 			assert.Equal(t, test.PodSecurityContext, coderd.Spec.Template.Spec.SecurityContext,
 				"expected matching pod securityContext",
