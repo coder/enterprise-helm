@@ -177,14 +177,16 @@ ingress:
   # ingress.annotations -- Additional annotations to add to the Ingress
   # object. The behavior is typically dependent on the Ingress Controller
   # implementation, and useful for managing features like TLS termination.
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
   # ingress.tls -- Configures TLS settings for the Ingress.
   tls:
     # ingress.tls.enable -- Determines whether the Ingress handles TLS.
     enable: false
 
 # envbox -- Required for running Docker inside containers. See requirements:
-# https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms
+# https://coder.com/docs/coder/latest/admin/workspace-management/cvms
 envbox:
   # envbox.image -- Injected by Coder during release.
   image: ""

@@ -1,21 +1,17 @@
-{{/* 
-  coder.storageClassName adds a storageClassName field to a volume claim
-  if the 'storageClassName' value is non-empty.
-*/}}
+# coder.storageClassName adds a storageClassName field to a volume claim
+# if the 'storageClassName' value is non-empty.
 {{- define "coder.storageClassName" }}
-{{ $storageClass := include "movedValue" (dict "Values" .Values "Key" "postgres.default.storageClassName") }}
-{{- if ne $storageClass "" }}
-storageClassName: {{ $storageClass | default "" | quote }}
+{{- if .Values.postgres.default.storageClassName }}
+storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
 {{- end }}
 {{- end }}
-{{/*
-  coder.postgres.env adds environment variables that
-  specify how to connect to a Postgres instance.
-*/}}
+
+# coder.postgres.env adds environment variables that
+# specify how to connect to a Postgres instance.
 {{- define "coder.postgres.env" }}
-{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" true)) "true" }}
+{{- if .Values.postgres.default.enable }}
 - name: DB_HOST
-  value: timescale.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}
+  value: timescale.{{ .Release.Namespace }}{{ .Values.services.clusterDomainSuffix }}
 - name: DB_PORT
   value: "5432"
 - name: DB_USER
@@ -54,27 +50,26 @@ storageClassName: {{ $storageClass | default "" | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
-{{/*
-  coder.volumes adds a volumes stanza if a cert.secret is provided.
-*/}}
+
+# coder.volumes adds a volumes stanza if a cert.secret is provided.
 {{- define "coder.volumes" }}
 volumes:
   - name: tmp-pgcerts
     emptyDir: {}
-{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
+{{- if .Values.certs.secret.name }}
   - name: {{ .Values.certs.secret.name | quote }}
     secret:
       secretName: {{ .Values.certs.secret.name | quote }}
 {{- end }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+{{- if .Values.coderd.tls.hostSecretName }}
   - name: tls
     secret:
-      secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName") }}
+      secretName: {{ .Values.coderd.tls.hostSecretName | quote }}
 {{- end }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
+{{- if .Values.coderd.tls.devurlsHostSecretName }}
   - name: devurltls
     secret:
-      secretName: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName") }}
+      secretName: {{ .Values.coderd.tls.devurlsHostSecretName | quote }}
 {{- end }}
 {{- if ne .Values.postgres.ssl.certSecret.name "" }}
   - name: pgcert
@@ -93,24 +88,23 @@ volumes:
 {{- end }}
 {{- end }}
 
-{{/* 
-  coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
-*/}}
+# coder.volumeMounts adds a volume mounts stanza if a cert.secret is
+# provided.
 {{- define "coder.volumeMounts" }}
 volumeMounts:
   - name: tmp-pgcerts
     mountPath: /tmp/pgcerts
-{{- if (merge .Values dict | dig "certs" "secret" "name" false) }}
+{{- if .Values.certs.secret.name }}
   - name: {{ .Values.certs.secret.name | quote }}
     mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
     subPath: {{ .Values.certs.secret.key | quote }}
 {{- end }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.hostSecretName")) "" }}
+{{- if .Values.coderd.tls.hostSecretName }}
   - name: tls
     mountPath: /etc/ssl/certs/host
     readOnly: true
 {{- end }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "coderd.tls.devurlsHostSecretName")) "" }}
+{{- if .Values.coderd.tls.devurlsHostSecretName }}
   - name: devurltls
     mountPath: /etc/ssl/certs/devurls
     readOnly: true
@@ -131,56 +125,37 @@ volumeMounts:
     readOnly: true
 {{- end }}
 {{- end }}
-{{/*
-  coder.serviceTolerations adds tolerations if any are specified to 
-  coder-managed services.
-*/}}
+
+# coder.serviceTolerations adds tolerations if any are specified to
+# coder-managed services.
 {{- define "coder.serviceTolerations" }}
-{{- if ne (include "movedValue" (dict "Values" .Values "Key" "services.tolerations")) "" }}
-tolerations:
-{{ include "movedValue" (dict "Values" .Values "Key" "services.tolerations") }}
+{{- if .Values.services.tolerations }}
+tolerations: {{ toYaml .Values.services.tolerations | nindent 2 }}
 {{- end }}
 {{- end }}
-{{/*
-  coder.accessURL is a URL for accessing the coderd.
-*/}}
+
+# coder.accessURL is a URL for accessing the coderd.
 {{- define "coder.accessURL" }}
-{{- if .Values.cemanager }}
-{{- if ne (merge .Values dict | dig "cemanager" "accessURL" "") "" }}
-{{- .Values.cemanager.accessURL -}}
-{{- else -}}
-    http://cemanager.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
-{{- end }}
-{{- else -}}
-{{- if ne (merge .Values dict | dig "coderd" "accessURL" "") "" }}
+{{- if .Values.coderd.accessURL }}
 {{- .Values.coderd.accessURL -}}
 {{- else -}}
-    http://coderd.{{ .Release.Namespace }}{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:8080
+http://coderd.{{ .Release.Namespace }}{{ .Values.services.clusterDomainSuffix }}:8080
 {{- end }}
-{{- end }}
-{{- end }}
-{{/*
-  coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
-*/}}
-{{- define "coder.cluster.accessURL" -}}
-https://kubernetes.default{{ include "movedValue" (dict "Values" .Values "Key" "services.clusterDomainSuffix") }}:443
 {{- end }}
 
-{{/*
-  coder.services.nodeSelector adds nodeSelectors if any are specified to
-  coder-managed services.
-*/}}
+# coder.cluster.accessURL is a URL for accessing the Kubernetes cluster.
+{{- define "coder.cluster.accessURL" -}}
+https://kubernetes.default{{ .Values.services.clusterDomainSuffix }}:443
+{{- end }}
+
+# coder.services.nodeSelector adds nodeSelectors if any are specified to
+# coder-managed services.
 {{- define "coder.services.nodeSelector" }}
 {{- if .Values.services.nodeSelector }}
-nodeSelector:
-{{ toYaml .Values.services.nodeSelector | indent 1 }}
+nodeSelector: {{ toYaml .Values.services.nodeSelector | nindent 2 }}
 {{- end }}
 {{- end }}
 
-{{- define "coder.serviceName" }}
-{{- if hasKey .Values "cemanager" -}}
-cemanager
-{{- else -}}
+{{- define "coder.serviceName" -}}
 coderd
-{{- end }}
 {{- end }}

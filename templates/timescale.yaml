@@ -1,4 +1,4 @@
-{{- if eq (include "movedValue" (dict "Values" .Values "Key" "postgres.default.enable" "Default" "false")) "true"}}
+{{- if .Values.postgres.default.enable }}
 {{- if not .Values.coderd.satellite.enable }}
 ---
 apiVersion: v1
@@ -23,10 +23,7 @@ kind: StatefulSet
 metadata:
   name: timescale
   namespace: {{ .Release.Namespace }}
-  annotations:
-  {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
 spec:
   serviceName: timescale
   replicas: 1
@@ -44,10 +41,7 @@ spec:
         app.kubernetes.io/part-of: coder
         app: timescale
         coder.deployment: timescale
-      annotations:
-      {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+      annotations: {{ toYaml .Values.services.annotations | nindent 8 }}
     spec:
       serviceAccountName: timescale
       securityContext:
@@ -57,10 +51,10 @@ spec:
         runAsGroup: 70
         fsGroup: 70
       terminationGracePeriodSeconds: 60
-{{- include "coder.serviceTolerations" . | indent 6 }}
+      {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
-          image: {{ include "movedValue" (dict "Values" .Values "Key" "postgres.default.image") }}
+          image: {{ .Values.postgres.default.image | quote }}
           imagePullPolicy: Always
           readinessProbe:
             exec:
@@ -99,7 +93,7 @@ spec:
             - name: run
               mountPath: /var/run/postgresql
               readOnly: false
-{{- include "coder.resources" (fromYaml (include "movedValue" (dict "Values" .Values "Key" "postgres.default.resources"))) | indent 10 }}
+          {{- include "coder.resources" .Values.postgres.default.resources | indent 10 }}
           lifecycle:
             preStop:
               exec:
@@ -121,7 +115,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: {{ include "movedValue" (dict "Values" .Values "Key" "postgres.default.resources.requests.storage") | quote }}
+            storage: {{ .Values.postgres.default.resources.requests.storage | quote }}
 ---
 apiVersion: v1
 kind: ServiceAccount
