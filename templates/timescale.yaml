@@ -30,6 +30,10 @@ metadata:
 spec:
   serviceName: timescale
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
   selector:
     matchLabels:
       app: timescale
