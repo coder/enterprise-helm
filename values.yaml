@@ -151,6 +151,9 @@ coderd:
       # contains the super admin password.
       key: "password"
 
+  # coderd.extraLabels -- Allows specifying additional labels to pods in the
+  # `coderd` deployment (.spec.template.metadata.labels).
+  extraLabels: {}
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
   # deployment. If you set `coderd.replicas` to a value higher than 1, you
   # may wish to also add a pod anti-affinity definition to ensure that

@@ -89,6 +89,7 @@ type CoderdValues struct {
 	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
 	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
+	ExtraLabels                   map[string]string                          `json:"extraLabels" yaml:"extraLabels"`
 }
 
 // CoderdServiceNodePortsValues reflect values from

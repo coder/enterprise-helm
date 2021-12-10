@@ -29,6 +29,9 @@ spec:
         app.kubernetes.io/part-of: coder
         app: {{ include "coder.serviceName" . }}
         coder.deployment: {{ include "coder.serviceName" . }}
+        {{- with .Values.coderd.extraLabels -}}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
       annotations:
       {{- range $key, $value := fromYaml (include "movedValue" (dict "Values" .Values "Key" "services.annotations")) }}
         {{ $key }}: {{ $value | quote }}
