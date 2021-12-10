@@ -4,6 +4,19 @@ coderd:
   serviceSpec:
     type: ClusterIP
 
+  # OpenShift's default "restricted" Security Context Constraint
+  # requires that these be unset. OpenShift manages the runAsUser
+  # (using the project-specific User ID range) and seccompProfile.
+  podSecurityContext:
+    runAsUser: null
+    runAsGroup: null
+    seccompProfile: null
+
+  securityContext:
+    runAsUser: null
+    runAsGroup: null
+    seccompProfile: null
+
 ingress:
   enable: true
   # Hostname to use for routing decisions
@@ -19,13 +32,3 @@ ingress:
     route.openshift.io/termination: "edge"
     haproxy.router.openshift.io/set-forwarded-headers: "replace"
     haproxy.router.openshift.io/balance: "leastconn"
-
-  # OpenShift's default "restricted" Security Context Constraint
-  # requires that these be unset. OpenShift manages the runAsUser
-  # (using the project-specific User ID range) and seccompProfile.
-  podSecurityContext:
-    runAsUser: null
-    seccompProfile: null
-
-  securityContext:
-    seccompProfile: null
