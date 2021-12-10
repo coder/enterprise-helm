@@ -198,6 +198,7 @@ coderd:
   # coderd.extraLabels -- Allows specifying additional labels to pods in the
   # `coderd` deployment (.spec.template.metadata.labels).
   extraLabels: {}
+
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
   # deployment. The default rule prefers to schedule coderd pods on different
   # nodes, which is only applicable if coderd.replicas is greater than 1.
@@ -213,6 +214,7 @@ coderd:
                     - "coderd"
             topologyKey: kubernetes.io/hostname
           weight: 1
+
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.
