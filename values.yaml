@@ -82,7 +82,7 @@ coderd:
     #   abc.example.com:3100 or its subdomains (port 3100 only).
     # - example.com - connect directly to example.com or any of its
     #   subdomains (any port)
-    exempt: ""
+    exempt: "cluster.local"
 
   # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
