@@ -82,8 +82,8 @@ type CoderdValues struct {
 	DevURLsHost                   *string                                    `json:"devurlsHost" yaml:"devurlsHost"`
 	TLS                           *CoderdTLSValues                           `json:"tls" yaml:"tls"`
 	Satellite                     *CoderdSatelliteValues                     `json:"satellite" yaml:"satellite"`
-	PodSecurityContext            *CoderdPodSecurityContextValues            `json:"podSecurityContext" yaml:"podSecurityContext"`
-	SecurityContext               *CoderdSecurityContextValues               `json:"securityContext" yaml:"securityContext"`
+	PodSecurityContext            *corev1.PodSecurityContext                 `json:"podSecurityContext" yaml:"podSecurityContext"`
+	SecurityContext               *corev1.SecurityContext                    `json:"securityContext" yaml:"securityContext"`
 	Resources                     *corev1.ResourceRequirements               `json:"resources" yaml:"resources"`
 	BuiltinProviderServiceAccount *CoderdBuiltinProviderServiceAccountValues `json:"builtinProviderServiceAccount" yaml:"builtinProviderServiceAccount"`
 	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
@@ -145,22 +145,6 @@ type CoderdServiceSpecValues struct {
 	ExternalTrafficPolicy    *corev1.ServiceExternalTrafficPolicyType `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
 	LoadBalancerIP           *string                                  `json:"loadBalancerIP" yaml:"loadBalancerIP"`
 	LoadBalancerSourceRanges *[]string                                `json:"loadBalancerSourceRanges" yaml:"loadBalancerSourceRanges"`
-}
-
-// CoderdPodSecurityContextValues reflect values from
-// coderd.podSecurityContext.
-type CoderdPodSecurityContextValues struct {
-	RunAsNonRoot   *bool                  `json:"runAsNonRoot" yaml:"runAsNonRoot"`
-	RunAsUser      *int                   `json:"runAsUser" yaml:"runAsUser"`
-	SeccompProfile *corev1.SeccompProfile `json:"seccompProfile" yaml:"seccompProfile"`
-}
-
-// CoderdSecurityContextValues reflect values from
-// coderd.securityContext.
-type CoderdSecurityContextValues struct {
-	ReadOnlyRootFilesystem   *bool                  `json:"readOnlyRootFilesystem" yaml:"readOnlyRootFilesystem"`
-	AllowPrivilegeEscalation *bool                  `json:"allowPrivilegeEscalation" yaml:"allowPrivilegeEscalation"`
-	SeccompProfile           *corev1.SeccompProfile `json:"seccompProfile" yaml:"seccompProfile"`
 }
 
 // EnvboxValues reflect values from envbox.

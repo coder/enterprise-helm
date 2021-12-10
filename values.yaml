@@ -76,11 +76,15 @@ coderd:
   # container security context, which will take precedence over these values.
   podSecurityContext:
     # coderd.podSecurityContext.runAsNonRoot -- Requires that containers in
-    # the pod run as a non-privileged user.
+    # the pod run as an unprivileged user. If setting runAsUser to 0 (root),
+    # this will need to be set to false.
     runAsNonRoot: true
     # coderd.podSecurityContext.runAsUser -- Sets the user id of the pod.
-    # This must not be set to root (uid 0).
+    # For security reasons, we recommend using a non-root user.
     runAsUser: 1000
+    # coderd.podSecurityContext.runAsGroup -- Sets the group id of the pod.
+    # For security reasons, we recommend using a non-root group.
+    runAsGroup: 1000
     # coderd.podSecurityContext.seccompProfile -- Sets the seccomp profile
     # for the pod. If set, the container security context setting will take
     # precedence over this value.
@@ -91,6 +95,16 @@ coderd:
   # context (as opposed to the pod). Some fields are also present in the pod
   # security context, in which case these values will take precedence.
   securityContext:
+    # coderd.securityContext.runAsNonRoot -- Requires that the coderd and
+    # migrations containers run as an unprivileged user. If setting
+    # runAsUser to 0 (root), this will need to be set to false.
+    runAsNonRoot: true
+    # coderd.securityContext.runAsUser -- Sets the user id of the pod.
+    # For security reasons, we recommend using a non-root user.
+    runAsUser: 1000
+    # coderd.securityContext.runAsGroup -- Sets the group id of the pod.
+    # For security reasons, we recommend using a non-root group.
+    runAsGroup: 1000
     # coderd.securityContext.readOnlyRootFilesystem -- Mounts the container's
     # root filesystem as read-only. It is recommended to leave this setting
     # enabled in production. This will override the same setting in the pod

@@ -4,13 +4,6 @@ coderd:
     # Avoid provisioning a LoadBalancer
     type: ClusterIP
 
-  # Set the container security context (by default, this inherits
-  # the settings from the pod security context)
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-
   # Reduce resource requirements for deployments using kind, which
   # we typically use for development and test purposes only.
   resources:
