@@ -16,6 +16,7 @@ metadata:
 spec:
   replicas: {{ include "movedValue" (dict "Values" .Values "Key" "coderd.replicas" 1) }}
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: "25%"
       maxUnavailable: "25%"

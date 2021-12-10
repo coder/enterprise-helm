@@ -19,6 +19,7 @@ checks:
     - no-liveness-probe
     - no-read-only-root-fs
     - no-readiness-probe
+    - no-rolling-update-strategy
     - non-existent-service-account
     - privilege-escalation-container
     - privileged-container
@@ -39,8 +40,6 @@ checks:
     - access-to-secrets
     # TODO: evaluate high availability by default
     - minimum-three-replicas
-    # TODO: add update strategy
-    - no-rolling-update-strategy
     # TODO: add network policy for coderd and timescale pods
     - non-isolated-pod
     - required-annotation-email
