@@ -1,17 +1,31 @@
 coderd:
+  replicas: 1
+
   serviceSpec:
     type: ClusterIP
-  replicas: 1
+
+ingress:
+  enable: true
+  # Hostname to use for routing decisions
+  host: 'coder.apps.openshift.coder.com'
+  # Custom annotations to apply to the resulting Ingress object.
+  # This is useful for configuring other controllers in the cluster,
+  # such as cert-manager or the ingress controller.
+  #
+  # OpenShift supports annotations that configure the corresponding
+  # Route object created from this Ingress. See the documentation:
+  # https://docs.okd.io/latest/networking/routes/route-configuration.html#nw-ingress-creating-a-route-via-an-ingress_route-configuration
+  annotations:
+    route.openshift.io/termination: "edge"
+    haproxy.router.openshift.io/set-forwarded-headers: "replace"
+    haproxy.router.openshift.io/balance: "leastconn"
+
+  # OpenShift's default "restricted" Security Context Constraint
+  # requires that these be unset. OpenShift manages the runAsUser
+  # (using the project-specific User ID range) and seccompProfile.
   podSecurityContext:
     runAsUser: null
     seccompProfile: null
-  securityContext:
-    readOnlyRootFilesystem: true
-    seccompProfile: null
 
-postgres:
-  default:
-    resources:
-      requests:
-        cpu: "0m"
-        memory: "32Mi"
+  securityContext:
+    seccompProfile: null

@@ -1,25 +1,19 @@
 coderd:
-  serviceSpec:
-    type: ClusterIP
   replicas: 1
+  serviceSpec:
+    # Avoid provisioning a LoadBalancer
+    type: ClusterIP
+
+  # Reduce resource requirements for deployments using kind, which
+  # we typically use for development and test purposes only.
   resources:
     requests:
-      cpu: "0m"
       memory: "32Mi"
-  podSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-  securityContext:
-    seccompProfile:
-      type: RuntimeDefault
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
 
 postgres:
   default:
+    # Reduce resource requirements for deployments using kind, which
+    # we typically use for development and test purposes only.
     resources:
       requests:
-        cpu: "0m"
         memory: "32Mi"
