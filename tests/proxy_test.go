@@ -26,13 +26,13 @@ func TestProxy(t *testing.T) {
 				vars := EnvVarsAsMap(spec.Containers[0].Env)
 				require.Empty(t, vars["https_proxy"], "https_proxy should be empty")
 				require.Empty(t, vars["http_proxy"], "http_proxy should be empty")
-				require.Empty(t, vars["no_proxy"], "no_proxy should be empty")
+				require.Equal(t, "cluster.local", vars["no_proxy"], "no_proxy did not match")
 
 				require.Len(t, spec.InitContainers, 1, "pod spec should have 1 init container")
 				vars = EnvVarsAsMap(spec.InitContainers[0].Env)
 				require.Empty(t, vars["https_proxy"], "https_proxy should be empty")
 				require.Empty(t, vars["http_proxy"], "http_proxy should be empty")
-				require.Empty(t, vars["no_proxy"], "no_proxy should be empty")
+				require.Equal(t, "cluster.local", vars["no_proxy"], "no_proxy did not match")
 			},
 		},
 		{
