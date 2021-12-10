@@ -61,7 +61,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.tls.devurlsHostSecretName | string | The secret to use for DevURL TLS. | `""` |
 | coderd.tls.hostSecretName | string | The secret to use for TLS. | `""` |
 | coderd.trustProxyIP | bool | Whether Coder should trust X-Real-IP and/or X-Forwarded-For headers from your reverse proxy. This should only be turned on if you're using a reverse proxy that sets both of these headers. This is always enabled if the Nginx ingress is deployed. | `false` |
-| envbox | object | Required for running Docker inside containers. See requirements: https://coder.com/docs/coder/v1.19/admin/workspace-management/cvms | `{"image":""}` |
+| envbox | object | Required for running Docker inside containers. See requirements: https://coder.com/docs/coder/latest/admin/workspace-management/cvms | `{"image":""}` |
 | envbox.image | string | Injected by Coder during release. | `""` |
 | ingress | object | Configure an Ingress to route traffic to Coder services. | `{"annotations":{"nginx.ingress.kubernetes.io/proxy-body-size":"0"},"enable":false,"host":"","tls":{"enable":false}}` |
 | ingress.annotations | object | Additional annotations to add to the Ingress object. The behavior is typically dependent on the Ingress Controller implementation, and useful for managing features like TLS termination. | `{"nginx.ingress.kubernetes.io/proxy-body-size":"0"}` |
