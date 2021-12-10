@@ -152,16 +152,15 @@ coderd:
       key: "password"
 
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
-  # deployment. The default rule attempts to schedule multiple coderd
-  # pods on different nodes. This only really applies if you set
-  # `coderd.replicas` to a value higher than 1.
+  # deployment. The default rule prefers to schedule coderd pods on different
+  # nodes, which is only applicable if coderd.replicas is greater than 1.
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
         - podAffinityTerm:
             labelSelector:
               matchExpressions:
-                - key: app
+                - key: app.kubernetes.io/name
                   operator: In
                   values:
                     - "coderd"
