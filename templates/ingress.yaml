@@ -7,7 +7,6 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-{{- include "coder.ingress.tls" . }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
@@ -41,4 +40,19 @@ spec:
             name: {{ include "coder.serviceName" . }}
             port:
               name: tcp-{{ include "coder.serviceName" . }}
+  {{- if .Values.ingress.tls.enable }}
+  tls:
+    {{- if and .Values.ingress.host .Values.ingress.tls.hostSecretName }}
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      secretName: {{ .Values.ingress.tls.hostSecretName }}
+    {{- end }}
+    {{- if .Values.devurls }}
+    {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
+    - hosts:
+      - {{ .Values.coderd.devurlsHost }}
+      secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}
