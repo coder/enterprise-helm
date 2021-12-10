@@ -41,7 +41,7 @@ func TestNamespace(t *testing.T) {
 			t.Parallel()
 
 			// Render the chart with default values
-			objs, err := chart.Render(chart.OriginalValues, &opts, nil)
+			objs, err := chart.Render(nil, &opts, nil)
 			require.NoError(t, err, "chart render failed")
 
 			// Verify that all objects are using the supplied namespace

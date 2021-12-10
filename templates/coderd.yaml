@@ -71,6 +71,12 @@ spec:
               value: {{ .Values.coderd.devurlsHost | quote }}
             - name: VERBOSE
               value: "true"
+            - name: http_proxy
+              value: {{ .Values.coderd.proxy.http | quote }}
+            - name: https_proxy
+              value: {{ .Values.coderd.proxy.https | quote }}
+            - name: no_proxy
+              value: {{ .Values.coderd.proxy.exempt | quote }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
           command:
@@ -158,13 +164,19 @@ spec:
             {{- end }}
             - name: OIDC_REDIRECT_OPTIONS
               value: {{ toJson .Values.coderd.oidc.redirectOptions | quote }}
-            {{- if ne .Values.coderd.superAdmin.passwordSecret.name "" }}
+            {{- if .Values.coderd.superAdmin.passwordSecret.name }}
             - name: SUPER_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
                   key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
             {{- end }}
+            - name: http_proxy
+              value: {{ .Values.coderd.proxy.http | quote }}
+            - name: https_proxy
+              value: {{ .Values.coderd.proxy.https | quote }}
+            - name: no_proxy
+              value: {{ .Values.coderd.proxy.exempt | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
           command:

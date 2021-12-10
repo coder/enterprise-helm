@@ -9,6 +9,8 @@ import (
 func TestDeployment(t *testing.T) {
 	t.Parallel()
 
+	chart := LoadChart(t)
+
 	t.Run("Labels", func(t *testing.T) {
 		var (
 			expectedLabels = map[string]string{
@@ -21,7 +23,7 @@ func TestDeployment(t *testing.T) {
 				"foo": "bar",
 			}
 
-			objs = LoadChart(t).MustRender(t, func(cv *CoderValues) {
+			objs = chart.MustRender(t, func(cv *CoderValues) {
 				cv.Coderd.ExtraLabels = extraLabels
 			})
 			coderd = MustFindDeployment(t, objs, "coderd")
