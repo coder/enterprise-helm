@@ -30,6 +30,7 @@ checks:
     - ssh-port
     - unsafe-proc-mount
     - unsafe-sysctls
+    - unset-cpu-requirements
     - unset-memory-requirements
     - use-namespace
     - wildcard-in-rules
@@ -44,4 +45,3 @@ checks:
     - non-isolated-pod
     - required-annotation-email
     - required-label-owner
-    - unset-cpu-requirements
