@@ -183,7 +183,9 @@ ingress:
   # ingress.annotations -- Additional annotations to add to the Ingress
   # object. The behavior is typically dependent on the Ingress Controller
   # implementation, and useful for managing features like TLS termination.
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
   # ingress.tls -- Configures TLS settings for the Ingress.
   tls:
     # ingress.tls.enable -- Determines whether the Ingress handles TLS.

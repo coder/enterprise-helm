@@ -9,7 +9,7 @@ metadata:
     coder.deployment: {{ include "coder.serviceName" . }}
   name: {{ include "coder.serviceName" . }}
   namespace: {{ .Release.Namespace | quote }}
-  annotations: {{- toYaml .Values.services.annotations | nindent 4 }}
+  annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
 spec:
   replicas: {{ default 1 .Values.coderd.replicas }}
   strategy:
@@ -26,9 +26,9 @@ spec:
         app.kubernetes.io/part-of: coder
         app: {{ include "coder.serviceName" . }}
         coder.deployment: {{ include "coder.serviceName" . }}
-      annotations: {{- toYaml .Values.services.annotations | nindent 8 }}
+      annotations: {{ toYaml .Values.services.annotations | nindent 8 }}
     spec:
-      securityContext: {{- toYaml .Values.coderd.podSecurityContext | nindent 8 }}
+      securityContext: {{ toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
@@ -39,8 +39,8 @@ spec:
       {{- if .Values.coderd.affinity }}
       affinity: {{- include "coder.template.render" (dict "value" .Values.coderd.affinity "context" $) | nindent 8 }}
       {{- end }}
-{{- include "coder.services.nodeSelector" . | indent 6 }}
-{{- include "coder.serviceTolerations" . | indent 6 }}
+      {{- include "coder.services.nodeSelector" . | indent 6 }}
+      {{- include "coder.serviceTolerations" . | indent 6 }}
       {{- if not .Values.coderd.satellite.enable }}
       initContainers:
         - name: migrations
@@ -67,19 +67,14 @@ spec:
               value: {{ .Values.coderd.devurlsHost | quote }}
             - name: VERBOSE
               value: "true"
-{{- include "coder.postgres.env" . | indent 12 }}
-{{- include "coder.workspaces.configMapEnv" . | indent 12 }}
+            {{- include "coder.postgres.env" . | indent 12 }}
+            {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
           command:
             - coderd
             - migrate
             - up
-          securityContext:
-            {{- if hasKey .Values "cemanager" }}
-            {{- toYaml .Values.cemanager.securityContext | nindent 12 }}
-            {{- else }}
-            {{- toYaml .Values.coderd.securityContext | nindent 12 }}
-            {{- end }}
-{{- include "coder.volumeMounts" . | indent 10 }}
+          securityContext: {{ toYaml .Values.coderd.securityContext | nindent 12 }}
+          {{- include "coder.volumeMounts" . | indent 10 }}
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
@@ -171,8 +166,8 @@ spec:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
                   key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
             {{- end }}
-{{- include "coder.workspaces.configMapEnv" . | indent 12 }}
-{{- include "coder.postgres.env" . | indent 12 }}
+            {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
+            {{- include "coder.postgres.env" . | indent 12 }}
           command:
             - coderd
             {{- if not .Values.coderd.satellite.enable }}
@@ -194,9 +189,9 @@ spec:
             initialDelaySeconds: 10
             failureThreshold: 7
             periodSeconds: 10
-{{- include "coder.resources" .Values.coderd.resources | indent 10 }}
-{{- include "coder.volumeMounts" . | indent 10 }}
-{{- include "coder.volumes" . | indent 6 }}
+          {{- include "coder.resources" .Values.coderd.resources | indent 10 }}
+          {{- include "coder.volumeMounts" . | indent 10 }}
+      {{- include "coder.volumes" . | indent 6 }}
 {{- if .Values.coderd.satellite.enable }}
 ---
 apiVersion: v1

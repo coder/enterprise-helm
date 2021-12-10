@@ -5,15 +5,11 @@ kind: Ingress
 metadata:
   name: coderd-ingress
   namespace: {{ .Release.Namespace | quote }}
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-  {{- range $key, $value := merge .Values dict | dig "ingress" "annotations" dict }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
 {{- include "coder.ingress.tls" . }}
   rules:
-  - host: {{ merge .Values dict | dig "ingress" "host" "" | quote }}
+  - host: {{ .Values.ingress.host | quote }}
     http:
       paths:
       - path: /
@@ -23,19 +19,19 @@ spec:
             name: {{ include "coder.serviceName" . }}
             port:
               name: tcp-{{ include "coder.serviceName" . }}
-    {{- /* Regex docs on '*-suffix.example.com'. This is required as the original
-         * input including the suffix is not a legal ingress host. We need to
-         * remove the suffix, and keep the wildcard '*'.
-         *
-         *   - '\\*'     Starts with '*'
-         *   - '[^.]*'   Suffix is 0 or more characters, '-suffix'
-         *   - '('       Start domain capture group
-         *   -   '\\.'     The domain should be separated with a '.' from the subdomain
-         *   -   '.*'      Rest of the domain.
-         *   - ')'       $1 is the ''.example.com'
-         */ -}}
-  {{- $devURLHost := merge .Values dict | dig "coderd" "devurlsHost" "" }}
-  - host: {{ regexReplaceAll "\\*[^.]*(\\..*)" $devURLHost "*${1}" | quote }}
+
+    {{/* Regex docs on '*-suffix.example.com'. This is required as the original
+       * input including the suffix is not a legal ingress host. We need to
+       * remove the suffix, and keep the wildcard '*'.
+       *
+       *   - '\\*'     Starts with '*'
+       *   - '[^.]*'   Suffix is 0 or more characters, '-suffix'
+       *   - '('       Start domain capture group
+       *   -   '\\.'     The domain should be separated with a '.' from the subdomain
+       *   -   '.*'      Rest of the domain.
+       *   - ')'       $1 is the ''.example.com'
+       */}}
+  - host: {{ regexReplaceAll "\\*[^.]*(\\..*)" .Values.coderd.devurlsHost "*${1}" | quote }}
     http:
       paths:
       - path: /
