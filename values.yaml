@@ -54,6 +54,36 @@ coderd:
     # coderd.tls.devurlsHostSecretName -- The secret to use for DevURL TLS.
     devurlsHostSecretName: ""
 
+  # coderd.proxy -- Whether Coder should initiate outbound connections using
+  # a proxy.
+  proxy:
+    # coderd.proxy.http -- Proxy to use for HTTP connections. If unset,
+    # coderd will initiate HTTP connections directly. This corresponds to
+    # the http_proxy environment variable.
+    #
+    # Examples:
+    # - localhost:3128 - a HTTP proxy on localhost:3128
+    # - socks5://localhost:1080 - a SOCKS5 proxy on localhost:1080
+    http: ""
+
+    # coderd.proxy.https -- Proxy to use for HTTPS connections. If this is
+    # not set, coderd will use the HTTP proxy (if set), otherwise it will
+    # initiate HTTPS connections directly. This corresponds to the
+    # https_proxy environment variable.
+    https: ""
+
+    # coderd.proxy.exempt -- Bypass the configured proxy rules for this
+    # comma-delimited list of hosts or prefixes. This corresponds to the
+    # no_proxy environment variable.
+    #
+    # Examples:
+    # - host.example.com,abc.example.com:3100 - connect directly to
+    #   host.example.com or its subdomains (any port), as well as
+    #   abc.example.com:3100 or its subdomains (port 3100 only).
+    # - example.com - connect directly to example.com or any of its
+    #   subdomains (any port)
+    exempt: "cluster.local"
+
   # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
   satellite:
@@ -168,6 +198,7 @@ coderd:
   # coderd.extraLabels -- Allows specifying additional labels to pods in the
   # `coderd` deployment (.spec.template.metadata.labels).
   extraLabels: {}
+
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
   # deployment. The default rule prefers to schedule coderd pods on different
   # nodes, which is only applicable if coderd.replicas is greater than 1.
@@ -183,6 +214,7 @@ coderd:
                     - "coderd"
             topologyKey: kubernetes.io/hostname
           weight: 1
+
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.

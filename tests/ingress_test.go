@@ -106,11 +106,7 @@ func TestIngress(t *testing.T) {
 			copier.Copy(values, chart.OriginalValues)
 
 			// Run function to perform test-specific modifications of defaults
-			test.ValuesFunc(values)
-
-			// Verify the results using AssertFunc
-			objs, err := chart.Render(values, nil, nil)
-			require.NoError(t, err, "chart render failed")
+			objs := chart.MustRender(t, test.ValuesFunc)
 
 			var found bool
 			for _, obj := range objs {
