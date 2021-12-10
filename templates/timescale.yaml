@@ -47,7 +47,7 @@ spec:
         runAsGroup: 70
         fsGroup: 70
       terminationGracePeriodSeconds: 60
-{{- include "coder.serviceTolerations" . | indent 6 }}
+      {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
           image: {{ .Values.postgres.default.image | quote }}
@@ -89,7 +89,7 @@ spec:
             - name: run
               mountPath: /var/run/postgresql
               readOnly: false
-{{- include "coder.resources" .Values.postgres.default.resources | indent 10 }}
+          {{- include "coder.resources" .Values.postgres.default.resources | indent 10 }}
           lifecycle:
             preStop:
               exec:
