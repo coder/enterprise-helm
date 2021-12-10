@@ -46,7 +46,7 @@ func TestExamples(t *testing.T) {
 			ContainerSecurityContext: &corev1.SecurityContext{
 				RunAsUser:                nil,
 				RunAsGroup:               nil,
-				RunAsNonRoot:             nil,
+				RunAsNonRoot:             pointer.Bool(true),
 				Capabilities:             nil,
 				Privileged:               nil,
 				SELinuxOptions:           nil,
@@ -62,6 +62,7 @@ func TestExamples(t *testing.T) {
 			Values: exampleKind,
 			PodSecurityContext: &corev1.PodSecurityContext{
 				RunAsUser:    pointer.Int64(1000),
+				RunAsGroup:   pointer.Int64(1000),
 				RunAsNonRoot: pointer.Bool(true),
 				SeccompProfile: &corev1.SeccompProfile{
 					Type: corev1.SeccompProfileTypeRuntimeDefault,
@@ -89,6 +90,7 @@ func TestExamples(t *testing.T) {
 	var (
 		defaultPsp = &corev1.PodSecurityContext{
 			RunAsUser:    pointer.Int64(1000),
+			RunAsGroup:   pointer.Int64(1000),
 			RunAsNonRoot: pointer.Bool(true),
 			SeccompProfile: &corev1.SeccompProfile{
 				Type: corev1.SeccompProfileTypeRuntimeDefault,
@@ -96,6 +98,9 @@ func TestExamples(t *testing.T) {
 		}
 
 		defaultCsc = &corev1.SecurityContext{
+			RunAsUser:                pointer.Int64(1000),
+			RunAsGroup:               pointer.Int64(1000),
+			RunAsNonRoot:             pointer.Bool(true),
 			ReadOnlyRootFilesystem:   pointer.Bool(true),
 			AllowPrivilegeEscalation: pointer.Bool(false),
 			SeccompProfile: &corev1.SeccompProfile{
