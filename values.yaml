@@ -152,26 +152,20 @@ coderd:
       key: "password"
 
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
-  # deployment. If you set `coderd.replicas` to a value higher than 1, you
-  # may wish to also add a pod anti-affinity definition to ensure that
-  # multiple coderd pods are not scheduled on the same node.
-  affinity: {}
-  # Example:
-  # ```
-  # affinity:
-  #   podAntiAffinity:
-  #     preferredDuringSchedulingIgnoredDuringExecution:
-  #       - podAffinityTerm:
-  #           labelSelector:
-  #             matchExpressions:
-  #               - key: app
-  #                 operator: In
-  #                 values:
-  #                   - "coderd"
-  #           topologyKey: kubernetes.io/hostname
-  #         weight: 1
-  # ```
-
+  # deployment. The default rule prefers to schedule coderd pods on different
+  # nodes, which is only applicable if coderd.replicas is greater than 1.
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - "coderd"
+            topologyKey: kubernetes.io/hostname
+          weight: 1
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.
