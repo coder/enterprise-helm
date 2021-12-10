@@ -117,13 +117,8 @@ spec:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
-            {{- if .Values.ingress.enable }}
-            - name: TRUST_PROXY_IP
-              value: "true"
-            {{- else }}
             - name: TRUST_PROXY_IP
               value: {{ .Values.coderd.trustProxyIP | quote }}
-            {{- end }}
             {{- if .Values.coderd.satellite.enable }}
             - name: CODER_SATELLITE_PRIVATE_KEY
               valueFrom:
