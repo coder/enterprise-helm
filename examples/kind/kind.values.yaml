@@ -3,6 +3,7 @@ coderd:
   serviceSpec:
     # Avoid provisioning a LoadBalancer
     type: ClusterIP
+    externalTrafficPolicy: ""
 
   # Reduce resource requirements for deployments using kind, which
   # we typically use for development and test purposes only.

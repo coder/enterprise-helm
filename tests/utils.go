@@ -8,6 +8,23 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
+// MustFindService finds a service in the given slice of objects with the
+// given name, or fails the test.
+func MustFindService(t testing.TB, objs []runtime.Object, name string) *corev1.Service {
+	names := []string{}
+	for _, obj := range objs {
+		if service, ok := obj.(*corev1.Service); ok {
+			if service.Name == name {
+				return service
+			}
+			names = append(names, service.Name)
+		}
+	}
+
+	t.Fatalf("failed to find service %q, found %v", name, names)
+	return nil
+}
+
 // MustFindDeployment finds a deployment in the given slice of objects with the
 // given name, or fails the test.
 func MustFindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv1.Deployment {

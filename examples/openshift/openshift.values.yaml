@@ -3,6 +3,7 @@ coderd:
 
   serviceSpec:
     type: ClusterIP
+    externalTrafficPolicy: ""
 
   # OpenShift's default "restricted" Security Context Constraint
   # requires that these be unset. OpenShift manages the runAsUser

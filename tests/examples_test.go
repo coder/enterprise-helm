@@ -18,6 +18,9 @@ func TestExamples(t *testing.T) {
 
 	chart := LoadChart(t)
 
+	exampleIngress, err := ReadValuesFileAsMap("../examples/ingress/ingress.values.yaml")
+	require.NoError(t, err, "failed to load ingress example values")
+
 	exampleOpenShift, err := ReadValuesFileAsMap("../examples/openshift/openshift.values.yaml")
 	require.NoError(t, err, "failed to load OpenShift example values")
 
@@ -29,11 +32,16 @@ func TestExamples(t *testing.T) {
 		Values                   map[string]interface{}
 		PodSecurityContext       *corev1.PodSecurityContext
 		ContainerSecurityContext *corev1.SecurityContext
-		Postgres                 *PostgresValues
+		ServiceType              corev1.ServiceType
 	}{
 		{
-			Name:   "default",
-			Values: nil,
+			Name:        "default",
+			Values:      nil,
+			ServiceType: corev1.ServiceTypeLoadBalancer,
+		}, {
+			Name:        "ingress",
+			Values:      exampleIngress,
+			ServiceType: corev1.ServiceTypeClusterIP,
 		}, {
 			Name:   "openshift",
 			Values: exampleOpenShift,
@@ -56,6 +64,7 @@ func TestExamples(t *testing.T) {
 				ProcMount:                nil,
 				SeccompProfile:           nil,
 			},
+			ServiceType: corev1.ServiceTypeClusterIP,
 		},
 		{
 			Name:   "kind",
@@ -84,6 +93,7 @@ func TestExamples(t *testing.T) {
 					LocalhostProfile: nil,
 				},
 			},
+			ServiceType: corev1.ServiceTypeClusterIP,
 		},
 	}
 
@@ -143,6 +153,18 @@ func TestExamples(t *testing.T) {
 			assert.Equal(t, test.ContainerSecurityContext, coderd.Spec.Template.Spec.Containers[0].SecurityContext,
 				"expected matching container securityContext",
 			)
+
+			service := MustFindService(t, objs, "coderd")
+			assert.Equal(t, test.ServiceType, service.Spec.Type, "service type should match")
+			switch test.ServiceType {
+			case corev1.ServiceTypeLoadBalancer:
+				assert.Empty(t, service.Spec.ExternalName, "external name should not be set")
+			case corev1.ServiceTypeClusterIP:
+				assert.Empty(t, service.Spec.ExternalName, "external name should not be set")
+				assert.Nil(t, service.Spec.LoadBalancerClass, "loadBalancerClass should not be set")
+				assert.Empty(t, service.Spec.LoadBalancerSourceRanges, "loadBalancerSourceRanges should not be set")
+				assert.Empty(t, service.Spec.ExternalTrafficPolicy, "externalTrafficPolicy should not be set")
+			}
 		})
 	}
 }

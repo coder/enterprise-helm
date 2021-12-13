@@ -3,6 +3,7 @@ coderd:
   serviceSpec:
     # The Ingress will route traffic to the internal ClusterIP.
     type: ClusterIP
+    externalTrafficPolicy: ""
 
 ingress:
   enable: true
