@@ -133,6 +133,9 @@ jobs:
       - name: Start MicroShift cluster
         uses: container-tools/microshift-action@v0.2
 
+      - name: Remove microshift temporary files
+        run: rm microshift-ubuntu.tar.xz release.sha256
+
       - name: Show environment data
         run: |
           set -x
