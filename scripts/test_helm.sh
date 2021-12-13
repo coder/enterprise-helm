@@ -26,7 +26,6 @@ for example in "${EXAMPLES[@]}"; do
     --create-namespace \
     --namespace=coder-test \
     --release-name \
-    --values="$PROJECT_ROOT/examples/images.yaml" \
     --values="$PROJECT_ROOT/examples/$example/$example.values.yaml" \
     --output-dir="$BUILD"
 done

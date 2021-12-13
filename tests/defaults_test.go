@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/utils/pointer"
 )
 
 // TestDefault loads the chart and checks metadata.
@@ -18,8 +19,22 @@ func TestDefault(t *testing.T) {
 	require.Equal(t, "coder", metadata.Name, "unexpected chart name")
 	require.False(t, metadata.Deprecated, "chart should not be deprecated")
 
-	coderd := chart.OriginalValues.Coderd
-	require.Equal(t, 1, *coderd.Replicas, "expected 1 replica by default")
+	objs := chart.MustRender(t, nil)
+	deployment := MustFindDeployment(t, objs, "coderd")
+
+	require.Equal(t, pointer.Int32(1), deployment.Spec.Replicas, "expected 1 replica by default")
+	podSpec := deployment.Spec.Template.Spec
+	require.Len(t, podSpec.Containers, 1, "pod spec should have 1 container")
+	require.Equal(t, "docker.io/coderenvs/coder-service:1.25.0", podSpec.Containers[0].Image,
+		"expected default image name")
+	vars := EnvVarsAsMap(podSpec.Containers[0].Env)
+	t.Logf("vars: %v", vars)
+	require.Equal(t, "docker.io/coderenvs/envbox:1.25.0", vars["ENVBOX_IMAGE"],
+		"expected default envbox image name")
+
+	require.Len(t, podSpec.InitContainers, 1, "pod spec should have 1 init container")
+	require.Equal(t, "docker.io/coderenvs/coder-service:1.25.0", podSpec.InitContainers[0].Image,
+		"expected default image name")
 }
 
 // TestNamespace checks that all objects are created in the specified
