@@ -18,9 +18,16 @@ func TestFuzz(t *testing.T) {
 	t.Log("seed:", seed)
 
 	c := &CoderValues{}
+
+	// First, populate all struct fields with random values.
 	faker.Build(c)
+
+	// Then, we walk through the struct and unset fields based on a randomized
+	// probability.
 	reflectwalk.Walk(c, walker{rand: rand.Float64()})
 
+	// Finally, ensure the chart renders correctly. We only care that it renders,
+	// not that it's valid Kubernetes spec.
 	LoadChart(t).MustRender(t, func(cv *CoderValues) { *cv = *c })
 }
 
