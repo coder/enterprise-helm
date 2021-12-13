@@ -141,6 +141,24 @@ jobs:
           kubectl cluster-info
           kubectl config view
 
+      - name: Show CWD contents
+        run: ls -alR .
+
+      - name: Run template
+        run: |
+          helm template coder-test . \
+            --create-namespace \
+            --namespace=coder-test \
+            --wait \
+            --debug \
+            --values=examples/openshift/openshift.values.yaml \
+            --values=examples/images.yaml \
+            --set=coderd.image=docker.io/coderenvs/coder-service:1.24.0 \
+            --set=coderd.serviceSpec.type=ClusterIP \
+            --set=coderd.serviceSpec.externalTrafficPolicy="" \
+            --set=postgres.default.image=docker.io/coderenvs/timescale:1.24.0 \
+            --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
+
       - name: Install Coder
         run: |
           helm install coder-test . \
