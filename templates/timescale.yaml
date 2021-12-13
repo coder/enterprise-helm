@@ -54,7 +54,7 @@ spec:
       {{- include "coder.serviceTolerations" . | indent 6 }}
       containers:
         - name: timescale
-          image: {{ .Values.postgres.default.image | quote }}
+          image: {{ .Values.postgres.default.image | default (printf "docker.io/coderenvs/timescale:%s" (.Chart.AppVersion)) | quote }}
           imagePullPolicy: Always
           readinessProbe:
             exec:

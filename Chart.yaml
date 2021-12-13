@@ -3,9 +3,11 @@
 # See release.mk - build/helm target.
 apiVersion: v2
 name: coder
-description: Coder moves developer workspaces to your cloud and centralizes their creation and management.
-appVersion: master
-version: 1.19.0
+description: >
+  Coder moves developer workspaces to your cloud and centralizes their
+  creation and management.
+appVersion: 1.25.0
+version: 1.25.0
 # Coder follows the Kubernetes upstream version support policy, and the
 # latest stable release version of Coder supports the previous two minor
 # releases as well as the current release of Kubernetes at time of

@@ -105,13 +105,7 @@ jobs:
             --namespace=coder-test \
             --wait \
             --debug \
-            --values=examples/kind/kind.values.yaml \
-            --values=examples/images.yaml \
-            --set=coderd.image=docker.io/coderenvs/coder-service:1.24.0 \
-            --set=coderd.serviceSpec.type=ClusterIP \
-            --set=coderd.serviceSpec.externalTrafficPolicy="" \
-            --set=postgres.default.image=docker.io/coderenvs/timescale:1.24.0 \
-            --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
+            --values=examples/kind/kind.values.yaml
 
       - name: Get running info
         if: always()

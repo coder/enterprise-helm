@@ -48,7 +48,7 @@ spec:
       {{- if not .Values.coderd.satellite.enable }}
       initContainers:
         - name: migrations
-          image: {{ .Values.coderd.image | quote }}
+          image: {{ .Values.coderd.image | default (printf "docker.io/coderenvs/coder-service:%s" (.Chart.AppVersion)) | quote }}
           imagePullPolicy: Always
           env:
             - name: HUMAN_LOG
@@ -88,7 +88,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ include "coder.serviceName" . }}
-          image: {{ .Values.coderd.image | quote }}
+          image: {{ .Values.coderd.image | default (printf "docker.io/coderenvs/coder-service:%s" (.Chart.AppVersion)) | quote }}
           imagePullPolicy: Always
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
@@ -112,7 +112,7 @@ spec:
               # additional features to users for running applications
               # such as dockerd and kubernetes.
             - name: ENVBOX_IMAGE
-              value: {{ .Values.envbox.image | quote }}
+              value: {{ .Values.envbox.image | default (printf "docker.io/coderenvs/envbox:%s" (.Chart.AppVersion)) | quote }}
             - name: CLUSTER_ADDRESS
               value: {{ include "coder.cluster.accessURL" . | quote }}
             - name: NAMESPACE
