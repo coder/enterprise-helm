@@ -24,3 +24,7 @@ updates:
       timezone: "America/Chicago"
     commit-message:
       prefix: "chore"
+    ignore:
+      # Kubernetes is pulled in as a dependency of Helm, and we should
+      # be able to use whichever version it pulls in
+      - dependency-name: "k8s.io/*"
