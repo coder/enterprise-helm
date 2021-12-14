@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"helm.sh/helm/v3/pkg/chartutil"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/utils/pointer"
 )
@@ -28,7 +29,6 @@ func TestDefault(t *testing.T) {
 	require.Equal(t, "docker.io/coderenvs/coder-service:1.25.0", podSpec.Containers[0].Image,
 		"expected default image name")
 	vars := EnvVarsAsMap(podSpec.Containers[0].Env)
-	t.Logf("vars: %v", vars)
 	require.Equal(t, "docker.io/coderenvs/envbox:1.25.0", vars["ENVBOX_IMAGE"],
 		"expected default envbox image name")
 
@@ -67,6 +67,55 @@ func TestNamespace(t *testing.T) {
 				actualNamespace := metaObject.GetNamespace()
 				require.Equal(t, namespace, actualNamespace,
 					"deployed namespace does not match target")
+			}
+		})
+	}
+}
+
+func TestVersion(t *testing.T) {
+	t.Parallel()
+
+	chart := LoadChart(t)
+
+	tests := []struct {
+		Name       string
+		Version    string
+		Compatible bool
+	}{
+		{
+			Name:       "gke-outdated-1.19",
+			Version:    "1.19.13-gke.1900",
+			Compatible: false,
+		},
+		{
+			Name:       "gke-current-1.20",
+			Version:    "1.20.12-gke.1500",
+			Compatible: true,
+		},
+		{
+			Name:       "gke-current-1.21",
+			Version:    "1.21.5-gke.1802",
+			Compatible: true,
+		},
+		{
+			Name:       "gke-current-1.22",
+			Version:    "1.22.3-gke.1500",
+			Compatible: true,
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.Name, func(t *testing.T) {
+			t.Parallel()
+
+			compatible := chartutil.IsCompatibleRange(chart.Metadata.KubeVersion, test.Version)
+			if test.Compatible {
+				require.True(t, compatible, "expected version %q to be compatible with constraint %q",
+					test.Version, chart.Metadata.KubeVersion)
+			} else {
+				require.False(t, compatible, "expected version %q not to be compatible with constraint %q",
+					test.Version, chart.Metadata.KubeVersion)
 			}
 		})
 	}
