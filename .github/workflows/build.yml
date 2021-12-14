@@ -131,10 +131,7 @@ jobs:
         run: ./scripts/install_deps.sh
 
       - name: Start MicroShift cluster
-        uses: container-tools/microshift-action@v0.2
-
-      - name: Remove microshift temporary files
-        run: sleep 30; rm microshift-ubuntu.tar.xz release.sha256
+        uses: container-tools/microshift-action@v0.2.1
 
       - name: Show environment data
         run: |
