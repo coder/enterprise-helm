@@ -122,7 +122,7 @@ jobs:
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.1
-        if: github.event_type == 'pull_request'
+        if: github.event_name == 'pull_request'
 
       - name: Checkout source
         uses: actions/checkout@v2
@@ -163,13 +163,7 @@ jobs:
             --namespace=coder-test \
             --wait \
             --debug \
-            --values=examples/openshift/openshift.values.yaml \
-            --values=examples/images.yaml \
-            --set=coderd.image=docker.io/coderenvs/coder-service:1.24.0 \
-            --set=coderd.serviceSpec.type=ClusterIP \
-            --set=coderd.serviceSpec.externalTrafficPolicy="" \
-            --set=postgres.default.image=docker.io/coderenvs/timescale:1.24.0 \
-            --set=envbox.image=docker.io/coderenvs/envbox:1.24.0
+            --values=examples/openshift/openshift.values.yaml
 
       - name: Get running info
         if: always()
