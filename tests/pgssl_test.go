@@ -16,33 +16,27 @@ func TestPgSSL(t *testing.T) {
 
 	var (
 		secretName = pointer.String("pg-certs")
-		pgval      = &PostgresValues{
-			Default:        &PostgresDefaultValues{Enable: pointer.Bool(false)},
-			Host:           pointer.String("1.1.1.1"),
-			Port:           pointer.String("5432"),
-			User:           pointer.String("postgres"),
-			Database:       pointer.String("postgres"),
-			PasswordSecret: pointer.String("pg-pass"),
-			SSLMode:        pointer.String("require"),
-			SSL: &PostgresSSLValues{
-				CertSecret: &CertsSecretValues{
-					Name: secretName,
-					Key:  pointer.String("cert"),
-				},
-				KeySecret: &CertsSecretValues{
-					Name: secretName,
-					Key:  pointer.String("key"),
-				},
-				RootCertSecret: &CertsSecretValues{
-					Name: secretName,
-					Key:  pointer.String("rootcert"),
-				},
-			},
-		}
-
-		objs   = LoadChart(t).MustRender(t, func(cv *CoderValues) { cv.Postgres = pgval })
-		coderd = MustFindDeployment(t, objs, "coderd")
 	)
+
+	objs := LoadChart(t).MustRender(t, func(cv *CoderValues) {
+		cv.Postgres.Default.Enable = pointer.Bool(false)
+
+		cv.Postgres.Host = pointer.String("1.1.1.1")
+		cv.Postgres.Port = pointer.String("5432")
+		cv.Postgres.User = pointer.String("postgres")
+
+		cv.Postgres.Database = pointer.String("postgres")
+		cv.Postgres.PasswordSecret = pointer.String("pg-pass")
+
+		cv.Postgres.SSLMode = pointer.String("require")
+		cv.Postgres.SSL.CertSecret.Name = secretName
+		cv.Postgres.SSL.CertSecret.Key = pointer.String("cert")
+		cv.Postgres.SSL.KeySecret.Name = secretName
+		cv.Postgres.SSL.KeySecret.Key = pointer.String("cert")
+		cv.Postgres.SSL.RootCertSecret.Name = secretName
+		cv.Postgres.SSL.RootCertSecret.Key = pointer.String("cert")
+	})
+	coderd := MustFindDeployment(t, objs, "coderd")
 
 	for _, vol := range []string{"pgcert", "pgkey", "pgrootcert"} {
 		AssertVolume(t, coderd.Spec.Template.Spec.Volumes, vol, func(t testing.TB, v corev1.Volume) {
