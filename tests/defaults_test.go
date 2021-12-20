@@ -26,19 +26,21 @@ func TestDefault(t *testing.T) {
 	require.Equal(t, pointer.Int32(1), deployment.Spec.Replicas, "expected 1 replica by default")
 	podSpec := deployment.Spec.Template.Spec
 	require.Len(t, podSpec.Containers, 1, "pod spec should have 1 container")
-	require.Equal(t, "docker.io/coderenvs/coder-service:1.25.0", podSpec.Containers[0].Image,
+	tag := chart.AppVersion()
+	require.Equal(t, "docker.io/coderenvs/coder-service:"+tag, podSpec.Containers[0].Image,
 		"expected default image name")
 	vars := EnvVarsAsMap(podSpec.Containers[0].Env)
-	require.Equal(t, "docker.io/coderenvs/envbox:1.25.0", vars["ENVBOX_IMAGE"],
+	require.Equal(t, "docker.io/coderenvs/envbox:"+tag, vars["ENVBOX_IMAGE"],
 		"expected default envbox image name")
 
 	require.Len(t, podSpec.InitContainers, 1, "pod spec should have 1 init container")
-	require.Equal(t, "docker.io/coderenvs/coder-service:1.25.0", podSpec.InitContainers[0].Image,
+	require.Equal(t, "docker.io/coderenvs/coder-service:"+tag, podSpec.InitContainers[0].Image,
 		"expected default image name")
 }
 
-// TestNamespace checks that all objects are created in the specified
-// release namespace.
+// TestMetadata checks that all objects are created with expected metadata.
+// This checks that the release name is as expected and expected labels are
+// present.
 func TestNamespace(t *testing.T) {
 	t.Parallel()
 
@@ -50,8 +52,13 @@ func TestNamespace(t *testing.T) {
 	}
 	for _, namespace := range namespaces {
 		namespace := namespace
+
+		// Create a release that installs into the given namespace and
+		// with the given name
 		opts := opts
+		opts.Name = namespace + "-release"
 		opts.Namespace = namespace
+
 		t.Run(namespace, func(t *testing.T) {
 			t.Parallel()
 
@@ -59,14 +66,34 @@ func TestNamespace(t *testing.T) {
 			objs, err := chart.Render(nil, &opts, nil)
 			require.NoError(t, err, "chart render failed")
 
-			// Verify that all objects are using the supplied namespace
 			for _, obj := range objs {
 				metaObject, err := meta.Accessor(obj)
-				require.NoError(t, err, "failed to get object metadata")
+				require.NoErrorf(t, err, "failed to get object metadata for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
 
+				// Verify that all objects are using the supplied namespace
 				actualNamespace := metaObject.GetNamespace()
-				require.Equal(t, namespace, actualNamespace,
-					"deployed namespace does not match target")
+				require.Equalf(t, namespace, actualNamespace,
+					"deployed namespace does not match for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
+
+				// Check that labels are present and values match what we expect
+				labels := metaObject.GetLabels()
+				require.Equalf(t, chart.Name(), labels["app.kubernetes.io/name"],
+					"chart name matches for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
+				require.Containsf(t, labels["helm.sh/chart"], chart.Name(),
+					"objects include chart name label for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
+				require.Equalf(t, "Helm", labels["app.kubernetes.io/managed-by"],
+					"objects are managed by Helm for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
+				require.Equalf(t, namespace+"-release", labels["app.kubernetes.io/instance"],
+					"object instance label matches Helm release name for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
+				require.Equalf(t, chart.AppVersion(), labels["app.kubernetes.io/version"],
+					"objects version label matches Helm appVersion for object %q with name %q",
+					obj.GetObjectKind().GroupVersionKind(), metaObject.GetName())
 			}
 		})
 	}

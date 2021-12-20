@@ -14,10 +14,12 @@ func TestDeployment(t *testing.T) {
 	t.Run("Labels", func(t *testing.T) {
 		var (
 			expectedLabels = map[string]string{
-				"app":                       "coderd",
-				"app.kubernetes.io/name":    "coderd",
-				"app.kubernetes.io/part-of": "coder",
-				"coder.deployment":          "coderd",
+				"app":                         "coderd",
+				"app.kubernetes.io/name":      "coder",
+				"app.kubernetes.io/part-of":   "coder",
+				"app.kubernetes.io/component": "coderd",
+				"app.kubernetes.io/instance":  "coder",
+				"coder.deployment":            "coderd",
 			}
 			extraLabels = map[string]string{
 				"foo": "bar",

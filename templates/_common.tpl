@@ -159,3 +159,7 @@ nodeSelector: {{ toYaml .Values.services.nodeSelector | nindent 2 }}
 {{- define "coder.serviceName" -}}
 coderd
 {{- end }}
+
+{{- define "timescale.serviceName" -}}
+timescale
+{{- end }}

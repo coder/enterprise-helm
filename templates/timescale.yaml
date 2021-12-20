@@ -7,25 +7,36 @@ metadata:
   name: timescale
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: timescale
-    app.kubernetes.io/part-of: coder
-    app: timescale
-    coder.deployment: timescale
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
+    app: {{ include "timescale.serviceName" . }}
+    coder.deployment: {{ include "timescale.serviceName" . }}
 spec:
   ports:
     - port: 5432
       name: tcp-timescale
   selector:
-    app: timescale
+    app: {{ include "timescale.serviceName" . }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: timescale
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
   annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
 spec:
-  serviceName: timescale
+  serviceName: {{ include "timescale.serviceName" . }}
   replicas: 1
   updateStrategy:
     type: RollingUpdate
@@ -37,8 +48,12 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: timescale
-        app.kubernetes.io/part-of: coder
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
         app: timescale
         coder.deployment: timescale
       annotations: {{ toYaml .Values.services.annotations | nindent 8 }}
@@ -123,6 +138,12 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   name: timescale
   labels:
-    coder.deployment: timescale
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
+    coder.deployment: {{ include "timescale.serviceName" . }}
 {{- end }}
 {{- end }}
