@@ -86,7 +86,7 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				podSelector := &metav1.LabelSelector{}
 				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/instance", "coder")
 				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/component", "coderd")
-				require.Equal(t, podSelector, policy.Spec.PodSelector, "expected pod selectors to match")
+				require.Equal(t, podSelector, &policy.Spec.PodSelector, "expected pod selectors to match")
 
 				expectedRules := []networkingv1.NetworkPolicyIngressRule{
 					{
