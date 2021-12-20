@@ -50,12 +50,10 @@ func TestExamples(t *testing.T) {
 			ServiceType: corev1.ServiceTypeClusterIP,
 		},
 		{
-			Name:              "offline",
-			Values:            exampleOffline,
-			ServiceType:       corev1.ServiceTypeLoadBalancer,
-			CoderdImageRef:    "us-docker.pkg.dev/airgap-project/test/coder-service:1.25.0",
-			EnvboxImageRef:    "us-docker.pkg.dev/airgap-project/test/envbox:1.25.0",
-			TimescaleImageRef: "us-docker.pkg.dev/airgap-project/test/timescale:1.25.0",
+			Name:           "offline",
+			Values:         exampleOffline,
+			ServiceType:    corev1.ServiceTypeLoadBalancer,
+			CoderdImageRef: "us-docker.pkg.dev/airgap-project/test/coder-service:1.25.0",
 		},
 		{
 			Name:   "openshift",
