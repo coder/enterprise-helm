@@ -39,7 +39,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      com.coder.resource: "true"
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: coderd
   policyTypes:
     - Ingress
   # Deny all ingress traffic, except on our service ports
@@ -70,7 +71,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      com.coder.resource: "true"
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: timescale
   policyTypes:
     - Ingress
     - Egress
@@ -83,7 +85,8 @@ spec:
         # feature behind a feature gate.
         - podSelector:
             matchLabels:
-              app: coderd
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: coderd
       ports:
         - protocol: TCP
           port: 5432
