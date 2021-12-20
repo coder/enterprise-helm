@@ -82,6 +82,12 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				require.NotContains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected all egress to be allowed")
 				require.Empty(t, policy.Spec.Egress, "expected empty egress rules")
 				protocolTCP := corev1.ProtocolTCP
+
+				podSelector := &metav1.LabelSelector{}
+				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/instance", "coder")
+				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/component", "coderd")
+				require.Equal(t, podSelector, policy.Spec.PodSelector, "expected pod selectors to match")
+
 				expectedRules := []networkingv1.NetworkPolicyIngressRule{
 					{
 						From: []networkingv1.NetworkPolicyPeer{},
@@ -115,13 +121,18 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				protocolTCP := corev1.ProtocolTCP
 
 				podSelector := &metav1.LabelSelector{}
-				metav1.AddLabelToSelector(podSelector, "app", "coderd")
+				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/instance", "coder")
+				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/component", "timescale")
+
+				coderdPodSelector := &metav1.LabelSelector{}
+				metav1.AddLabelToSelector(coderdPodSelector, "app.kubernetes.io/instance", "coder")
+				metav1.AddLabelToSelector(coderdPodSelector, "app.kubernetes.io/component", "coderd")
 
 				expectedRules := []networkingv1.NetworkPolicyIngressRule{
 					{
 						From: []networkingv1.NetworkPolicyPeer{
 							{
-								PodSelector: podSelector,
+								PodSelector: coderdPodSelector,
 							},
 						},
 						Ports: []networkingv1.NetworkPolicyPort{

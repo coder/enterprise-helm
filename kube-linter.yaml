@@ -21,6 +21,7 @@ checks:
     - no-readiness-probe
     - no-rolling-update-strategy
     - non-existent-service-account
+    - non-isolated-pod
     - privilege-escalation-container
     - privileged-container
     - privileged-ports
@@ -41,7 +42,5 @@ checks:
     - access-to-secrets
     # TODO: evaluate high availability by default
     - minimum-three-replicas
-    # TODO: add network policy for coderd and timescale pods
-    - non-isolated-pod
     - required-annotation-email
     - required-label-owner
