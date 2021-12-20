@@ -93,6 +93,7 @@ type CoderdValues struct {
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
 	ExtraLabels                   map[string]string                          `json:"extraLabels" yaml:"extraLabels"`
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
+	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
 }
 
 // CoderdServiceNodePortsValues reflect values from
@@ -135,6 +136,11 @@ type CoderdBuiltinProviderServiceAccountValues struct {
 	Labels map[string]string `json:"labels" yaml:"labels"`
 	// Annotations is the same type as metav1.ObjectMeta.Annotations
 	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+}
+
+// CoderdNetworkPolicyValues reflect values from coderd.networkPolicy.
+type CoderdNetworkPolicyValues struct {
+	Enable *bool `json:"enable" yaml:"enable"`
 }
 
 // CoderdOIDCValues reflect values from coderd.oidc.
@@ -228,10 +234,17 @@ type PostgresSSLValues struct {
 // PostgresDefaultValues reflect the values from
 // postgres.default.
 type PostgresDefaultValues struct {
-	Enable           *bool                        `json:"enable" yaml:"enable"`
-	Image            *string                      `json:"image" yaml:"image"`
-	StorageClassName *string                      `json:"storageClassName" yaml:"storageClassName"`
-	Resources        *corev1.ResourceRequirements `json:"resources" yaml:"resources"`
+	Enable           *bool                               `json:"enable" yaml:"enable"`
+	Image            *string                             `json:"image" yaml:"image"`
+	StorageClassName *string                             `json:"storageClassName" yaml:"storageClassName"`
+	Resources        *corev1.ResourceRequirements        `json:"resources" yaml:"resources"`
+	NetworkPolicy    *PostgresDefaultNetworkPolicyValues `json:"networkPolicy" yaml:"networkPolicy"`
+}
+
+// PostgresDefaultNetworkPolicyValues reflect values from
+// postgres.default.networkPolicy.
+type PostgresDefaultNetworkPolicyValues struct {
+	Enable *bool `json:"enable" yaml:"enable"`
 }
 
 // ServicesValues reflect the values from services.

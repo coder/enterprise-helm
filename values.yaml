@@ -215,6 +215,12 @@ coderd:
             topologyKey: kubernetes.io/hostname
           weight: 1
 
+  # coderd.networkPolicy -- Configure the network policy to apply to coderd.
+  networkPolicy:
+    # coderd.networkPolicy.enable -- Manage a network policy for coderd using
+    # Helm. If false, no policies will be created for the Coder control plane.
+    enable: true
+
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.
@@ -291,11 +297,14 @@ postgres:
     # using an external PostgreSQL instance in production.
     # If true, all other values are ignored.
     enable: true
+
     # postgres.default.image -- Injected by Coder during release.
     image: ""
+
     # postgres.default.storageClassName -- Set the storageClass to store
     # the database.
     storageClassName: ""
+
     # postgres.default.resources -- Kubernetes resource specification for the PostgreSQL pod.
     # To unset a value, set it to "". To unset all values, set resources to nil.
     resources:
@@ -308,6 +317,14 @@ postgres:
       limits:
         cpu: "250m"
         memory: "1Gi"
+
+    # postgres.default.networkPolicy -- Configure the network policy to apply
+    # to the built-in PostgreSQL deployment.
+    networkPolicy:
+      # postgres.default.networkPolicy.enable -- Manage a network policy for
+      # PostgreSQL using Helm. If false, no policies will be created for the
+      # built-in database.
+      enable: true
 
 # services -- Kubernetes Service configuration that applies to Coder services.
 services:

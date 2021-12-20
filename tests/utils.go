@@ -5,6 +5,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -40,6 +41,20 @@ func MustFindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv
 
 	t.Fatalf("failed to find deployment %q, found %v", name, names)
 	return nil
+}
+
+// FindNetworkPolicy finds a network policy in the given slice of objects with
+// the given name, or returns false if no policy with that name was found.
+func FindNetworkPolicy(objs []runtime.Object, name string) (*networkingv1.NetworkPolicy, bool) {
+	for _, obj := range objs {
+		if policy, ok := obj.(*networkingv1.NetworkPolicy); ok {
+			if policy.Name == name {
+				return policy, true
+			}
+		}
+	}
+
+	return nil, false
 }
 
 // EnvVarsAsMap converts simple key/value environment variable pairs into a

@@ -1,5 +1,4 @@
-{{- if .Values.postgres.default.enable }}
-{{- if not .Values.coderd.satellite.enable }}
+{{- if (and .Values.postgres.default.enable (not .Values.coderd.satellite.enable)) }}
 ---
 apiVersion: v1
 kind: Service
@@ -145,5 +144,4 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
     coder.deployment: {{ include "timescale.serviceName" . }}
-{{- end }}
 {{- end }}
