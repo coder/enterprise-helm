@@ -43,6 +43,23 @@ func MustFindDeployment(t testing.TB, objs []runtime.Object, name string) *appsv
 	return nil
 }
 
+// MustFindStatefulSet finds a stateful set in the given slice of objects with
+// the given name, or fails the test.
+func MustFindStatefulSet(t testing.TB, objs []runtime.Object, name string) *appsv1.StatefulSet {
+	names := []string{}
+	for _, obj := range objs {
+		if statefulset, ok := obj.(*appsv1.StatefulSet); ok {
+			if statefulset.Name == name {
+				return statefulset
+			}
+			names = append(names, statefulset.Name)
+		}
+	}
+
+	t.Fatalf("failed to find statefulset %q, found %v", name, names)
+	return nil
+}
+
 // FindNetworkPolicy finds a network policy in the given slice of objects with
 // the given name, or returns false if no policy with that name was found.
 func FindNetworkPolicy(objs []runtime.Object, name string) (*networkingv1.NetworkPolicy, bool) {

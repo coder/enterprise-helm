@@ -8,7 +8,6 @@ checks:
     - docker-sock
     - drop-net-raw-capability
     - env-var-secret
-    - exposed-services
     - host-ipc
     - host-network
     - host-pid
@@ -39,9 +38,9 @@ checks:
     # Coder needs to create pods for workspaces
     - access-to-create-pods
     - access-to-secrets
+    # We use a load balancer service by default
+    - exposed-services
     # TODO: evaluate high availability by default
     - minimum-three-replicas
-    # TODO: add network policy for coderd and timescale pods
-    - non-isolated-pod
     - required-annotation-email
     - required-label-owner

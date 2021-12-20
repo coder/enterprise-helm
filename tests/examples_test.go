@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,6 +22,9 @@ func TestExamples(t *testing.T) {
 	exampleIngress, err := ReadValuesFileAsMap("../examples/ingress/ingress.values.yaml")
 	require.NoError(t, err, "failed to load ingress example values")
 
+	exampleOffline, err := ReadValuesFileAsMap("../examples/offline/offline.values.yaml")
+	require.NoError(t, err, "failed to load offline example values")
+
 	exampleOpenShift, err := ReadValuesFileAsMap("../examples/openshift/openshift.values.yaml")
 	require.NoError(t, err, "failed to load OpenShift example values")
 
@@ -33,16 +37,25 @@ func TestExamples(t *testing.T) {
 		PodSecurityContext       *corev1.PodSecurityContext
 		ContainerSecurityContext *corev1.SecurityContext
 		ServiceType              corev1.ServiceType
+		CoderdImageRef           string
 	}{
 		{
 			Name:        "default",
 			Values:      nil,
 			ServiceType: corev1.ServiceTypeLoadBalancer,
-		}, {
+		},
+		{
 			Name:        "ingress",
 			Values:      exampleIngress,
 			ServiceType: corev1.ServiceTypeClusterIP,
-		}, {
+		},
+		{
+			Name:           "offline",
+			Values:         exampleOffline,
+			ServiceType:    corev1.ServiceTypeLoadBalancer,
+			CoderdImageRef: "us-docker.pkg.dev/airgap-project/test/coder-service:1.25.0",
+		},
+		{
 			Name:   "openshift",
 			Values: exampleOpenShift,
 			PodSecurityContext: &corev1.PodSecurityContext{
@@ -143,13 +156,18 @@ func TestExamples(t *testing.T) {
 
 			// Find the coderd Deployment
 			coderd := MustFindDeployment(t, objs, "coderd")
-
 			assert.Equal(t, test.PodSecurityContext, coderd.Spec.Template.Spec.SecurityContext,
 				"expected matching pod securityContext",
 			)
 			require.Len(t, coderd.Spec.Template.Spec.Containers, 1,
 				"expected one container",
 			)
+			if test.CoderdImageRef != "" {
+				require.Equal(t, test.CoderdImageRef, coderd.Spec.Template.Spec.Containers[0].Image, "expected image ref to match")
+			} else {
+				imageRef := fmt.Sprintf("docker.io/coderenvs/coder-service:%s", chart.Metadata.AppVersion)
+				require.Equal(t, imageRef, coderd.Spec.Template.Spec.Containers[0].Image, "expected image ref to be default")
+			}
 			assert.Equal(t, test.ContainerSecurityContext, coderd.Spec.Template.Spec.Containers[0].SecurityContext,
 				"expected matching container securityContext",
 			)
