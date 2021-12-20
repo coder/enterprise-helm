@@ -29,6 +29,9 @@ func TestDefault(t *testing.T) {
 	tag := chart.AppVersion()
 	require.Equal(t, "docker.io/coderenvs/coder-service:"+tag, podSpec.Containers[0].Image,
 		"expected default image name")
+	require.Empty(t, chart.OriginalValues.Coderd.Image, "expected default coderd image to be empty")
+	require.Empty(t, chart.OriginalValues.Envbox.Image, "expected default envbox image to be empty")
+	require.Empty(t, chart.OriginalValues.Postgres.Default.Image, "expected default timescale image to be empty")
 	vars := EnvVarsAsMap(podSpec.Containers[0].Env)
 	require.Equal(t, "docker.io/coderenvs/envbox:"+tag, vars["ENVBOX_IMAGE"],
 		"expected default envbox image name")
