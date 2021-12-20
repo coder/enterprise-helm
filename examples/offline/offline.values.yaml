@@ -1,0 +1,26 @@
+# This example demonstrates settings relevant for an offline cluster
+# without direct outbound Internet access. This is sometimes called
+# an air-gapped or private cluster topology.
+coderd:
+  # By default, the chart uses images from Docker Hub. Air-gapped
+  # installations will require pulling the image into a local registry,
+  # and configuring the Helm installer to use those images instead.
+  #
+  # For details, see: https://coder.com/docs/coder/latest/setup/air-gapped
+  image: us-docker.pkg.dev/airgap-project/test/coder-service:1.25.0
+
+  # Configure a proxy for outbound network access. Coder will use this
+  # proxy for all outbound HTTP/HTTPS connections, such as when checking
+  # for updated images in the image registry. However, note that images
+  # are pulled from the Kubernetes container runtime, and may require a
+  # different setting.
+  proxy:
+    http: http://proxy.internal:8888
+    exempt: cluster.local
+
+postgres:
+  default:
+    image: us-docker.pkg.dev/airgap-project/test/timescale:1.25.0
+
+envbox:
+  image: us-docker.pkg.dev/airgap-project/test/envbox:1.25.0
