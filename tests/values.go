@@ -369,7 +369,9 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 	values := c.OriginalValues
 	if fn != nil {
 		values = &CoderValues{}
-		copier.Copy(values, c.OriginalValues)
+		copier.CopyWithOption(values, c.OriginalValues, copier.Option{
+			DeepCopy: true,
+		})
 
 		fn(values)
 	}
