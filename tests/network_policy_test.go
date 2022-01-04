@@ -79,8 +79,9 @@ func TestNetworkPolicyCoder(t *testing.T) {
 			require.Equal(t, test.ExpectCoderPolicy, exist, "coderd network policy")
 			if test.ExpectCoderPolicy {
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeIngress, "expected to restrict ingress")
-				require.NotContains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected all egress to be allowed")
-				require.Empty(t, policy.Spec.Egress, "expected empty egress rules")
+				for _, rule := range policy.Spec.Egress {
+					require.Empty(t, rule, "expected empty egress rule")
+				}
 				protocolTCP := corev1.ProtocolTCP
 
 				podSelector := &metav1.LabelSelector{}
@@ -117,7 +118,9 @@ func TestNetworkPolicyCoder(t *testing.T) {
 			if test.ExpectDatabasePolicy {
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeIngress, "expected to restrict ingress")
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected to restrict egress")
-				require.Empty(t, policy.Spec.Egress, "expected empty egress rules")
+				for _, rule := range policy.Spec.Egress {
+					require.Empty(t, rule, "expected empty egress rule")
+				}
 				protocolTCP := corev1.ProtocolTCP
 
 				podSelector := &metav1.LabelSelector{}

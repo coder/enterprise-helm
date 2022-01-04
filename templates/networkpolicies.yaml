@@ -43,6 +43,7 @@ spec:
       app.kubernetes.io/component: coderd
   policyTypes:
     - Ingress
+    - Egress
   # Deny all ingress traffic, except on our service ports
   ingress:
     - from: []
@@ -51,6 +52,9 @@ spec:
           port: 8080
         - protocol: TCP
           port: 8443
+  # Explicitly allow all egress traffic
+  egress:
+    - {}
 {{- end }}
 
 {{/* Policies for the built-in PostgreSQL database */}}
@@ -90,6 +94,7 @@ spec:
       ports:
         - protocol: TCP
           port: 5432
-  # Deny all egress traffic
-  egress: []
+  # Explicitly allow all egress traffic
+  egress:
+    - {}
 {{- end }}
