@@ -93,13 +93,16 @@ spec:
   # Allow egress to istio service mesh. This shouldn't cause any issues if
   # Istio is not in use.
   egress:
+  # Allow all traffic to Istio control plane. This may need to be adjusted
+  # based on your cluster configuration.
   - to:
     - namespaceSelector:
         matchLabels:
           app.kubernetes.io/name: istio-controlplane
-    - podSelector:
+      podSelector:
         matchLabels:
           istio: pilot
+  # Allow all outbound DNS traffic (53/UDP and TCP)
   - ports:
     - port: 53
       protocol: TCP

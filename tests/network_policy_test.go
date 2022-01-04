@@ -79,7 +79,8 @@ func TestNetworkPolicyCoder(t *testing.T) {
 			require.Equal(t, test.ExpectCoderPolicy, exist, "coderd network policy")
 			if test.ExpectCoderPolicy {
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeIngress, "expected to restrict ingress")
-				require.NotContains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected to not restrict egress")
+				require.NotContains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected all egress to be allowed")
+				require.Empty(t, policy.Spec.Egress, "expected empty egress rules")
 				protocolTCP := corev1.ProtocolTCP
 
 				podSelector := &metav1.LabelSelector{}
@@ -117,6 +118,7 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeIngress, "expected to restrict ingress")
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected to restrict egress")
 				protocolTCP := corev1.ProtocolTCP
+				protocolUDP := corev1.ProtocolUDP
 
 				podSelector := &metav1.LabelSelector{}
 				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/instance", "coder")
@@ -126,7 +128,7 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				metav1.AddLabelToSelector(coderdPodSelector, "app.kubernetes.io/instance", "coder")
 				metav1.AddLabelToSelector(coderdPodSelector, "app.kubernetes.io/component", "coderd")
 
-				expectedRules := []networkingv1.NetworkPolicyIngressRule{
+				expectedIngressRules := []networkingv1.NetworkPolicyIngressRule{
 					{
 						From: []networkingv1.NetworkPolicyPeer{
 							{
@@ -144,7 +146,41 @@ func TestNetworkPolicyCoder(t *testing.T) {
 						},
 					},
 				}
-				require.Equal(t, expectedRules, policy.Spec.Ingress, "expected ingress rules to match")
+				require.Equal(t, expectedIngressRules, policy.Spec.Ingress, "expected ingress rules to match")
+
+				istioNamespaceSelector := &metav1.LabelSelector{}
+				metav1.AddLabelToSelector(istioNamespaceSelector, "app.kubernetes.io/name", "istio-controlplane")
+				istioPodSelector := &metav1.LabelSelector{}
+				metav1.AddLabelToSelector(istioPodSelector, "istio", "pilot")
+				expectedEgressRules := []networkingv1.NetworkPolicyEgressRule{
+					{
+						To: []networkingv1.NetworkPolicyPeer{
+							{
+								NamespaceSelector: istioNamespaceSelector,
+								PodSelector:       istioPodSelector,
+							},
+						},
+					},
+					{
+						Ports: []networkingv1.NetworkPolicyPort{
+							{
+								Protocol: &protocolTCP,
+								Port: &intstr.IntOrString{
+									Type:   intstr.Int,
+									IntVal: 53,
+								},
+							},
+							{
+								Protocol: &protocolUDP,
+								Port: &intstr.IntOrString{
+									Type:   intstr.Int,
+									IntVal: 53,
+								},
+							},
+						},
+					},
+				}
+				require.Equal(t, expectedEgressRules, policy.Spec.Egress, "expected egress rules to match")
 			}
 		})
 	}
