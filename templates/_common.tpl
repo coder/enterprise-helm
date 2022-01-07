@@ -36,6 +36,8 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
   value: {{ .Values.postgres.database | quote }}
+- name: DB_USE_AWS_IAM_AUTH
+  value: {{ .Values.postgres.useAWSIAMAuth | quote }}
 {{- if ne .Values.postgres.ssl.certSecret.name "" }}
 - name: DB_CERT
   value: "/etc/ssl/certs/pg/cert/{{ .Values.postgres.ssl.certSecret.key }}"

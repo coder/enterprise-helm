@@ -290,6 +290,11 @@ postgres:
       name: ""
       # postgres.ssl.rootCertSecret.key -- Key pointing to a certificate in the secret.
       key: ""
+  # postgres.useAWSIAMAuth will use the aws credentials of the environment to 
+  # authenticate to a rds postgres instance.
+  # This should only be set to "true" for RDS instances with IAM DB authentication enabled.
+  # When set to "true" the value of the secret postgres.passwordSecret will not be used for authentication.
+  useAWSIAMAuth: false
 
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
