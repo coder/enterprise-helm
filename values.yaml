@@ -36,10 +36,10 @@ coderd:
   # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
   serviceAnnotations: {}
 
-  # coderd.trustProxyIP -- Whether Coder should trust X-Real-IP and/or
-  # X-Forwarded-For headers from your reverse proxy. This should only be turned
-  # on if you're using a reverse proxy that sets both of these headers. This is
-  # always enabled if the Nginx ingress is deployed.
+  # coderd.trustProxyIP -- Configures Coder to accept X-Real-IP and X-Forwarded-For
+  # headers from any origin. This option is deprecated and will be removed in a
+  # future release. Use the coderd.reverseProxy setting instead, which supports
+  # configuring an allowlist of trusted origins.
   trustProxyIP: false
 
   # coderd.devurlsHost -- Wildcard hostname to allow matching against custom-created
@@ -83,6 +83,29 @@ coderd:
     # - example.com - connect directly to example.com or any of its
     #   subdomains (any port)
     exempt: "cluster.local"
+
+  # coderd.reverseProxy -- Whether Coder should trust proxy headers for
+  # inbound connections, important for ensuring correct IP addresses
+  # when an Ingress Controller, service mesh, or other Layer 7 reverse
+  # proxy are deployed in front of Coder.
+  reverseProxy:
+    # coderd.reverseProxy.trustedOrigins -- A list of IPv4 or IPv6
+    # subnets to consider trusted, specified in CIDR format. If hosts
+    # are part of a matching network, the configured headers will be
+    # trusted; otherwise, coderd will rely on the connecting client
+    # IP address.
+    trustedOrigins: []
+
+    # coderd.reverseProxy.headers -- A list of trusted headers.
+    #
+    # Coder currently supports the following list of headers, with the
+    # following fixed search order:
+    #
+    # - CF-Connecting-IP
+    # - True-Client-IP
+    # - X-Real-IP
+    # - X-Forwarded-For
+    headers: []
 
   # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
