@@ -133,8 +133,6 @@ spec:
                   fieldPath: status.podIP
             - name: VERBOSE
               value: "true"
-            - name: TRUST_PROXY_IP
-              value: {{ .Values.coderd.trustProxyIP | quote }}
             {{- if .Values.coderd.satellite.enable }}
             - name: CODER_SATELLITE_PRIVATE_KEY
               valueFrom:
@@ -183,6 +181,12 @@ spec:
               value: {{ .Values.coderd.proxy.https | quote }}
             - name: no_proxy
               value: {{ .Values.coderd.proxy.exempt | quote }}
+            - name: TRUST_PROXY_IP
+              value: {{ .Values.coderd.trustProxyIP | quote }}
+            - name: PROXY_TRUSTED_ORIGINS
+              value: {{ join "," .Values.coderd.reverseProxy.trustedOrigins | quote }}
+            - name: PROXY_TRUSTED_HEADERS
+              value: {{ join "," .Values.coderd.reverseProxy.headers | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
           command:

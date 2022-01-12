@@ -93,6 +93,7 @@ type CoderdValues struct {
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
 	ExtraLabels                   map[string]string                          `json:"extraLabels" yaml:"extraLabels"`
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
+	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
 }
 
@@ -127,6 +128,12 @@ type CoderdProxyValues struct {
 	HTTP   *string `json:"http" yaml:"http"`
 	HTTPS  *string `json:"https" yaml:"https"`
 	Exempt *string `json:"exempt" yaml:"exempt"`
+}
+
+// CoderdReverseProxyValues reflect values from coderd.reverseProxy
+type CoderdReverseProxyValues struct {
+	TrustedOrigins []string `json:"trustedOrigins" yaml:"trustedOrigins"`
+	Headers        []string `json:"headers" yaml:"headers"`
 }
 
 // CoderdBuiltinProviderServiceAccountValues reflect values from
