@@ -187,6 +187,14 @@ spec:
               value: {{ join "," .Values.coderd.reverseProxy.trustedOrigins | quote }}
             - name: PROXY_TRUSTED_HEADERS
               value: {{ join "," .Values.coderd.reverseProxy.headers | quote }}
+            {{- if ne .Values.coderd.clientSsl.certSecret.name "" }}
+            - name: SSL_CLIENT_CERT_FILE
+              value: "/etc/ssl/certs/client/cert/{{ .Values.coderd.clientSsl.certSecret.key }}"
+            {{- end }}
+            {{- if ne .Values.coderd.clientSsl.keySecret.name "" }}
+            - name: SSL_CLIENT_KEY_FILE
+              value: "/etc/ssl/certs/client/key/{{ .Values.coderd.clientSsl.keySecret.key }}"
+            {{- end }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
           command:
