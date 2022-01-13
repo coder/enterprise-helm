@@ -92,6 +92,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | logging.stackdriver | string | Location to send logs that are formatted for Google Stackdriver. Set to an empty string to disable. | `""` |
 | metrics | object | Configure various metrics to gain observability into Coder. | `{"amplitudeKey":""}` |
 | metrics.amplitudeKey | string | Enables telemetry pushing to Amplitude. Amplitude records how users interact with Coder, which is used to improve the product. No events store any personal information. Amplitude can be found here: https://amplitude.com/ Keep empty to disable. | `""` |
+| postgres.connector | string |  | `"postgres"` |
 | postgres.database | string | Name of the database that Coder will use. You must create this database first. | `""` |
 | postgres.default | object | Configure a built-in PostgreSQL deployment. | `{"enable":true,"image":"","networkPolicy":{"enable":true},"resources":{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}},"storageClassName":""}` |
 | postgres.default.enable | bool | Deploys a PostgreSQL instance. We recommend using an external PostgreSQL instance in production. If true, all other values are ignored. | `true` |
@@ -104,7 +105,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.host | string | Host of the external PostgreSQL instance. | `""` |
 | postgres.passwordSecret | string | Name of an existing secret in the current namespace with the password of the PostgreSQL instance. The password must be contained in the secret field `password`. This should be set to an empty string if the database does not require a password to connect. | `""` |
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
-| postgres.ssl | object | Options for configuring the SSL cert, key, and root cert when connecting to Postgres. | `{"certSecret":{"key":"","name":""},"keySecret":{"key":"","name":""},"rootCertSecret":{"key":"","name":""}}` |
+| postgres.ssl | object | Options for configuring the SSL cert, key, and root cert when connecting to Postgres. postgres.connector -- Option for configuring database connector type. valid values are: - "postgres" -- default connector - "awsiamrds" -- uses aws profile in environment to authenticate using   IAM to connect to an RDS instance. | `{"certSecret":{"key":"","name":""},"keySecret":{"key":"","name":""},"rootCertSecret":{"key":"","name":""}}` |
 | postgres.ssl.certSecret | object | Secret containing a PEM encoded cert file. | `{"key":"","name":""}` |
 | postgres.ssl.certSecret.key | string | Key pointing to a certificate in the secret. | `""` |
 | postgres.ssl.certSecret.name | string | Name of the secret. | `""` |
