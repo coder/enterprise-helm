@@ -20,6 +20,8 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: coder
 - name: DB_SSL_MODE
   value: disable
+- name: DB_CONNECTOR
+  value: {{ .Values.postgres.connector | quote }}
 {{- else }}
 - name: DB_HOST
   value: {{ .Values.postgres.host | quote }}
