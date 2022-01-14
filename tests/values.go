@@ -230,6 +230,7 @@ type PostgresValues struct {
 	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
 	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
 	SSL            *PostgresSSLValues     `json:"ssl" yaml:"ssl"`
+	Connector      *string                `json:"connector" yaml:"connector"`
 }
 
 type PostgresSSLValues struct {
