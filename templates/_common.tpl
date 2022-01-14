@@ -20,8 +20,6 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: coder
 - name: DB_SSL_MODE
   value: disable
-- name: DB_CONNECTOR
-  value: {{ .Values.postgres.connector | quote }}
 {{- else }}
 - name: DB_HOST
   value: {{ .Values.postgres.host | quote }}
@@ -29,13 +27,15 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: {{ .Values.postgres.port | quote }}
 - name: DB_USER
   value: {{ .Values.postgres.user | quote }}
-{{- if ne .Values.postgres.connector "awsiamrds" }}
+{{- if ne .Values.postgres.passwordSecret "" }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.postgres.passwordSecret | quote }}    
       key: password
 {{- end }}
+- name: DB_CONNECTOR
+  value: {{ .Values.postgres.connector | quote }}
 - name: DB_SSL_MODE
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
