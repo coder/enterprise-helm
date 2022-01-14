@@ -92,7 +92,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | logging.stackdriver | string | Location to send logs that are formatted for Google Stackdriver. Set to an empty string to disable. | `""` |
 | metrics | object | Configure various metrics to gain observability into Coder. | `{"amplitudeKey":""}` |
 | metrics.amplitudeKey | string | Enables telemetry pushing to Amplitude. Amplitude records how users interact with Coder, which is used to improve the product. No events store any personal information. Amplitude can be found here: https://amplitude.com/ Keep empty to disable. | `""` |
-| postgres.connector | string | Option for configuring database connector type. valid values are: - "postgres" -- default connector - "awsiamrds" -- uses aws profile in environment to authenticate using   IAM to connect to an RDS instance. | `"postgres"` |
+| postgres.connector | string | Option for configuring database connector type. valid values are: - "postgres" -- default connector - "awsiamrds" -- uses AWS IAM account in environment to authenticate using   IAM to connect to an RDS instance. | `"postgres"` |
 | postgres.database | string | Name of the database that Coder will use. You must create this database first. | `""` |
 | postgres.default | object | Configure a built-in PostgreSQL deployment. | `{"enable":true,"image":"","networkPolicy":{"enable":true},"resources":{"limits":{"cpu":"250m","memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi","storage":"10Gi"}},"storageClassName":""}` |
 | postgres.default.enable | bool | Deploys a PostgreSQL instance. We recommend using an external PostgreSQL instance in production. If true, all other values are ignored. | `true` |
