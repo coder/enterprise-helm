@@ -294,12 +294,6 @@ postgres:
   sslMode: "require"
   # postgres.ssl -- Options for configuring the SSL cert, key, and root cert
   # when connecting to Postgres.
-  # postgres.connector -- Option for configuring database connector type.
-  # valid values are:
-  # - "postgres" -- default connector
-  # - "awsiamrds" -- uses aws profile in environment to authenticate using
-  #   IAM to connect to an RDS instance.
-  connector: "postgres"
   ssl:
     # postgres.ssl.certSecret -- Secret containing a PEM encoded cert file.
     certSecret:
@@ -319,7 +313,13 @@ postgres:
       name: ""
       # postgres.ssl.rootCertSecret.key -- Key pointing to a certificate in the secret.
       key: ""
-
+  # postgres.connector -- Option for configuring database connector type.
+  # valid values are:
+  # - "postgres" -- default connector
+  # - "awsiamrds" -- uses aws profile in environment to authenticate using
+  #   IAM to connect to an RDS instance.
+  connector: "postgres"
+  
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
     # postgres.default.enable -- Deploys a PostgreSQL instance. We recommend
