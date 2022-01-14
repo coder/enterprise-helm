@@ -29,7 +29,7 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: {{ .Values.postgres.port | quote }}
 - name: DB_USER
   value: {{ .Values.postgres.user | quote }}
-{{- if eq .Values.postgres.connector "postgres" }}
+{{- if ne .Values.postgres.connector "awsiamrds" }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
