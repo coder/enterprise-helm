@@ -316,7 +316,7 @@ postgres:
   # postgres.connector -- Option for configuring database connector type.
   # valid values are:
   # - "postgres" -- default connector
-  # - "awsiamrds" -- uses aws profile in environment to authenticate using
+  # - "awsiamrds" -- uses AWS IAM account in environment to authenticate using
   #   IAM to connect to an RDS instance.
   connector: "postgres"
   
