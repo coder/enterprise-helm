@@ -3,7 +3,7 @@ module cdr.dev/enterprise-helm/tests
 go 1.17
 
 require (
-	github.com/jinzhu/copier v0.3.4
+	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.2
 	github.com/pioz/faker v1.7.2
 	github.com/stretchr/testify v1.7.0
