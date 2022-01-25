@@ -79,7 +79,6 @@ type CoderdValues struct {
 	Replicas                      *int                                       `json:"replicas" yaml:"replicas"`
 	ServiceSpec                   *CoderdServiceSpecValues                   `json:"serviceSpec" yaml:"serviceSpec"`
 	ServiceNodePorts              *CoderdServiceNodePortsValues              `json:"serviceNodePorts" yaml:"serviceNodePorts"`
-	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
 	TrustProxyIP                  *bool                                      `json:"trustProxyIP" yaml:"trustProxyIP"`
 	DevURLsHost                   *string                                    `json:"devurlsHost" yaml:"devurlsHost"`
 	TLS                           *CoderdTLSValues                           `json:"tls" yaml:"tls"`
