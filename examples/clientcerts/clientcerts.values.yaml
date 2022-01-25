@@ -1,0 +1,29 @@
+# These sections are used for the client side of certificate authentication.
+coderd:
+  clientTls:
+    certSecret:
+      name: "client-cert-secret"
+      key: "client-cert-filename.crt"
+    keySecret:
+      name: "client-key-secret"
+      key: "client-key-filename.key"
+
+postgres:
+  default:
+    enable: false
+  host: "some.rds.hostname"
+  port: 5432
+  user: "coder"
+  database: "coder"
+  passwordSecret: "database-password-secret"
+  sslMode: "require"
+  ssl:
+    certSecret:
+      name: "database-client-cert-secret"
+      key: "database-client-cert-filename.crt"
+    keySecret:
+      name: "database-client-key-secret"
+      key: "database-client-key-filename.key"
+    rootCertSecret:
+      name: "database-root-cert-secret"
+      key: "database-root-cert-filename.crt"
