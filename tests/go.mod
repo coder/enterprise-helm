@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.2
-	github.com/pioz/faker v1.7.2
+	github.com/pioz/faker v2.0.1+incompatible
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	helm.sh/helm/v3 v3.8.0
@@ -19,6 +19,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
+	github.com/bxcodec/faker v2.0.1+incompatible // indirect
 	github.com/cyphar/filepath-securejoin v0.2.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
