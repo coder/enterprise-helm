@@ -29,7 +29,7 @@ run_trace false curl "${curl_flags[@]}" "https://github.com/golangci/golangci-li
   tar --extract --gzip --directory="$TMPDIR" --file=- --strip-components=1 "golangci-lint-${GOLANGCI_LINT_VERSION}-linux-amd64/golangci-lint"
 
 # Helm for packaging and validating chart
-HELM_VERSION=3.7.1
+HELM_VERSION=3.8.0
 run_trace false curl "${curl_flags[@]}" "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \| \
   tar --extract --gzip --directory="$TMPDIR" --file=- --strip-components=1 linux-amd64/helm
 
