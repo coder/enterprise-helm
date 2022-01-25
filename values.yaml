@@ -33,9 +33,6 @@ coderd:
     # This should usually be omitted.
     https: null
 
-  # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
-  serviceAnnotations: {}
-
   # coderd.trustProxyIP -- Configures Coder to accept X-Real-IP and X-Forwarded-For
   # headers from any origin. This option is deprecated and will be removed in a
   # future release. Use the coderd.reverseProxy setting instead, which supports
