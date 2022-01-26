@@ -15,7 +15,6 @@ postgres:
   port: 5432
   user: "coder"
   database: "coder"
-  passwordSecret: "database-password-secret"
   sslMode: "require"
   ssl:
     certSecret:
