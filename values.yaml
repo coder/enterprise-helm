@@ -33,9 +33,6 @@ coderd:
     # This should usually be omitted.
     https: null
 
-  # coderd.serviceAnnotations -- Extra annotations to apply to the coderd service.
-  serviceAnnotations: {}
-
   # coderd.trustProxyIP -- Configures Coder to accept X-Real-IP and X-Forwarded-For
   # headers from any origin. This option is deprecated and will be removed in a
   # future release. Use the coderd.reverseProxy setting instead, which supports
@@ -327,7 +324,13 @@ postgres:
       name: ""
       # postgres.ssl.rootCertSecret.key -- Key pointing to a certificate in the secret.
       key: ""
-
+  # postgres.connector -- Option for configuring database connector type.
+  # valid values are:
+  # - "postgres" -- default connector
+  # - "awsiamrds" -- uses AWS IAM account in environment to authenticate using
+  #   IAM to connect to an RDS instance.
+  connector: "postgres"
+  
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
     # postgres.default.enable -- Deploys a PostgreSQL instance. We recommend

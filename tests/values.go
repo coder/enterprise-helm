@@ -79,7 +79,6 @@ type CoderdValues struct {
 	Replicas                      *int                                       `json:"replicas" yaml:"replicas"`
 	ServiceSpec                   *CoderdServiceSpecValues                   `json:"serviceSpec" yaml:"serviceSpec"`
 	ServiceNodePorts              *CoderdServiceNodePortsValues              `json:"serviceNodePorts" yaml:"serviceNodePorts"`
-	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
 	TrustProxyIP                  *bool                                      `json:"trustProxyIP" yaml:"trustProxyIP"`
 	DevURLsHost                   *string                                    `json:"devurlsHost" yaml:"devurlsHost"`
 	TLS                           *CoderdTLSValues                           `json:"tls" yaml:"tls"`
@@ -95,6 +94,12 @@ type CoderdValues struct {
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
 	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
+	ClientTls                     *CoderdClientTlsValues                     `json:"clientTls" yaml:"clientTls"`
+}
+
+type CoderdClientTlsValues struct{
+	CertSecret *CertsSecretValues `json:"certSecret" yaml:"certSecret"`
+	KeySecret  *CertsSecretValues `json:"keySecret" yaml:"keySecret"` 
 }
 
 // CoderdServiceNodePortsValues reflect values from
@@ -230,6 +235,7 @@ type PostgresValues struct {
 	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
 	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
 	SSL            *PostgresSSLValues     `json:"ssl" yaml:"ssl"`
+	Connector      *string                `json:"connector" yaml:"connector"`
 }
 
 type PostgresSSLValues struct {
