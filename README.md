@@ -7,7 +7,7 @@
 
 Coder moves developer workspaces to your cloud and centralizes their creation and management. Keep developers in flow with the power of the cloud and a superior developer experience.
 
-The Coder chart is the best way to operate Coder on Kubernetes. It contains all the required components, and can scale to large deployments.
+The Coder Helm Chart is the best way to install and operate Coder on Kubernetes. It contains all the required components, and can scale to large deployments.
 
 ![Coder Dashboard](./assets/coder.svg)
 
@@ -124,16 +124,8 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 
 ## Contributing
 
-Templates for Coder services live in the `templates` directory.
-Helm compiles templates with `values.yaml` when deploying.
-
-`README.md` is generated from `README.md.gotmpl` to ensure values are correct. Regenerate the readme:
-
-```shell-session
-$ make README.md
-```
-
-Deprecation notices should be added to `templates/NOTES.txt`.
+Thanks for considering a contribution to this Chart!
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for our conventions and practices.
 
 ## Support
 
@@ -142,7 +134,7 @@ pull request in this repository. Feel free to [contact us instead](https://coder
 
 ## Copyright and License
 
-Copyright (C) 2020-2021 Coder Technologies Inc.
+Copyright (C) 2020-2022 Coder Technologies Inc.
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
