@@ -6,8 +6,8 @@ name: coder
 description: >
   Coder moves developer workspaces to your cloud and centralizes their
   creation and management.
-appVersion: 1.25.0
-version: 1.25.0
+appVersion: 1.27.0
+version: 1.27.0
 # Coder follows the Kubernetes upstream version support policy, and the
 # latest stable release version of Coder supports the previous two minor
 # releases as well as the current release of Kubernetes at time of
