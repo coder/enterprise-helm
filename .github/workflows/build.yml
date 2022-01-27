@@ -70,10 +70,9 @@ jobs:
       matrix:
         # Image tags for kindest/node to run
         tag:
-          - v1.20.7
           - v1.21.2
           - v1.22.4
-          - v1.23.0
+          - v1.23.3
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.9.1

@@ -14,7 +14,7 @@ version: 1.27.0
 # publication.
 #
 # See: https://coder.com/docs/coder/latest/setup/kubernetes#supported-kubernetes-versions
-kubeVersion: ">= 1.20.0-0"
+kubeVersion: ">= 1.21.0-0"
 home: https://coder.com
 keywords:
   - coder
