@@ -90,15 +90,10 @@ volumes:
     secret:
       secretName: {{ .Values.postgres.ssl.rootCertSecret.name | quote }}
 {{- end }}
-{{- if ne .Values.coderd.clientTls.certSecret.name "" }}
+{{- if ne .Values.coderd.clientTls.secretName "" }}
   - name: clientcert
     secret:
-      secretName: {{ .Values.coderd.clientTls.certSecret.name | quote }}
-{{- end }}
-{{- if ne .Values.coderd.clientTls.keySecret.name "" }}
-  - name: clientkey
-    secret:
-      secretName: {{ .Values.coderd.clientTls.keySecret.name | quote }}
+      secretName: {{ .Values.coderd.clientTls.secretName | quote }}
 {{- end }}
 {{- end }}
 
@@ -138,14 +133,9 @@ volumeMounts:
     mountPath: /etc/ssl/certs/pg/rootcert
     readOnly: true
 {{- end }}
-{{- if ne .Values.coderd.clientTls.certSecret.name "" }}
+{{- if ne .Values.coderd.clientTls.secretName "" }}
   - name: clientcert
-    mountPath: /etc/ssl/certs/client/cert
-    readOnly: true
-{{- end }}
-{{- if ne .Values.coderd.clientTls.keySecret.name "" }}
-  - name: clientkey
-    mountPath: /etc/ssl/certs/client/key
+    mountPath: /etc/ssl/certs/client
     readOnly: true
 {{- end }}
 {{- end }}
