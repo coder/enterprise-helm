@@ -22,7 +22,7 @@ func Test_ClientTLS(t *testing.T) {
 	)
 
 	objs := chart.MustRender(t, func(cv *CoderValues) {
-		cv.Coderd.ClientTls = &CoderdClientTlsValues{
+		cv.Coderd.ClientTLS = &CoderdClientTLSValues{
 			SecretName: &certSecretName,
 		}
 	})

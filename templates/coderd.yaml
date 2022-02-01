@@ -187,7 +187,7 @@ spec:
               value: {{ join "," .Values.coderd.reverseProxy.trustedOrigins | quote }}
             - name: PROXY_TRUSTED_HEADERS
               value: {{ join "," .Values.coderd.reverseProxy.headers | quote }}
-            {{- if ne .Values.coderd.clientTls.secretName "" }}
+            {{- if ne .Values.coderd.clientTLS.secretName "" }}
             - name: SSL_CLIENT_CERT_FILE
               value: "/etc/ssl/certs/client/tls.crt"
             - name: SSL_CLIENT_KEY_FILE

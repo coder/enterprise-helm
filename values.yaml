@@ -51,9 +51,9 @@ coderd:
     # coderd.tls.devurlsHostSecretName -- The secret to use for DevURL TLS.
     devurlsHostSecretName: ""
 
-  # coderd.clientTls -- Client-side TLS configuration for coderd.
-  clientTls:
-    # secretName -- Secret containing a PEM encoded cert file.
+  # coderd.clientTLS -- Client-side TLS configuration for coderd.
+  clientTLS:
+    # coderd.clientTLS.secretName -- Secret containing a PEM encoded cert file.
     secretName: ""
 
   # coderd.proxy -- Whether Coder should initiate outbound connections using

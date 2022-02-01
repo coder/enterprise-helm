@@ -1,12 +1,7 @@
 # These sections are used for the client side of certificate authentication.
 coderd:
-  clientTls:
-    certSecret:
-      name: "client-cert-secret"
-      key: "client-cert-filename.crt"
-    keySecret:
-      name: "client-key-secret"
-      key: "client-key-filename.key"
+  clientTLS:
+    secretName: "client-cert-secret"
 
 postgres:
   default:
