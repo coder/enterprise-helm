@@ -18,24 +18,12 @@ func Test_ClientTLS(t *testing.T) {
 
 		certVolName    = "clientcert"
 		certSecretName = "coder-tls-cert"
-		certSecretKey  = "cert"
-		certMountPath  = "/etc/ssl/certs/client/cert"
-		keyVolName     = "clientkey"
-		keySecretName  = "coder-tls-key"
-		keySecretKey   = "cert-key"
-		keyMountPath   = "/etc/ssl/certs/client/key"
+		certMountPath  = "/etc/ssl/certs/client"
 	)
 
 	objs := chart.MustRender(t, func(cv *CoderValues) {
 		cv.Coderd.ClientTls = &CoderdClientTlsValues{
-			CertSecret: &CertsSecretValues{
-				Name: &certSecretName,
-				Key:  &certSecretKey,
-			},
-			KeySecret: &CertsSecretValues{
-				Name: &keySecretName,
-				Key:  &keySecretKey,
-			},
+			SecretName: &certSecretName,
 		}
 	})
 
@@ -45,39 +33,16 @@ func Test_ClientTLS(t *testing.T) {
 	envVars := EnvVarsAsMap(coderdCtr.Env)
 
 	// Assert volumes and volume mounts for both the cert and key.
-	cases := []struct {
-		volName    string
-		secretName string
-		secretKey  string
-		mountPath  string
-		envName    string
-	}{
-		{
-			volName:    certVolName,
-			secretName: certSecretName,
-			secretKey:  certSecretKey,
-			mountPath:  certMountPath,
-			envName:    "SSL_CLIENT_CERT_FILE",
-		},
-		{
-			volName:    keyVolName,
-			secretName: keySecretName,
-			secretKey:  keySecretKey,
-			mountPath:  keyMountPath,
-			envName:    "SSL_CLIENT_KEY_FILE",
-		},
-	}
-	for _, c := range cases {
-		AssertVolume(t, coderd.Spec.Template.Spec.Volumes, c.volName, func(t testing.TB, v v1.Volume) {
-			require.NotNil(t, v.Secret)
-			assert.Equal(t, c.secretName, v.Secret.SecretName)
-		})
+	AssertVolume(t, coderd.Spec.Template.Spec.Volumes, certVolName, func(t testing.TB, v v1.Volume) {
+		require.NotNil(t, v.Secret)
+		assert.Equal(t, certSecretName, v.Secret.SecretName)
+	})
 
-		AssertVolumeMount(t, coderdCtr.VolumeMounts, c.volName, func(t testing.TB, v v1.VolumeMount) {
-			assert.Equal(t, c.mountPath, v.MountPath)
-			assert.True(t, v.ReadOnly)
-		})
+	AssertVolumeMount(t, coderdCtr.VolumeMounts, certVolName, func(t testing.TB, v v1.VolumeMount) {
+		assert.Equal(t, certMountPath, v.MountPath)
+		assert.True(t, v.ReadOnly)
+	})
 
-		assert.Equal(t, envVars[c.envName], filepath.Join(c.mountPath, c.secretKey))
-	}
+	assert.Equal(t, envVars["SSL_CLIENT_CERT_FILE"], filepath.Join(certMountPath, "tls.crt"))
+	assert.Equal(t, envVars["SSL_CLIENT_KEY_FILE"], filepath.Join(certMountPath, "tls.key"))
 }

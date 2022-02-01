@@ -97,9 +97,8 @@ type CoderdValues struct {
 	ClientTls                     *CoderdClientTlsValues                     `json:"clientTls" yaml:"clientTls"`
 }
 
-type CoderdClientTlsValues struct{
-	CertSecret *CertsSecretValues `json:"certSecret" yaml:"certSecret"`
-	KeySecret  *CertsSecretValues `json:"keySecret" yaml:"keySecret"` 
+type CoderdClientTlsValues struct {
+	SecretName *string `json:"secretName" yaml:"secretName"`
 }
 
 // CoderdServiceNodePortsValues reflect values from
