@@ -94,6 +94,7 @@ type CoderdValues struct {
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
 	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
+	Annotations                   map[string]string                          `json:"annotations" yaml:"annotations"`
 }
 
 // CoderdServiceNodePortsValues reflect values from
@@ -168,6 +169,7 @@ type CoderdServiceSpecValues struct {
 	ExternalTrafficPolicy    *corev1.ServiceExternalTrafficPolicyType `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
 	LoadBalancerIP           *string                                  `json:"loadBalancerIP" yaml:"loadBalancerIP"`
 	LoadBalancerSourceRanges *[]string                                `json:"loadBalancerSourceRanges" yaml:"loadBalancerSourceRanges"`
+	Annotations              map[string]string                        `json:"annotations" yaml:"annotations"`
 }
 
 // EnvboxValues reflect values from envbox.
@@ -246,6 +248,7 @@ type PostgresDefaultValues struct {
 	StorageClassName *string                             `json:"storageClassName" yaml:"storageClassName"`
 	Resources        *corev1.ResourceRequirements        `json:"resources" yaml:"resources"`
 	NetworkPolicy    *PostgresDefaultNetworkPolicyValues `json:"networkPolicy" yaml:"networkPolicy"`
+	Annotations      map[string]string                   `json:"annotations" yaml:"annotations"`
 }
 
 // PostgresDefaultNetworkPolicyValues reflect values from
@@ -256,7 +259,6 @@ type PostgresDefaultNetworkPolicyValues struct {
 
 // ServicesValues reflect the values from services.
 type ServicesValues struct {
-	Annotations         map[string]string    `json:"annotations" yaml:"annotations"`
 	ClusterDomainSuffix *string              `json:"clusterDomainSuffix" yaml:"clusterDomainSuffix"`
 	Tolerations         *[]corev1.Toleration `json:"tolerations" yaml:"tolerations"`
 	NodeSelector        map[string]string    `json:"nodeSelector" yaml:"nodeSelector"`

@@ -13,13 +13,12 @@ func TestAnnotations(t *testing.T) {
 
 	chart := LoadChart(t)
 
-	expected := map[string]string{
-		"key": "value",
-		"service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "http",
-	}
+	expected := map[string]string{}
 
 	objs := chart.MustRender(t, func(cv *CoderValues) {
-		cv.Services.Annotations = expected
+		cv.Coderd.Annotations = expected
+		cv.Coderd.ServiceSpec.Annotations = expected
+		cv.Postgres.Default.Annotations = expected
 	})
 
 	depl := MustFindDeployment(t, objs, "coderd")

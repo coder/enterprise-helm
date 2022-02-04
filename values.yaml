@@ -4,7 +4,9 @@ coderd:
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   replicas: 1
-
+  # coderd.annotations -- Apply annotations to the coderd deployment.
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
   # coderd.serviceSpec -- Specification to inject for the coderd service. See:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
@@ -21,6 +23,9 @@ coderd:
     # will be restricted to the specified client IPs. This field will be ignored if
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
+    # coderd.serviceSpec.annotations -- Apply annotations to the coderd service.
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
 
   # coderd.serviceNodePorts -- Allows manually setting static node ports for the coderd service.
   # This is only helpful if static ports are required, and usually should be left alone.
@@ -351,12 +356,12 @@ postgres:
       # PostgreSQL using Helm. If false, no policies will be created for the
       # built-in database.
       enable: true
+    # postgres.default.annotations -- Apply annotations to the default postgres service.
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
 
 # services -- Kubernetes Service configuration that applies to Coder services.
 services:
-  # services.annotations -- A KV mapping of annotations. See:
-  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  annotations: {}
   # services.clusterDomainSuffix -- Custom domain suffix for DNS resolution in your cluster. See:
   # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
   clusterDomainSuffix: ".svc.cluster.local"
