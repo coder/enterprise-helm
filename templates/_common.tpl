@@ -90,6 +90,11 @@ volumes:
     secret:
       secretName: {{ .Values.postgres.ssl.rootCertSecret.name | quote }}
 {{- end }}
+{{- if ne .Values.coderd.clientTLS.secretName "" }}
+  - name: clientcert
+    secret:
+      secretName: {{ .Values.coderd.clientTLS.secretName | quote }}
+{{- end }}
 {{- end }}
 
 # coder.volumeMounts adds a volume mounts stanza if a cert.secret is
@@ -126,6 +131,11 @@ volumeMounts:
 {{- if ne .Values.postgres.ssl.rootCertSecret.name "" }}
   - name: pgrootcert
     mountPath: /etc/ssl/certs/pg/rootcert
+    readOnly: true
+{{- end }}
+{{- if ne .Values.coderd.clientTLS.secretName "" }}
+  - name: clientcert
+    mountPath: /etc/ssl/certs/client
     readOnly: true
 {{- end }}
 {{- end }}

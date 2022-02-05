@@ -7,10 +7,11 @@ help:
 	@echo " * 'all' - Run everything"
 	@echo " * 'fmt' - Run formatters"
 	@echo " * 'lint' - Run linters"
+	@echo " * 'test' - Run unit tests"
 	@echo " * 'clean' - Remove generated build files"
 .PHONY: help
 
-all: lint fmt
+all: lint fmt test
 .PHONY: all
 
 lint: lint/helm lint/kubernetes lint/shellcheck
@@ -40,6 +41,14 @@ README.md: README.md.gotmpl values.yaml
 	helm-docs --template-files=$<
 	@printf "<!-- DO NOT EDIT. THIS IS GENERATED FROM README.md.gotmpl -->\n\n%s\n" "$$(cat README.md)" > README.md
 .PHONY: README.md
+
+test: test/go
+.PHONY: test
+
+test/go:
+	@echo "--- Running tests"
+	./scripts/test_go.sh
+.PHONY: test/go
 
 clean:
 	rm -vrf build/

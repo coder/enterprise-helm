@@ -95,6 +95,11 @@ type CoderdValues struct {
 	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
 	Annotations                   map[string]string                          `json:"annotations" yaml:"annotations"`
+	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
+}
+
+type CoderdClientTLSValues struct {
+	SecretName *string `json:"secretName" yaml:"secretName"`
 }
 
 // CoderdServiceNodePortsValues reflect values from
