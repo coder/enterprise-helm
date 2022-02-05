@@ -362,6 +362,9 @@ postgres:
 
 # services -- Kubernetes Service configuration that applies to Coder services.
 services:
+  # services.annotations -- A KV mapping of annotations. See:
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
   # services.clusterDomainSuffix -- Custom domain suffix for DNS resolution in your cluster. See:
   # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/
   clusterDomainSuffix: ".svc.cluster.local"

@@ -33,7 +33,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
-  annotations: {{ toYaml .Values.postgres.default.annotations | nindent 4 }}
+  annotations: {{ toYaml (merge .Values.postgres.default.annotations .Values.services.annotations) | nindent 4 }}
 spec:
   serviceName: {{ include "timescale.serviceName" . }}
   replicas: 1

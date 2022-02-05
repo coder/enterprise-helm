@@ -263,6 +263,7 @@ type ServicesValues struct {
 	Tolerations         *[]corev1.Toleration `json:"tolerations" yaml:"tolerations"`
 	NodeSelector        map[string]string    `json:"nodeSelector" yaml:"nodeSelector"`
 	Type                *corev1.ServiceType  `json:"type" yaml:"type"`
+	Annotations         map[string]string    `json:"annotations" yaml:"annotations"`
 }
 
 // String returns the string representation of the values.
