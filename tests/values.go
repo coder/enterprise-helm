@@ -136,8 +136,9 @@ type CoderdProxyValues struct {
 
 // CoderdReverseProxyValues reflect values from coderd.reverseProxy
 type CoderdReverseProxyValues struct {
-	TrustedOrigins []string `json:"trustedOrigins" yaml:"trustedOrigins"`
-	Headers        []string `json:"headers" yaml:"headers"`
+	TrustedOrigins   []string `json:"trustedOrigins" yaml:"trustedOrigins"`
+	Headers          []string `json:"headers" yaml:"headers"`
+	TrustedHostnames []string `json:"trusted_hostnames" yaml:"trusted_hostnames"`
 }
 
 // CoderdBuiltinProviderServiceAccountValues reflect values from
