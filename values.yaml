@@ -114,13 +114,22 @@ coderd:
     # - X-Forwarded-For
     headers: []
 
+    # coderd.reverseProxy.trustedHostnames -- A list of hostnames that coderd
+    # (including satellites) will allow for OIDC. If this list is not set, all
+    # OIDC traffic will go to the configured access URL in the admin settings on
+    # the dashboard (or the satellite's primary URL as configured by Helm).
+    #
+    # This is used for geo DNS support with satellites. Read more:
+    # TODO: link to docs:
+    trustedHostnames: []
+
   # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
   satellite:
     # coderd.satellite.enable -- Run coderd as a satellite pointing to a primary
     # deployment. Satellite enable low-latency access to workspaces all over the
     # world. Read more:
-    # TODO: Link to docs.
+    # https://coder.com/docs/coder/latest/admin/satellites
     enable: false
     # coderd.satellite.accessURL -- URL of the satellite that clients will
     # connect to.
@@ -326,7 +335,7 @@ postgres:
   # - "awsiamrds" -- uses AWS IAM account in environment to authenticate using
   #   IAM to connect to an RDS instance.
   connector: "postgres"
-  
+
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
     # postgres.default.enable -- Deploys a PostgreSQL instance. We recommend
