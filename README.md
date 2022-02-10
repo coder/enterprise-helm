@@ -122,7 +122,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.sslMode | string | Provides variable levels of protection for the PostgreSQL connection. For acceptable values, see:  https://www.postgresql.org/docs/11/libpq-ssl.html | `"require"` |
 | postgres.user | string | User of the external PostgreSQL instance. | `""` |
 | services | object | Kubernetes Service configuration that applies to Coder services. | `{"annotations":{},"clusterDomainSuffix":".svc.cluster.local","nodeSelector":{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"},"tolerations":[],"type":"ClusterIP"}` |
-| services.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ | `{}` |
+| services.annotations | object | A KV mapping of annotations. See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ DEPRECATED -- Please use the annotations value for each object. | `{}` |
 | services.clusterDomainSuffix | string | Custom domain suffix for DNS resolution in your cluster. See: https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/ | `".svc.cluster.local"` |
 | services.nodeSelector | object | See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector | `{"kubernetes.io/arch":"amd64","kubernetes.io/os":"linux"}` |
 | services.tolerations | list | Each element is a toleration object. See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ | `[]` |
