@@ -193,7 +193,7 @@ spec:
             - name: SSL_CLIENT_KEY_FILE
               value: "/etc/ssl/certs/client/tls.key"
             {{- end }}
-            - name: CODER_TRUSTED_HOSTNAMES
+            - name: CODER_ALTERNATE_HOSTNAMES
               value: {{ join "," .Values.coderd.alternateHostnames | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
