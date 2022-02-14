@@ -109,14 +109,19 @@ coderd:
     # - X-Forwarded-For
     headers: []
 
-    # coderd.reverseProxy.trustedHostnames -- A list of hostnames that coderd
-    # (including satellites) will allow for OIDC. If this list is not set, all
-    # OIDC traffic will go to the configured access URL in the admin settings on
-    # the dashboard (or the satellite's primary URL as configured by Helm).
-    #
-    # This is used for geo DNS support with satellites. Read more:
-    # TODO: link to docs:
-    trustedHostnames: []
+  # coderd.alternateHostnames -- A list of hostnames that coderd (including
+  # satellites) will allow for OIDC. If this list is not set, all OIDC traffic
+  # will go to the configured access URL in the admin settings on the dashboard
+  # (or the satellite's primary URL as configured by Helm).
+  #
+  # Example:
+  #   alternateHostnames:
+  #     - coder.example.com
+  #     - primary.example.com
+  #
+  # This is used for having a unified hostname across all satellites. Read more:
+  # TODO: link to docs:
+  alternateHostnames: []
 
   # coderd.satellite -- Deploy a satellite to geodistribute access to
   # workspaces for lower latency.
