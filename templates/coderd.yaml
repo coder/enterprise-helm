@@ -194,7 +194,7 @@ spec:
               value: "/etc/ssl/certs/client/tls.key"
             {{- end }}
             - name: CODER_TRUSTED_HOSTNAMES
-              value: {{ join "," .Values.coderd.reverseProxy.trustedHostnames | quote }}
+              value: {{ join "," .Values.coderd.alternateHostnames | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
           command:
