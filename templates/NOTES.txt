@@ -1,0 +1,3 @@
+{{- if .Values.coderd.trustProxyIP -}}
+Deprecated: The coderd "trustProxyIP" setting is deprecated and will be removed in a future release. Instead, use the coderd "reverseProxy" settings, which provide fine-grained control over trusted headers and origins.
+{{- end -}}
