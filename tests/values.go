@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -415,6 +416,13 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 	manifests, err := engine.Render(c.chart, vals)
 	if err != nil {
 		return nil, fmt.Errorf("failed to render Chart: %w", err)
+	}
+
+	// As a special case, ignore any .txt files (e.g. NOTES.txt)
+	for key := range manifests {
+		if filepath.Ext(key) == ".txt" {
+			delete(manifests, key)
+		}
 	}
 
 	objs, err := LoadObjectsFromManifests(manifests)
