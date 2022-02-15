@@ -7,6 +7,9 @@ coderd:
   # coderd.annotations -- Apply annotations to the coderd deployment.
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   annotations: {}
+  # coderd.serviceAnnotations -- Apply annotations to the coderd service.
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  serviceAnnotations: {}
   # coderd.serviceSpec -- Specification to inject for the coderd service. See:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
@@ -23,9 +26,6 @@ coderd:
     # will be restricted to the specified client IPs. This field will be ignored if
     # the cloud provider does not support this feature.
     loadBalancerSourceRanges: []
-    # coderd.serviceSpec.annotations -- Apply annotations to the coderd service.
-    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-    annotations: {}
 
   # coderd.serviceNodePorts -- Allows manually setting static node ports for the coderd service.
   # This is only helpful if static ports are required, and usually should be left alone.

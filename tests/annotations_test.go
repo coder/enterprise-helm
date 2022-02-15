@@ -37,7 +37,7 @@ func TestAnnotations(t *testing.T) {
 		cv.Services.Annotations = expectedGlobal
 
 		cv.Coderd.Annotations = expectedCoderd
-		cv.Coderd.ServiceSpec.Annotations = expectedCoderdService
+		cv.Coderd.ServiceAnnotations = expectedCoderdService
 		cv.Postgres.Default.Annotations = expectedTimescale
 	})
 
@@ -76,7 +76,7 @@ func TestAnnotationsNull(t *testing.T) {
 		chart = LoadChart(t)
 		objs  = chart.MustRender(t, func(cv *CoderValues) {
 			cv.Coderd.Annotations = nil
-			cv.Coderd.ServiceSpec.Annotations = nil
+			cv.Coderd.ServiceAnnotations = nil
 			cv.Postgres.Default.Annotations = nil
 			cv.Services.Annotations = nil
 		})

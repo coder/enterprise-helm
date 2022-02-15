@@ -98,6 +98,7 @@ type CoderdValues struct {
 	Annotations                   map[string]string                          `json:"annotations" yaml:"annotations"`
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
 	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
+	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
 }
 
 type CoderdClientTLSValues struct {
@@ -176,7 +177,6 @@ type CoderdServiceSpecValues struct {
 	ExternalTrafficPolicy    *corev1.ServiceExternalTrafficPolicyType `json:"externalTrafficPolicy" yaml:"externalTrafficPolicy"`
 	LoadBalancerIP           *string                                  `json:"loadBalancerIP" yaml:"loadBalancerIP"`
 	LoadBalancerSourceRanges *[]string                                `json:"loadBalancerSourceRanges" yaml:"loadBalancerSourceRanges"`
-	Annotations              map[string]string                        `json:"annotations" yaml:"annotations"`
 }
 
 // EnvboxValues reflect values from envbox.
