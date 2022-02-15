@@ -69,6 +69,29 @@ func TestAnnotationsEmpty(t *testing.T) {
 	assert.Empty(t, db.Annotations)
 }
 
+func TestAnnotationsNull(t *testing.T) {
+	t.Parallel()
+
+	var (
+		chart = LoadChart(t)
+		objs  = chart.MustRender(t, func(cv *CoderValues) {
+			cv.Coderd.Annotations = nil
+			cv.Coderd.ServiceSpec.Annotations = nil
+			cv.Postgres.Default.Annotations = nil
+			cv.Services.Annotations = nil
+		})
+	)
+
+	depl := MustFindDeployment(t, objs, "coderd")
+	assert.Empty(t, depl.Annotations)
+
+	svc := MustFindService(t, objs, "coderd")
+	assert.Empty(t, svc.Annotations)
+
+	db := MustFindStatefulSet(t, objs, "timescale")
+	assert.Empty(t, db.Annotations)
+}
+
 // mergeAnnotations copies `a` into a new map, then it copies all key/value
 // pairs from `b` on top of that copy.
 func mergeAnnotations(a, b map[string]string) map[string]string {
