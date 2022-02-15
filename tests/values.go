@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -96,6 +97,7 @@ type CoderdValues struct {
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
 	Annotations                   map[string]string                          `json:"annotations" yaml:"annotations"`
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
+	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
 }
 
 type CoderdClientTLSValues struct {
@@ -137,9 +139,8 @@ type CoderdProxyValues struct {
 
 // CoderdReverseProxyValues reflect values from coderd.reverseProxy
 type CoderdReverseProxyValues struct {
-	TrustedOrigins   []string `json:"trustedOrigins" yaml:"trustedOrigins"`
-	Headers          []string `json:"headers" yaml:"headers"`
-	TrustedHostnames []string `json:"trustedHostnames" yaml:"trustedHostnames"`
+	TrustedOrigins []string `json:"trustedOrigins" yaml:"trustedOrigins"`
+	Headers        []string `json:"headers" yaml:"headers"`
 }
 
 // CoderdBuiltinProviderServiceAccountValues reflect values from
@@ -418,6 +419,13 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 	manifests, err := engine.Render(c.chart, vals)
 	if err != nil {
 		return nil, fmt.Errorf("failed to render Chart: %w", err)
+	}
+
+	// As a special case, ignore any .txt files (e.g. NOTES.txt)
+	for key := range manifests {
+		if filepath.Ext(key) == ".txt" {
+			delete(manifests, key)
+		}
 	}
 
 	objs, err := LoadObjectsFromManifests(manifests)

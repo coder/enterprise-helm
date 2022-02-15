@@ -23,15 +23,18 @@ permissions:
   security-events: none
   statuses: none
 
+# Cancel in-progress runs for pull requests when developers push
+# additional changes, and serialize builds in branches.
+# https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-concurrency-to-cancel-any-in-progress-job-or-run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   # Fast checks (e.g. static code analysis)
   quick:
     runs-on: ubuntu-20.04
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        if: github.event_name == 'pull_request'
-
       - name: Checkout source
         uses: actions/checkout@v2
 
@@ -74,10 +77,6 @@ jobs:
           - v1.22.4
           - v1.23.3
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        if: github.event_name == 'pull_request'
-
       - name: Checkout source
         uses: actions/checkout@v2
 
