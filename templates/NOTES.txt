@@ -1,7 +1,11 @@
 {{- if .Values.coderd.trustProxyIP -}}
-Deprecated: The coderd "trustProxyIP" setting is deprecated and will
-be removed in a future release. Instead, use the coderd "reverseProxy"
-settings, which provide fine-grained control over trusted headers and
-origins. For more information, see the proxy guide in our documentation:
-https://coder.com/docs/coder/latest/guides/deployments/proxy
+======================= DEPRECATION NOTICE =======================
+
+WARNING: The coderd "trustProxyIP" setting is deprecated. Instead,
+use the coderd "reverseProxy" setting to configure trusted headers
+and origins.
+
+See https://coder.com/docs/coder/latest/guides/deployments/proxy
+
+======================= DEPRECATION NOTICE =======================
 {{- end -}}
