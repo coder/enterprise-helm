@@ -36,7 +36,7 @@ spec:
         {{- with .Values.coderd.extraLabels -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}
-      annotations: {{ toYaml (merge (.Values.coderd.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 4 }}
+      annotations: {{ toYaml (merge (.Values.coderd.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 8 }}
     spec:
       securityContext: {{ toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always

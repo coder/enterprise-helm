@@ -55,7 +55,7 @@ spec:
         app.kubernetes.io/component: {{ include "timescale.serviceName" . }}
         app: timescale
         coder.deployment: timescale
-      annotations: {{ toYaml (merge (.Values.postgres.default.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 4 }}
+      annotations: {{ toYaml (merge (.Values.postgres.default.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 8 }}
     spec:
       serviceAccountName: timescale
       securityContext:
