@@ -95,8 +95,10 @@ type CoderdValues struct {
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
 	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
+	Annotations                   map[string]string                          `json:"annotations" yaml:"annotations"`
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
 	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
+	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
 }
 
 type CoderdClientTLSValues struct {
@@ -253,6 +255,7 @@ type PostgresDefaultValues struct {
 	StorageClassName *string                             `json:"storageClassName" yaml:"storageClassName"`
 	Resources        *corev1.ResourceRequirements        `json:"resources" yaml:"resources"`
 	NetworkPolicy    *PostgresDefaultNetworkPolicyValues `json:"networkPolicy" yaml:"networkPolicy"`
+	Annotations      map[string]string                   `json:"annotations" yaml:"annotations"`
 }
 
 // PostgresDefaultNetworkPolicyValues reflect values from
@@ -263,11 +266,11 @@ type PostgresDefaultNetworkPolicyValues struct {
 
 // ServicesValues reflect the values from services.
 type ServicesValues struct {
-	Annotations         map[string]string    `json:"annotations" yaml:"annotations"`
 	ClusterDomainSuffix *string              `json:"clusterDomainSuffix" yaml:"clusterDomainSuffix"`
 	Tolerations         *[]corev1.Toleration `json:"tolerations" yaml:"tolerations"`
 	NodeSelector        map[string]string    `json:"nodeSelector" yaml:"nodeSelector"`
 	Type                *corev1.ServiceType  `json:"type" yaml:"type"`
+	Annotations         map[string]string    `json:"annotations" yaml:"annotations"`
 }
 
 // String returns the string representation of the values.

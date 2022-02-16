@@ -4,7 +4,12 @@ coderd:
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   replicas: 1
-
+  # coderd.annotations -- Apply annotations to the coderd deployment.
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+  # coderd.serviceAnnotations -- Apply annotations to the coderd service.
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  serviceAnnotations: {}
   # coderd.serviceSpec -- Specification to inject for the coderd service. See:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   serviceSpec:
@@ -370,11 +375,15 @@ postgres:
       # PostgreSQL using Helm. If false, no policies will be created for the
       # built-in database.
       enable: true
+    # postgres.default.annotations -- Apply annotations to the default postgres service.
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
 
 # services -- Kubernetes Service configuration that applies to Coder services.
 services:
   # services.annotations -- A KV mapping of annotations. See:
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  # DEPRECATED -- Please use the annotations value for each object.
   annotations: {}
   # services.clusterDomainSuffix -- Custom domain suffix for DNS resolution in your cluster. See:
   # https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers/

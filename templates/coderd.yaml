@@ -13,7 +13,7 @@ metadata:
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
     app: {{ include "coder.serviceName" . }}
     coder.deployment: {{ include "coder.serviceName" . }}
-  annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
+  annotations: {{ toYaml (merge (.Values.coderd.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 4 }}
 spec:
   replicas: {{ default 1 .Values.coderd.replicas }}
   strategy:
@@ -36,7 +36,7 @@ spec:
         {{- with .Values.coderd.extraLabels -}}
         {{ toYaml . | nindent 8 }}
         {{- end }}
-      annotations: {{ toYaml .Values.services.annotations | nindent 8 }}
+      annotations: {{ toYaml (merge (.Values.coderd.annotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 8 }}
     spec:
       securityContext: {{ toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always
@@ -261,7 +261,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
-  annotations: {{ toYaml .Values.services.annotations | nindent 4 }}
+  annotations: {{ toYaml (merge (.Values.coderd.serviceAnnotations | default (dict)) (.Values.services.annotations | default (dict))) | nindent 4 }}
 spec:
   {{- if .Values.coderd.serviceSpec }}
   {{- toYaml .Values.coderd.serviceSpec | nindent 2 }}
