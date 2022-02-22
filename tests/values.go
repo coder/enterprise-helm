@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -434,6 +435,61 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 	}
 
 	return objs, nil
+}
+
+// Render creates a copy of the default chart values, runs fn to
+// modify those values, then applies those values to the chart,
+// returning the NOTES.txt file rendered from the chart, or an
+// error.
+//
+// values, options, and capabilities may be nil, in which case the
+// function will simulate a fresh install to the "coder" namespace
+// using the "coder" release, default values, and capabilities.
+func (c *Chart) RenderNotes(fn func(*CoderValues), options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) (string, error) {
+	var opts chartutil.ReleaseOptions
+	if options == nil {
+		opts = DefaultReleaseOptions()
+	} else {
+		opts = *options
+	}
+
+	if capabilities == nil {
+		capabilities = chartutil.DefaultCapabilities.Copy()
+	}
+
+	values := c.OriginalValues
+	if fn != nil {
+		values = &CoderValues{}
+		copier.CopyWithOption(values, c.OriginalValues, copier.Option{
+			DeepCopy: true,
+		})
+
+		fn(values)
+	}
+
+	vals, err := ConvertCoderValuesToMap(values)
+	if err != nil {
+		return "", fmt.Errorf("failed to convert CoderValues to map: %w", err)
+	}
+
+	vals, err = chartutil.ToRenderValues(c.chart, vals, opts, capabilities)
+	if err != nil {
+		return "", fmt.Errorf("failed to create render values: %w", err)
+	}
+
+	manifests, err := engine.Render(c.chart, vals)
+	if err != nil {
+		return "", fmt.Errorf("failed to render Chart: %w", err)
+	}
+
+	// As a special case, ignore any .txt files (e.g. NOTES.txt)
+	for key, value := range manifests {
+		if filepath.Base(key) == "NOTES.txt" {
+			return value, nil
+		}
+	}
+
+	return "", errors.New("Chart did not include NOTES.txt")
 }
 
 // MustRender renders a chart or fails the test. Use `fn` to modify the default
