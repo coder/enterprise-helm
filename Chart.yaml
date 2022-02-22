@@ -6,15 +6,16 @@ name: coder
 description: >
   Coder moves developer workspaces to your cloud and centralizes their
   creation and management.
-appVersion: 1.27.0
-version: 1.27.0
-# Coder follows the Kubernetes upstream version support policy, and the
-# latest stable release version of Coder supports the previous two minor
-# releases as well as the current release of Kubernetes at time of
-# publication.
+appVersion: 1.28.0
+version: 1.28.0
+# Coder has a hard requirement on Kubernetes 1.19, as this version
+# introduced the networking.k8s.io/v1 API for the Ingress and
+# NetworkPolicy resources.
 #
-# See: https://coder.com/docs/coder/latest/setup/kubernetes#supported-kubernetes-versions
-kubeVersion: ">= 1.21.0-0"
+# Additionally, the NOTES.txt file emits a warning if the cluster
+# version is outside our soft requirement, in accordance with our
+# official support policy.
+kubeVersion: ">= 1.19.0-0"
 home: https://coder.com
 keywords:
   - coder
