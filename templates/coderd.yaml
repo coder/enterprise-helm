@@ -99,6 +99,10 @@ spec:
           ports:
             - name: tcp-{{ include "coder.serviceName" . }}
               containerPort: 8080
+            - name: pprof-{{ include "coder.serviceName" . }}
+              containerPort: 6060
+            - name: prom-{{ include "coder.serviceName" . }}
+              containerPort: 2112
           securityContext: {{ toYaml .Values.coderd.securityContext | nindent 12 }}
           # coderd is a daemon service, no need to allocate a tty for it.
           tty: false
