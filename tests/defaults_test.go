@@ -115,14 +115,21 @@ func TestVersion(t *testing.T) {
 		// Uses real GKE version strings versions from:
 		// https://cloud.google.com/kubernetes-engine/docs/release-notes
 		{
-			Name:       "gke-outdated-1.19",
-			Version:    "1.19.13-gke.1900",
+			Name:       "gke-incompatible-1.15",
+			Version:    "1.15.11-gke.15",
 			Compatible: false,
 		},
 		{
-			Name:       "gke-outdated-1.20",
-			Version:    "1.20.12-gke.1500",
-			Compatible: false,
+			Name:    "gke-outdated-1.19",
+			Version: "1.19.13-gke.1900",
+			// Soft compatibility
+			Compatible: true,
+		},
+		{
+			Name:    "gke-outdated-1.20",
+			Version: "1.20.12-gke.1500",
+			// Soft compatibility
+			Compatible: true,
 		},
 		{
 			Name:       "gke-current-1.21",

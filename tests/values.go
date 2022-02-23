@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -377,14 +378,9 @@ func (c *Chart) Validate() error {
 	return c.chart.Validate()
 }
 
-// Render creates a copy of the default chart values, runs fn to
-// modify those values, then applies those values to the chart,
-// returning a list of Kubernetes runtime objects, or an error.
-//
-// values, options, and capabilities may be nil, in which case the
-// function will simulate a fresh install to the "coder" namespace
-// using the "coder" release, default values, and capabilities.
-func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) ([]runtime.Object, error) {
+// renderManifests is an internal helper function used to implement Render
+// and RenderNotes.
+func (c *Chart) renderManifests(fn func(*CoderValues), options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) (map[string]string, error) {
 	var opts chartutil.ReleaseOptions
 	if options == nil {
 		opts = DefaultReleaseOptions()
@@ -421,6 +417,31 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 		return nil, fmt.Errorf("failed to render Chart: %w", err)
 	}
 
+	return manifests, nil
+}
+
+// MustRender renders a chart or fails the test. Use `fn` to modify the default
+// chart values.
+func (c *Chart) MustRender(t testing.TB, fn func(*CoderValues)) []runtime.Object {
+	objs, err := c.Render(fn, nil, nil)
+	require.NoError(t, err, "render chart")
+
+	return objs
+}
+
+// Render creates a copy of the default chart values, runs fn to
+// modify those values, then applies those values to the chart,
+// returning a list of Kubernetes runtime objects, or an error.
+//
+// values, options, and capabilities may be nil, in which case the
+// function will simulate a fresh install to the "coder" namespace
+// using the "coder" release, default values, and capabilities.
+func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) ([]runtime.Object, error) {
+	manifests, err := c.renderManifests(fn, options, capabilities)
+	if err != nil {
+		return nil, fmt.Errorf("renderManifests: %w", err)
+	}
+
 	// As a special case, ignore any .txt files (e.g. NOTES.txt)
 	for key := range manifests {
 		if filepath.Ext(key) == ".txt" {
@@ -436,13 +457,28 @@ func (c *Chart) Render(fn func(*CoderValues), options *chartutil.ReleaseOptions,
 	return objs, nil
 }
 
-// MustRender renders a chart or fails the test. Use `fn` to modify the default
-// chart values.
-func (c *Chart) MustRender(t testing.TB, fn func(*CoderValues)) []runtime.Object {
-	objs, err := c.Render(fn, nil, nil)
-	require.NoError(t, err, "render chart")
+// Render creates a copy of the default chart values, runs fn to
+// modify those values, then applies those values to the chart,
+// returning the NOTES.txt file rendered from the chart, or an
+// error.
+//
+// values, options, and capabilities may be nil, in which case the
+// function will simulate a fresh install to the "coder" namespace
+// using the "coder" release, default values, and capabilities.
+func (c *Chart) RenderNotes(fn func(*CoderValues), options *chartutil.ReleaseOptions, capabilities *chartutil.Capabilities) (string, error) {
+	manifests, err := c.renderManifests(fn, options, capabilities)
+	if err != nil {
+		return "", fmt.Errorf("renderManifests: %w", err)
+	}
 
-	return objs
+	// Find and return the NOTES.txt file
+	for key, value := range manifests {
+		if filepath.Base(key) == "NOTES.txt" {
+			return value, nil
+		}
+	}
+
+	return "", errors.New("Chart did not include NOTES.txt")
 }
 
 func DefaultReleaseOptions() chartutil.ReleaseOptions {
