@@ -471,7 +471,7 @@ func (c *Chart) RenderNotes(fn func(*CoderValues), options *chartutil.ReleaseOpt
 		return "", fmt.Errorf("renderManifests: %w", err)
 	}
 
-	// As a special case, ignore any .txt files (e.g. NOTES.txt)
+	// Find and return the NOTES.txt file
 	for key, value := range manifests {
 		if filepath.Base(key) == "NOTES.txt" {
 			return value, nil
