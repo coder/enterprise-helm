@@ -2,6 +2,7 @@ package tests
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -150,6 +151,13 @@ func TestExamples(t *testing.T) {
 
 			manifests, err := engine.Render(chart.chart, values)
 			require.NoError(t, err, "failed to render chart")
+
+			// As a special case, ignore any .txt files (e.g. NOTES.txt)
+			for key := range manifests {
+				if filepath.Ext(key) == ".txt" {
+					delete(manifests, key)
+				}
+			}
 
 			objs, err := LoadObjectsFromManifests(manifests)
 			require.NoError(t, err, "failed to convert manifests to objects")
