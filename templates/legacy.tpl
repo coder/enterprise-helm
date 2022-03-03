@@ -18,14 +18,6 @@
 {{- fail "The 'ingress.loadbalancerIP' setting was deprecated in 1.21 and removed in 1.27; use 'coderd.serviceSpec.externalTrafficPolicy' instead" }}
 {{- end }}
 
-{{- if .Values.ingress.tls.hostSecretName }}
-{{- fail "The 'ingress.tls.hostSecretName' setting was deprecated in 1.21 and removed in 1.27; use 'coderd.tls.hostSecretName' instead" }}
-{{- end }}
-
-{{- if .Values.ingress.tls.devurlsHostSecretName }}
-{{- fail "The 'ingress.tls.devurlsHostSecretName' setting was deprecated in 1.21 and removed in 1.27; use 'coderd.tls.devurlsHostSecretName' instead" }}
-{{- end }}
-
 {{- if .Values.storageClassName }}
 {{- fail "The 'storageClassName' setting was deprecated in 1.21 and removed in 1.27; use 'postgres.default.storageClassName' instead" }}
 {{- end }}
