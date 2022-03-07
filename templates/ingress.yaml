@@ -49,16 +49,16 @@ spec:
               name: tcp-{{ include "coder.serviceName" . }}
   {{- if .Values.ingress.tls.enable }}
   tls:
-    {{- if and .Values.ingress.host .Values.ingress.tls.hostSecretName }}
+    {{- if and .Values.ingress.host .Values.coderd.tls.hostSecretName }}
     - hosts:
       - {{ .Values.ingress.host | quote }}
-      secretName: {{ .Values.ingress.tls.hostSecretName }}
+      secretName: {{ .Values.coderd.tls.hostSecretName | quote}}
     {{- end }}
     {{- if .Values.devurls }}
-    {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
+    {{- if and .Values.devurls.host .Values.coderd.tls.devurlsHostSecretName }}
     - hosts:
-      - {{ .Values.coderd.devurlsHost }}
-      secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
+      - {{ .Values.coderd.devurlsHost | quote }}
+      secretName: {{ .Values.coderd.tls.devurlsHostSecretName | quote }}
     {{- end }}
     {{- end }}
   {{- end }}
