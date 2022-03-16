@@ -6,7 +6,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.2
 	github.com/pioz/faker v1.7.2
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	helm.sh/helm/v3 v3.8.0
 	k8s.io/api v0.23.1
