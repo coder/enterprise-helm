@@ -100,6 +100,13 @@ type CoderdValues struct {
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
 	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
 	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
+	AwsStsRegionalEndpoints		  *CoderdAwsStsRegionalEndpoints             `json:"awsStsRegionalEndpoints" yaml:"awsStsRegionalEndpoints"`
+}
+
+
+// CoderdAwsStsRegionalEndpoints reflect values from coderd.awsStsRegionalEndpoints.
+type CoderdAwsStsRegionalEndpoints struct {
+	Enable *bool `json:"enable" yaml:"enable"`
 }
 
 type CoderdClientTLSValues struct {
