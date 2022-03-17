@@ -83,6 +83,10 @@ spec:
               value: {{ .Values.coderd.proxy.https | quote }}
             - name: no_proxy
               value: {{ .Values.coderd.proxy.exempt | quote }}
+            {{- if .Values.coderd.awsStsRegionalEndpoints.enable }}
+             - name : AWS_STS_REGIONAL_ENDPOINTS
+                value : "regional"
+            {{- end }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
           command:

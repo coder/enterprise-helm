@@ -264,6 +264,14 @@ coderd:
     # coderd.networkPolicy.enable -- Manage a network policy for coderd using
     # Helm. If false, no policies will be created for the Coder control plane.
     enable: true
+  
+  # coderd.awsStsRegionalEndpoints - Configure coderd AWS STS
+  awsStsRegionalEndpoints: 
+    # coderd.awsStsRegionalEndpoints.enable - Activate the use of the regional
+    # STS endpoint for AWS. This is used for coder deployments which need to
+    # use a VPC endpoint to authenticate with AWS. If false, the coderd service
+    # will not use regional endpoints. 
+    enable: false 
 
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
