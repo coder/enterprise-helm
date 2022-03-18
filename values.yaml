@@ -269,6 +269,8 @@ coderd:
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.
   enable: false
+  # Set ingress.classname -- The Classname of Ingress
+  classname: ""
   # ingress.host -- The hostname to proxy to the Coder installation.
   # The cluster Ingress Controller typically uses server name indication
   # or the HTTP Host header to route traffic.
