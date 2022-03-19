@@ -273,7 +273,8 @@ ingress:
   className: ""
   # ingress.host -- The hostname to proxy to the Coder installation.
   # The cluster Ingress Controller typically uses server name indication
-  # or the HTTP Host header to route traffic.
+  # or the HTTP Host header to route traffic. The dev URLs hostname is specified
+  # in coderd.devurlsHost.
   host: ""
   # ingress.annotations -- Additional annotations to add to the Ingress
   # object. The behavior is typically dependent on the Ingress Controller
@@ -281,7 +282,8 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
 
-  # ingress.tls -- Configures TLS settings for the Ingress.
+  # ingress.tls -- Configures TLS settings for the Ingress. TLS certificates are
+  # specified in coderd.tls.hostSecretName and coderd.tls.devurlsHostSecretName.
   tls:
     # ingress.tls.enable -- Determines whether the Ingress handles TLS.
     enable: false

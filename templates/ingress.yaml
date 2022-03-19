@@ -55,12 +55,10 @@ spec:
       - {{ .Values.ingress.host | quote }}
       secretName: {{ .Values.coderd.tls.hostSecretName | quote}}
     {{- end }}
-    {{- if .Values.coderd.devurlsHost }}
     {{- if and .Values.coderd.devurlsHost .Values.coderd.tls.devurlsHostSecretName }}
     - hosts:
       - {{ .Values.coderd.devurlsHost | quote }}
       secretName: {{ .Values.coderd.tls.devurlsHostSecretName | quote }}
-    {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
