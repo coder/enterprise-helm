@@ -14,7 +14,10 @@ metadata:
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
   annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-  ingressClassName: {{ .Values.ingress.className | default "" | quote }}
+  {{- if .Values.ingress.className }}
+  {{/* If this is set to an empty string it fails validation on K8s */}}
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host | quote }}
     http:
