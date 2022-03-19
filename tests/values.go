@@ -188,6 +188,7 @@ type EnvboxValues struct {
 // IngressValues reflect values from ingress.
 type IngressValues struct {
 	Enable      *bool             `json:"enable" yaml:"enable"`
+	ClassName   *string           `json:"className" yaml:"className"`
 	Host        *string           `json:"host" yaml:"host"`
 	Annotations map[string]string `json:"annotations" yaml:"annotations"`
 	TLS         *IngressTLSValues `json:"tls" yaml:"tls"`

@@ -81,11 +81,12 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.trustProxyIP | bool | Configures Coder to accept X-Real-IP and X-Forwarded-For headers from any origin. This option is deprecated and will be removed in a future release. Use the coderd.reverseProxy setting instead, which supports configuring an allowlist of trusted origins. | `false` |
 | envbox | object | Required for running Docker inside containers. See requirements: https://coder.com/docs/coder/latest/admin/workspace-management/cvms | `{"image":""}` |
 | envbox.image | string | Injected by Coder during release. | `""` |
-| ingress | object | Configure an Ingress to route traffic to Coder services. | `{"annotations":{"nginx.ingress.kubernetes.io/proxy-body-size":"0"},"enable":false,"host":"","tls":{"enable":false}}` |
+| ingress | object | Configure an Ingress to route traffic to Coder services. | `{"annotations":{"nginx.ingress.kubernetes.io/proxy-body-size":"0"},"className":"","enable":false,"host":"","tls":{"enable":false}}` |
 | ingress.annotations | object | Additional annotations to add to the Ingress object. The behavior is typically dependent on the Ingress Controller implementation, and useful for managing features like TLS termination. | `{"nginx.ingress.kubernetes.io/proxy-body-size":"0"}` |
+| ingress.className | string | The ingressClassName to set on the Ingress. | `""` |
 | ingress.enable | bool | A boolean controlling whether to create an Ingress. | `false` |
-| ingress.host | string | The hostname to proxy to the Coder installation. The cluster Ingress Controller typically uses server name indication or the HTTP Host header to route traffic. | `""` |
-| ingress.tls | object | Configures TLS settings for the Ingress. | `{"enable":false}` |
+| ingress.host | string | The hostname to proxy to the Coder installation. The cluster Ingress Controller typically uses server name indication or the HTTP Host header to route traffic. The dev URLs hostname is specified in coderd.devurlsHost. | `""` |
+| ingress.tls | object | Configures TLS settings for the Ingress. TLS certificates are specified in coderd.tls.hostSecretName and coderd.tls.devurlsHostSecretName. | `{"enable":false}` |
 | ingress.tls.enable | bool | Determines whether the Ingress handles TLS. | `false` |
 | logging | object | Configures the logging format and output of Coder. | `{"human":"/dev/stderr","json":"","splunk":{"channel":"","token":"","url":""},"stackdriver":""}` |
 | logging.human | string | Location to send logs that are formatted for readability. Set to an empty string to disable. | `"/dev/stderr"` |
