@@ -57,6 +57,8 @@ func TestIngress(t *testing.T) {
 				}
 				require.Equal(t, defaultAnnotations, ingress.Annotations)
 
+				require.Empty(t, ingress.Spec.IngressClassName)
+
 				expectedRules := []netv1.IngressRule{
 					{
 						Host:             "install.coder.com",
@@ -93,6 +95,16 @@ func TestIngress(t *testing.T) {
 					},
 				}
 				require.Equal(t, expectedRules, ingress.Spec.Rules, "expected ingress spec to match")
+			},
+		},
+		{
+			Name: "ingress-className",
+			ValuesFunc: func(v *CoderValues) {
+				v.Ingress.Enable = pointer.Bool(true)
+				v.Ingress.ClassName = pointer.String("test")
+			},
+			AssertFunc: func(t *testing.T, ingress *netv1.Ingress) {
+				require.Equal(t, pointer.String("test"), ingress.Spec.IngressClassName, "expected classname to match")
 			},
 		},
 	}
