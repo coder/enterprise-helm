@@ -84,8 +84,8 @@ spec:
             - name: no_proxy
               value: {{ .Values.coderd.proxy.exempt | quote }}
             {{- if .Values.coderd.awsStsRegionalEndpoints.enable }}
-             - name : AWS_STS_REGIONAL_ENDPOINTS
-                value : "regional"
+            - name : AWS_STS_REGIONAL_ENDPOINTS
+              value : "regional"
             {{- end }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
@@ -205,6 +205,10 @@ spec:
               value: {{ join "," .Values.coderd.alternateHostnames | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
+            {{- if .Values.coderd.awsStsRegionalEndpoints.enable }}
+            - name : AWS_STS_REGIONAL_ENDPOINTS
+              value : "regional"
+            {{- end }}
           command:
             - coderd
             {{- if not .Values.coderd.satellite.enable }}
