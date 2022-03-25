@@ -85,6 +85,10 @@ spec:
               value: {{ .Values.coderd.proxy.exempt | quote }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
+            {{- if .Values.coderd.awsStsRegionalEndpoints }}
+            - name : AWS_STS_REGIONAL_ENDPOINTS
+              value : "regional"
+            {{- end }}
           command:
             - coderd
             - migrate
