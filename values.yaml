@@ -207,12 +207,14 @@ coderd:
       initialDelaySeconds: 10
       failureThreshold: 15
       periodSeconds: 10
+      timeoutSeconds: 3
 
   # coderd.readiness -- Configure the readiness check for the coderd service.
   readiness:
       initialDelaySeconds: 10
       failureThreshold: 15
       periodSeconds: 10
+      timeoutSeconds: 3
 
   # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
   # provider service account.

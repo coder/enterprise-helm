@@ -152,6 +152,7 @@ type CoderdHealthzValues struct {
 	InitialDelaySeconds int32 `json:"initialDelaySeconds" yaml:"initialDelaySeconds"`
 	FailureThreshold    int32 `json:"failureThreshold" yaml:"failureThreshold"`
 	PeriodSeconds       int32 `json:"periodSeconds" yaml:"periodSeconds"`
+	TimeoutSeconds      int32 `json:"timeoutSeconds" yaml:"timeoutSeconds"`
 }
 
 // CoderdBuiltinProviderServiceAccountValues reflect values from
