@@ -212,16 +212,18 @@ spec:
             httpGet:
               path: /cem-healthz
               port: 8080
-            initialDelaySeconds: 10
-            failureThreshold: 7
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.coderd.readiness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.coderd.readiness.failureThreshold }}
+            periodSeconds: {{ .Values.coderd.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.coderd.readiness.timeoutSeconds }}
           livenessProbe:
             httpGet:
               path: /cem-healthz
               port: 8080
-            initialDelaySeconds: 10
-            failureThreshold: 7
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.coderd.liveness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.coderd.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.coderd.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.coderd.liveness.timeoutSeconds }}
           {{- include "coder.resources" .Values.coderd.resources | indent 10 }}
           {{- include "coder.volumeMounts" . | indent 10 }}
       {{- include "coder.volumes" . | indent 6 }}

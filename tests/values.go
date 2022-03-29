@@ -88,6 +88,8 @@ type CoderdValues struct {
 	PodSecurityContext            *corev1.PodSecurityContext                 `json:"podSecurityContext" yaml:"podSecurityContext"`
 	SecurityContext               *corev1.SecurityContext                    `json:"securityContext" yaml:"securityContext"`
 	Resources                     *corev1.ResourceRequirements               `json:"resources" yaml:"resources"`
+	Readiness                     *CoderdHealthzValues                       `json:"readiness" yaml:"readiness"`
+	Liveness                      *CoderdHealthzValues                       `json:"liveness" yaml:"liveness"`
 	BuiltinProviderServiceAccount *CoderdBuiltinProviderServiceAccountValues `json:"builtinProviderServiceAccount" yaml:"builtinProviderServiceAccount"`
 	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
 	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
@@ -143,6 +145,14 @@ type CoderdProxyValues struct {
 type CoderdReverseProxyValues struct {
 	TrustedOrigins []string `json:"trustedOrigins" yaml:"trustedOrigins"`
 	Headers        []string `json:"headers" yaml:"headers"`
+}
+
+// CoderdHealthzValues reflect values from coderd.readiness and coderd.liveness
+type CoderdHealthzValues struct {
+	InitialDelaySeconds int32 `json:"initialDelaySeconds" yaml:"initialDelaySeconds"`
+	FailureThreshold    int32 `json:"failureThreshold" yaml:"failureThreshold"`
+	PeriodSeconds       int32 `json:"periodSeconds" yaml:"periodSeconds"`
+	TimeoutSeconds      int32 `json:"timeoutSeconds" yaml:"timeoutSeconds"`
 }
 
 // CoderdBuiltinProviderServiceAccountValues reflect values from
