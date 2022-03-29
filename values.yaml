@@ -201,6 +201,18 @@ coderd:
     limits:
       cpu: "250m"
       memory: "512Mi"
+  
+  # coderd.liveness -- Configure the liveness check for the coderd service.
+  liveness:
+      initialDelaySeconds: 10
+      failureThreshold: 15
+      periodSeconds: 10
+
+  # coderd.readiness -- Configure the readiness check for the coderd service.
+  readiness:
+      initialDelaySeconds: 10
+      failureThreshold: 15
+      periodSeconds: 10
 
   # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
   # provider service account.
