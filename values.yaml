@@ -204,8 +204,8 @@ coderd:
   
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
-      initialDelaySeconds: 10
-      failureThreshold: 15
+      initialDelaySeconds: 30
+      failureThreshold: 30
       periodSeconds: 10
       timeoutSeconds: 3
 
