@@ -19,8 +19,7 @@ coderd:
     # coderd.serviceSpec.externalTrafficPolicy -- Set the traffic policy for the service. See:
     # https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     externalTrafficPolicy: Local
-    # coderd.serviceSpec.loadBalancerIP -- Set the external IP address of the
-    # Ingress service.
+    # coderd.serviceSpec.loadBalancerIP -- Set the IP address of the coderd service.
     loadBalancerIP: ""
     # coderd.serviceSpec.loadBalancerSourceRanges -- Traffic through the LoadBalancer
     # will be restricted to the specified client IPs. This field will be ignored if

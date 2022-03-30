@@ -72,7 +72,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.serviceNodePorts.https | string | Sets a static 'coderd' service TLS nodePort This should usually be omitted. | `nil` |
 | coderd.serviceSpec | object | Specification to inject for the coderd service. See: https://kubernetes.io/docs/concepts/services-networking/service/ | `{"externalTrafficPolicy":"Local","loadBalancerIP":"","loadBalancerSourceRanges":[],"type":"LoadBalancer"}` |
 | coderd.serviceSpec.externalTrafficPolicy | string | Set the traffic policy for the service. See: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip | `"Local"` |
-| coderd.serviceSpec.loadBalancerIP | string | Set the external IP address of the Ingress service. | `""` |
+| coderd.serviceSpec.loadBalancerIP | string | Set the IP address of the coderd service. | `""` |
 | coderd.serviceSpec.loadBalancerSourceRanges | list | Traffic through the LoadBalancer will be restricted to the specified client IPs. This field will be ignored if the cloud provider does not support this feature. | `[]` |
 | coderd.serviceSpec.type | string | Set the type of Service. See: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types | `"LoadBalancer"` |
 | coderd.superAdmin.passwordSecret.key | string | The key of the secret that contains the super admin password. | `"password"` |
