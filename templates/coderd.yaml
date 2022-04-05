@@ -85,6 +85,9 @@ spec:
               value: {{ .Values.coderd.proxy.exempt | quote }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
+            {{- with .Values.coderd.extraEnvs -}}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
           command:
             - coderd
             - migrate
@@ -201,6 +204,9 @@ spec:
               value: {{ join "," .Values.coderd.alternateHostnames | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
+            {{- with .Values.coderd.extraEnvs -}}
+            {{ toYaml . | nindent 12 }}
+            {{- end }}
           command:
             - coderd
             {{- if not .Values.coderd.satellite.enable }}
