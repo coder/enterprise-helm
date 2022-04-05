@@ -243,6 +243,15 @@ coderd:
   # `coderd` deployment (.spec.template.metadata.labels).
   extraLabels: {}
 
+  # coderd.extraEnvs -- Add additional environment variables to the coderd
+  # deployment containers. Overriding any environment variables that the Helm
+  # chart sets automatically is unsupported and will result in undefined
+  # behavior. You can find a list of the environment variables we set by default
+  # by inspecting the helm template files or by running `kubectl describe`
+  # against your existing coderd deployment.
+  # https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+  extraEnvs: []
+
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
   # deployment. The default rule prefers to schedule coderd pods on different
   # nodes, which is only applicable if coderd.replicas is greater than 1.
