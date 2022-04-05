@@ -35,7 +35,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | coderd.clientTLS | object | Client-side TLS configuration for coderd. | `{"secretName":""}` |
 | coderd.clientTLS.secretName | string | Secret containing a PEM encoded cert file. | `""` |
 | coderd.devurlsHost | string | Wildcard hostname to allow matching against custom-created dev URLs. Leaving as an empty string results in DevURLs being disabled. | `""` |
-| coderd.extraEnvs | list | Add additional environment variables to the coderd deployment containers. https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/ | `[]` |
+| coderd.extraEnvs | list | Add additional environment variables to the coderd deployment containers. Overriding any environment variables that the Helm chart sets automatically is unsupported and will result in undefined behavior. You can find a list of the environment variables we set by default by inspecting the helm template files or by running `kubectl describe` against your existing coderd deployment. https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/ | `[]` |
 | coderd.extraLabels | object | Allows specifying additional labels to pods in the `coderd` deployment (.spec.template.metadata.labels). | `{}` |
 | coderd.image | string | Injected by Coder during release. | `""` |
 | coderd.liveness | object | Configure the liveness check for the coderd service. | `{"failureThreshold":30,"initialDelaySeconds":30,"periodSeconds":10,"timeoutSeconds":3}` |

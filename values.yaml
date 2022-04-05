@@ -257,7 +257,11 @@ coderd:
   extraLabels: {}
 
   # coderd.extraEnvs -- Add additional environment variables to the coderd
-  # deployment containers.
+  # deployment containers. Overriding any environment variables that the Helm
+  # chart sets automatically is unsupported and will result in undefined
+  # behavior. You can find a list of the environment variables we set by default
+  # by inspecting the helm template files or by running `kubectl describe`
+  # against your existing coderd deployment.
   # https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
   extraEnvs: []
 
