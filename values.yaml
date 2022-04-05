@@ -200,7 +200,7 @@ coderd:
     limits:
       cpu: "250m"
       memory: "512Mi"
-  
+
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
       initialDelaySeconds: 30
@@ -255,6 +255,11 @@ coderd:
   # coderd.extraLabels -- Allows specifying additional labels to pods in the
   # `coderd` deployment (.spec.template.metadata.labels).
   extraLabels: {}
+
+  # coderd.extraEnvs -- Add additional environment variables to the coderd
+  # deployment containers.
+  # https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+  extraEnvs: []
 
   # coderd.affinity -- Allows specifying an affinity rule for the `coderd`
   # deployment. The default rule prefers to schedule coderd pods on different

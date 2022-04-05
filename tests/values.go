@@ -95,6 +95,7 @@ type CoderdValues struct {
 	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
 	ExtraLabels                   map[string]string                          `json:"extraLabels" yaml:"extraLabels"`
+	ExtraEnvs                     []corev1.EnvVar                            `json:"extraEnvs" yaml:"extraEnvs"`
 	Proxy                         *CoderdProxyValues                         `json:"proxy" yaml:"proxy"`
 	ReverseProxy                  *CoderdReverseProxyValues                  `json:"reverseProxy" yaml:"reverseProxy"`
 	NetworkPolicy                 *CoderdNetworkPolicyValues                 `json:"networkPolicy" yaml:"networkPolicy"`
