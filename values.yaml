@@ -224,6 +224,9 @@ coderd:
     # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
     # used for the built-in provider.
     labels: {}
+    # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace 
+    # provider using the coded environment.
+    migrate: true
 
   # Temporary options for opting in to the new OIDC refresh feature, which
   # allows Coder-issued API keys to inherit session timing limits and uses

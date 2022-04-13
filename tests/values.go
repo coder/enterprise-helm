@@ -163,6 +163,8 @@ type CoderdBuiltinProviderServiceAccountValues struct {
 	Labels map[string]string `json:"labels" yaml:"labels"`
 	// Annotations is the same type as metav1.ObjectMeta.Annotations
 	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+	// Migrate will migrate the built-in provider on start
+	Migrate *bool `json:"migrate" yaml:"migrate"`
 }
 
 // CoderdNetworkPolicyValues reflect values from coderd.networkPolicy.
