@@ -203,7 +203,7 @@ spec:
             - name: CODER_ALTERNATE_HOSTNAMES
               value: {{ join "," .Values.coderd.alternateHostnames | quote }}
             - name: CODER_MIGRATE_BUILT_IN_PROVIDER
-              value: {{ .Values.coderd.builtinProviderServiceAccount | quote }}
+              value: {{ .Values.coderd.builtinProviderServiceAccount.migrate | quote }}
             {{- include "coder.workspaces.configMapEnv" . | indent 12 }}
             {{- include "coder.postgres.env" . | indent 12 }}
             {{- with .Values.coderd.extraEnvs -}}
