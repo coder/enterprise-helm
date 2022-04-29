@@ -45,12 +45,7 @@ spec:
     - Ingress
   # Deny all ingress traffic, except on our service ports
   ingress:
-    - from: []
-      ports:
-        - protocol: TCP
-          port: 8080
-        - protocol: TCP
-          port: 8443
+    - {}
 {{- end }}
 
 {{/* Policies for the built-in PostgreSQL database */}}
