@@ -81,35 +81,13 @@ func TestNetworkPolicyCoder(t *testing.T) {
 				require.Contains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeIngress, "expected to restrict ingress")
 				require.NotContains(t, policy.Spec.PolicyTypes, networkingv1.PolicyTypeEgress, "expected all egress to be allowed")
 				require.Empty(t, policy.Spec.Egress, "expected empty egress rules")
-				protocolTCP := corev1.ProtocolTCP
 
 				podSelector := &metav1.LabelSelector{}
 				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/instance", "coder")
 				metav1.AddLabelToSelector(podSelector, "app.kubernetes.io/component", "coderd")
 				require.Equal(t, podSelector, &policy.Spec.PodSelector, "expected pod selectors to match")
 
-				expectedRules := []networkingv1.NetworkPolicyIngressRule{
-					{
-						From: []networkingv1.NetworkPolicyPeer{},
-						Ports: []networkingv1.NetworkPolicyPort{
-							{
-								Protocol: &protocolTCP,
-								Port: &intstr.IntOrString{
-									Type:   intstr.Int,
-									IntVal: 8080,
-								},
-							},
-							{
-								Protocol: &protocolTCP,
-								Port: &intstr.IntOrString{
-									Type:   intstr.Int,
-									IntVal: 8443,
-								},
-							},
-						},
-					},
-				}
-				require.Equal(t, expectedRules, policy.Spec.Ingress, "expected ingress rules to match")
+				require.Equal(t, []networkingv1.NetworkPolicyIngressRule{{}}, policy.Spec.Ingress, "expected ingress rules to match")
 			}
 
 			policy, exist = FindNetworkPolicy(objs, "timescale")
