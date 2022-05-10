@@ -195,11 +195,11 @@ coderd:
   # To unset a value, set it to "". To unset all values, set resources to nil.
   resources:
     requests:
-      cpu: "250m"
-      memory: "512Mi"
+      cpu: "500m"
+      memory: "1Gi"
     limits:
-      cpu: "250m"
-      memory: "512Mi"
+      cpu: "500m"
+      memory: "1Gi"
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
