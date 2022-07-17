@@ -3,6 +3,7 @@ coderd:
   # coderd.image -- Injected by Coder during release.
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
+  # Consider increasing replicas as you add more nodes and more users are accessing Coder.
   replicas: 1
   # coderd.annotations -- Apply annotations to the coderd deployment.
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -193,12 +194,13 @@ coderd:
 
   # coderd.resources -- Kubernetes resource specification for coderd pods.
   # To unset a value, set it to "". To unset all values, set resources to nil.
+  # Consider increasing resources as more users are accessing Coder.
   resources:
     requests:
       cpu: "250m"
       memory: "512Mi"
     limits:
-      cpu: "250m"
+      cpu: "500m"
       memory: "512Mi"
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
