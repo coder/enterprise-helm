@@ -17,6 +17,7 @@ metadata:
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
     {{- with .Values.coderd.workspaceServiceAccount.labels -}}
     {{ toYaml . | nindent 4 }}
+    {{- end }}
 ---
 # The service account for the built in workspace provider on application installation.
 apiVersion: v1
