@@ -1,0 +1,1 @@
+{"buildTargets":["README.md","all","clean","fmt","help","lint","lint/helm","lint/kubernetes","lint/shellcheck","test","test/go"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
