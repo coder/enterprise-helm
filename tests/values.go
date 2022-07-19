@@ -91,6 +91,7 @@ type CoderdValues struct {
 	Readiness                     *CoderdHealthzValues                       `json:"readiness" yaml:"readiness"`
 	Liveness                      *CoderdHealthzValues                       `json:"liveness" yaml:"liveness"`
 	BuiltinProviderServiceAccount *CoderdBuiltinProviderServiceAccountValues `json:"builtinProviderServiceAccount" yaml:"builtinProviderServiceAccount"`
+	WorkspaceServiceAccount       *CoderdWorkspaceServiceAccountValues       `json:"workspaceServiceAccount" yaml:"workspaceServiceAccount"`
 	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
 	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
@@ -165,6 +166,13 @@ type CoderdBuiltinProviderServiceAccountValues struct {
 	Annotations map[string]string `json:"annotations" yaml:"annotations"`
 	// Migrate will migrate the built-in provider on start
 	Migrate *bool `json:"migrate" yaml:"migrate"`
+}
+
+type CoderdWorkspaceServiceAccountValues struct {
+	// Annotations is the same type as metav1.ObjectMeta.Annotations
+	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+	// Labels is the same type as metav1.ObjectMeta.Labels
+	Labels map[string]string `json:"labels" yaml:"labels"`
 }
 
 // CoderdNetworkPolicyValues reflect values from coderd.networkPolicy.
