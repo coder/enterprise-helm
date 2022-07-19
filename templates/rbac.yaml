@@ -7,6 +7,7 @@ kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }} 
   name: environments
+  annotations: {{ toYaml .Values.coderd.workspaceServiceAccount.annotations | nindent 4 }}
   labels:
     app.kubernetes.io/name: {{ .Chart.Name }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -14,6 +15,8 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
+    {{- with .Values.coderd.workspaceServiceAccount.labels -}}
+    {{ toYaml . | nindent 4 }}
 ---
 # The service account for the built in workspace provider on application installation.
 apiVersion: v1

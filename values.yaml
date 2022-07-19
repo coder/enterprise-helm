@@ -227,7 +227,15 @@ coderd:
     # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace 
     # provider using the coded environment.
     migrate: true
-
+  # coderd.workspaceServiceAccount -- Customize the default service account used
+  # for workspaces.
+  workspaceServiceAccount:
+    # coderd.workspaceServiceAccount.annotations -- A KV mapping of annotations.
+    # See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
+    # coderd.workspaceServiceAccount.labels -- Add labels to the service account
+    # used for workspaces.
+    labels: {}
   # Temporary options for opting in to the new OIDC refresh feature, which
   # allows Coder-issued API keys to inherit session timing limits and uses
   # refresh tokens to ensure continued access. These are purposefully not
