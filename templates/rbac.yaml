@@ -6,7 +6,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }} 
-  name: environments
+  name: workspaces
   annotations: {{ toYaml .Values.coderd.workspaceServiceAccount.annotations | nindent 4 }}
   labels:
     app.kubernetes.io/name: {{ .Chart.Name }}
