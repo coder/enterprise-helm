@@ -1,12 +1,12 @@
 {{- if not .Values.coderd.satellite.enable }}
 ---
-# The service account used by environments. It has no permissions and is only 
-# used to bind a pod security policy (if one is provided).
+# The service account used by workspaces. It has no permissions and is 
+# used to bind pod security policies, labels and annotations (if provided).
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Namespace | quote }} 
-  name: workspaces
+  name: environments
   annotations: {{ toYaml .Values.coderd.workspaceServiceAccount.annotations | nindent 4 }}
   labels:
     app.kubernetes.io/name: {{ .Chart.Name }}
