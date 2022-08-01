@@ -40,6 +40,8 @@ spec:
     spec:
       securityContext: {{ toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: {{ toYaml .Values.coderd.imagePullSecret }}
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
       terminationGracePeriodSeconds: 300

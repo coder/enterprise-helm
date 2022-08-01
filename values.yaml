@@ -4,6 +4,9 @@ coderd:
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   replicas: 1
+  # coderd.imagePullSecret -- The secret used for pulling the coderd image from
+  # a private registry.
+  imagePullSecret: ""
   # coderd.annotations -- Apply annotations to the coderd deployment.
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   annotations: {}
