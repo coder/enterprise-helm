@@ -79,6 +79,7 @@ type CoderValues struct {
 type CoderdValues struct {
 	Image                         *string                                    `json:"image" yaml:"image"`
 	Replicas                      *int                                       `json:"replicas" yaml:"replicas"`
+	ImagePullSecret               *string                                    `json:"imagePullSecret" yaml:"imagePullSecret"`
 	ServiceSpec                   *CoderdServiceSpecValues                   `json:"serviceSpec" yaml:"serviceSpec"`
 	ServiceNodePorts              *CoderdServiceNodePortsValues              `json:"serviceNodePorts" yaml:"serviceNodePorts"`
 	TrustProxyIP                  *bool                                      `json:"trustProxyIP" yaml:"trustProxyIP"`
