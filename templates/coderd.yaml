@@ -186,6 +186,13 @@ spec:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
                   key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
             {{- end }}
+            {{- if .Values.coderd.scim.enable }}
+            - name: SCIM_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.coderd.scim.authSecret.name | quote }}
+                  key: {{ .Values.coderd.scim.authSecret.key | quote }}
+            {{- end }}
             - name: http_proxy
               value: {{ .Values.coderd.proxy.http | quote }}
             - name: https_proxy

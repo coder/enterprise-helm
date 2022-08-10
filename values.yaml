@@ -206,17 +206,17 @@ coderd:
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
-      initialDelaySeconds: 30
-      failureThreshold: 30
-      periodSeconds: 10
-      timeoutSeconds: 3
+    initialDelaySeconds: 30
+    failureThreshold: 30
+    periodSeconds: 10
+    timeoutSeconds: 3
 
   # coderd.readiness -- Configure the readiness check for the coderd service.
   readiness:
-      initialDelaySeconds: 10
-      failureThreshold: 15
-      periodSeconds: 10
-      timeoutSeconds: 3
+    initialDelaySeconds: 10
+    failureThreshold: 15
+    periodSeconds: 10
+    timeoutSeconds: 3
 
   # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
   # provider service account.
@@ -227,7 +227,7 @@ coderd:
     # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
     # used for the built-in provider.
     labels: {}
-    # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace 
+    # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace
     # provider using the coded environment.
     migrate: true
   # coderd.workspaceServiceAccount -- Customize the default service account used
@@ -300,6 +300,23 @@ coderd:
     # coderd.networkPolicy.enable -- Manage a network policy for coderd using
     # Helm. If false, no policies will be created for the Coder control plane.
     enable: true
+
+  # Controls the embedded SCIM server in coderd that can be used to
+  # automatically provision and deprovision users from third-party identity
+  # providers.
+  scim:
+    # coderd.scim.enable -- Enable SCIM support in coderd. SCIM allows you to
+    # automatically provision/deprovision users. If true, authSecret.name must
+    # be set.
+    enable: false
+    authSecret:
+      # coderd.scim.authSecret.name -- Name of a secret that should be used to
+      # determine the auth header used for the SCIM server. The secret should be
+      # contained in the field `secret`, or the manually specified one.
+      name: ""
+      # coderd.scim.authSecret.key -- The key of the secret that contains the
+      # SCIM auth header.
+      key: "secret"
 
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
