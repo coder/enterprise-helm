@@ -105,6 +105,17 @@ type CoderdValues struct {
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
 	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
 	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
+	SCIM                          *CoderdSCIMValues                          `json:"scim" yaml:"scim"`
+}
+
+type CoderdSCIMValues struct {
+	Enable     bool                       `json:"enable" yaml:"enable"`
+	AuthSecret CoderdSCIMAuthSecretValues `json:"authSecret" yaml:"authSecret"`
+}
+
+type CoderdSCIMAuthSecretValues struct {
+	Name *string `json:"name" yaml:"name"`
+	Key  *string `json:"key" yaml:"key"`
 }
 
 type CoderdClientTLSValues struct {
