@@ -459,6 +459,8 @@ services:
 
 # logging -- Configures the logging format and output of Coder.
 logging:
+  # logging.verbose -- Toggles coderd debug logging.
+  verbose: true
   # logging.human -- Location to send logs that are formatted for readability.
   # Set to an empty string to disable.
   human: /dev/stderr

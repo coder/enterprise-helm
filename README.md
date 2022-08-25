@@ -99,13 +99,14 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | ingress.host | string | The hostname to proxy to the Coder installation. The cluster Ingress Controller typically uses server name indication or the HTTP Host header to route traffic. The dev URLs hostname is specified in coderd.devurlsHost. | `""` |
 | ingress.tls | object | Configures TLS settings for the Ingress. TLS certificates are specified in coderd.tls.hostSecretName and coderd.tls.devurlsHostSecretName. | `{"enable":false}` |
 | ingress.tls.enable | bool | Determines whether the Ingress handles TLS. | `false` |
-| logging | object | Configures the logging format and output of Coder. | `{"human":"/dev/stderr","json":"","splunk":{"channel":"","token":"","url":""},"stackdriver":""}` |
+| logging | object | Configures the logging format and output of Coder. | `{"human":"/dev/stderr","json":"","splunk":{"channel":"","token":"","url":""},"stackdriver":"","verbose":true}` |
 | logging.human | string | Location to send logs that are formatted for readability. Set to an empty string to disable. | `"/dev/stderr"` |
 | logging.json | string | Location to send logs that are formatted as JSON. Set to an empty string to disable. | `""` |
 | logging.splunk | object | Coder can send logs directly to Splunk in addition to file-based output. | `{"channel":"","token":"","url":""}` |
 | logging.splunk.token | string | Splunk HEC collector token. | `""` |
 | logging.splunk.url | string | Splunk HEC collector endpoint. | `""` |
 | logging.stackdriver | string | Location to send logs that are formatted for Google Stackdriver. Set to an empty string to disable. | `""` |
+| logging.verbose | bool | Toggles coderd debug logging. | `true` |
 | metrics | object | Configure various metrics to gain observability into Coder. | `{"amplitudeKey":""}` |
 | metrics.amplitudeKey | string | Enables telemetry pushing to Amplitude. Amplitude records how users interact with Coder, which is used to improve the product. No events store any personal information. Amplitude can be found here: https://amplitude.com/ Keep empty to disable. | `""` |
 | postgres.connector | string | Option for configuring database connector type. valid values are: - "postgres" -- default connector - "awsiamrds" -- uses AWS IAM account in environment to authenticate using   IAM to connect to an RDS instance. | `"postgres"` |

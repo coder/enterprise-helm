@@ -234,6 +234,7 @@ type IngressTLSValues struct {
 
 // LoggingValues reflect values from logging.
 type LoggingValues struct {
+	Verbose     *bool                `json:"verbose" yaml:"verbose"`
 	Human       *string              `json:"human" yaml:"human"`
 	Stackdriver *string              `json:"stackdriver" yaml:"stackdriver"`
 	JSON        *string              `json:"json" yaml:"json"`
