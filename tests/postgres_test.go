@@ -11,6 +11,70 @@ import (
 	"k8s.io/utils/pointer"
 )
 
+func Test_PostgresNoPasswordEnv(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Off", func(t *testing.T) {
+		t.Parallel()
+
+		objs := LoadChart(t).MustRender(t, func(cv *CoderValues) {
+			cv.Postgres.Default.Enable = pointer.Bool(false)
+
+			cv.Postgres.Host = pointer.String("1.1.1.1")
+			cv.Postgres.Port = pointer.String("5432")
+			cv.Postgres.User = pointer.String("postgres")
+
+			cv.Postgres.Database = pointer.String("postgres")
+			cv.Postgres.PasswordSecret = pointer.String("pg-pass")
+		})
+		coderd := MustFindDeployment(t, objs, "coderd")
+
+		for _, cnt := range []string{"migrations", "coderd"} {
+			// Combine both init and regular containers.
+			cnts := append(coderd.Spec.Template.Spec.InitContainers, coderd.Spec.Template.Spec.Containers...)
+
+			AssertContainer(t, cnts, cnt, func(t testing.TB, c corev1.Container) {
+				AssertEnvVar(t, c.Env, "DB_PASSWORD", func(t testing.TB, env corev1.EnvVar) {
+					_ = assert.Empty(t, env.Value) &&
+						assert.NotNil(t, env.ValueFrom) &&
+						assert.NotNil(t, env.ValueFrom.SecretKeyRef) &&
+						assert.Equal(t, "pg-pass", env.ValueFrom.SecretKeyRef.Name)
+				})
+				AssertNoEnvVar(t, c.Env, "DB_PASSWORD_PATH")
+			})
+		}
+	})
+
+	t.Run("On", func(t *testing.T) {
+		t.Parallel()
+
+		objs := LoadChart(t).MustRender(t, func(cv *CoderValues) {
+			cv.Postgres.Default.Enable = pointer.Bool(false)
+
+			cv.Postgres.Host = pointer.String("1.1.1.1")
+			cv.Postgres.Port = pointer.String("5432")
+			cv.Postgres.User = pointer.String("postgres")
+
+			cv.Postgres.Database = pointer.String("postgres")
+			cv.Postgres.PasswordSecret = pointer.String("pg-pass")
+			cv.Postgres.NoPasswordEnv = pointer.Bool(true)
+		})
+		coderd := MustFindDeployment(t, objs, "coderd")
+
+		for _, cnt := range []string{"migrations", "coderd"} {
+			// Combine both init and regular containers.
+			cnts := append(coderd.Spec.Template.Spec.InitContainers, coderd.Spec.Template.Spec.Containers...)
+
+			AssertContainer(t, cnts, cnt, func(t testing.TB, c corev1.Container) {
+				AssertEnvVar(t, c.Env, "DB_PASSWORD_PATH", func(t testing.TB, env corev1.EnvVar) {
+					assert.Equal(t, "/some/path", env.Value)
+				})
+				AssertNoEnvVar(t, c.Env, "DB_PASSWORD")
+			})
+		}
+	})
+}
+
 func TestPgSSL(t *testing.T) {
 	t.Parallel()
 

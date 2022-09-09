@@ -137,3 +137,27 @@ func AssertContainer(t testing.TB, cnts []corev1.Container, name string, fn func
 
 	t.Fatalf("failed to find container %q, found %v", name, names)
 }
+
+// AssertEnvVar asserts that an environment variable exists with the given name.
+// If it exists, it runs fn against the named environment variable.
+func AssertEnvVar(t testing.TB, envs []corev1.EnvVar, name string, fn func(t testing.TB, env corev1.EnvVar)) {
+	names := []string{}
+	for _, env := range envs {
+		if env.Name == name {
+			fn(t, env)
+			return
+		}
+		names = append(names, env.Name)
+	}
+	t.Fatalf("failed to find env var %q, found %v", name, names)
+}
+
+// AssertNoEnvVar asserts that an environment variable does not exist with the given name.
+func AssertNoEnvVar(t testing.TB, envs []corev1.EnvVar, name string) {
+	for _, env := range envs {
+		if env.Name == name {
+			t.Fatalf("did not expect to find env var %q", name)
+			return
+		}
+	}
+}
