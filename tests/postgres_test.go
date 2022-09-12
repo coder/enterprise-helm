@@ -41,6 +41,7 @@ func Test_PostgresNoPasswordEnv(t *testing.T) {
 						assert.Equal(t, "pg-pass", env.ValueFrom.SecretKeyRef.Name)
 				})
 				AssertNoEnvVar(t, c.Env, "DB_PASSWORD_PATH")
+				AssertNoVolumeMount(t, c.VolumeMounts, "pg-pass")
 			})
 		}
 	})
@@ -67,9 +68,12 @@ func Test_PostgresNoPasswordEnv(t *testing.T) {
 
 			AssertContainer(t, cnts, cnt, func(t testing.TB, c corev1.Container) {
 				AssertEnvVar(t, c.Env, "DB_PASSWORD_PATH", func(t testing.TB, env corev1.EnvVar) {
-					assert.Equal(t, "/some/path", env.Value)
+					assert.Equal(t, "/run/secrets/pg-pass/password", env.Value)
 				})
 				AssertNoEnvVar(t, c.Env, "DB_PASSWORD")
+				AssertVolumeMount(t, c.VolumeMounts, "pg-pass", func(t testing.TB, v corev1.VolumeMount) {
+					assert.Equal(t, "/run/secrets/pg-pass", v.MountPath)
+				})
 			})
 		}
 	})

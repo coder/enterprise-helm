@@ -122,6 +122,17 @@ func AssertVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string, fn 
 	t.Fatalf("failed to find volume mount %q, found %v", name, names)
 }
 
+// AssertNoVolumeMount asserts that no volume mount exists of the given name in the given
+// slice of volumes.
+func AssertNoVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string) {
+	for _, v := range vols {
+		if v.Name == name {
+			t.Fatalf("did not expect to find volume %q", name)
+			return
+		}
+	}
+}
+
 // AssertContainer asserts that a container exists of the given name in the
 // given slice of containers. If it exists, it also runs fn against the named
 // container.
