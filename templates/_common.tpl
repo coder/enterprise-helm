@@ -150,8 +150,8 @@ volumeMounts:
     readOnly: true
 {{- end }}
 {{- if .Values.postgres.noPasswordEnv }}
-  - name: {{ .Values.postgres.passwordSecret }}
-    mountPath : /run/secrets/{{ .Values.postgres.passwordSecret }}
+  - name: {{ .Values.postgres.passwordSecret | quote }}
+    mountPath: "/run/secrets/{{ .Values.postgres.passwordSecret }}"
     readOnly: true
 {{- end }}
 {{- end }}
