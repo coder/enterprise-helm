@@ -104,7 +104,6 @@ volumes:
   - name: {{ .Values.postgres.passwordSecret | quote }}
     secret:
       secretName: {{ .Values.postgres.passwordSecret | quote }}
-      defaultMode: 0400
 {{- end }}
 {{- end }}
 
