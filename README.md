@@ -121,6 +121,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.default.resources.requests.storage | string | Specifies the size of the volume claim for persisting the database. | `"10Gi"` |
 | postgres.default.storageClassName | string | Set the storageClass to store the database. | `""` |
 | postgres.host | string | Host of the external PostgreSQL instance. | `""` |
+| postgres.noPasswordEnv | bool | If enabled, passwordSecret will be specified as a volumeMount and the env `DB_PASSWORD_PATH` will be set instead to point to that location. The default behaviour is to set the environment variable `DB_PASSWORD` to the value of the postgres password secret. | `false` |
 | postgres.passwordSecret | string | Name of an existing secret in the current namespace with the password of the PostgreSQL instance. The password must be contained in the secret field `password`. This should be set to an empty string if the database does not require a password to connect. | `""` |
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
 | postgres.ssl | object | Options for configuring the SSL cert, key, and root cert when connecting to Postgres. | `{"certSecret":{"key":"","name":""},"keySecret":{"key":"","name":""},"rootCertSecret":{"key":"","name":""}}` |
@@ -129,6 +130,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.ssl.certSecret.name | string | Name of the secret. | `""` |
 | postgres.ssl.keySecret | object | Secret containing a PEM encoded key file. | `{"key":"","name":""}` |
 | postgres.ssl.keySecret.key | string | Key pointing to a certificate in the secret. | `""` |
+| postgres.ssl.keySecret.name | string | Name of the secret. | `""` |
 | postgres.ssl.rootCertSecret | object | Secret containing a PEM encoded root cert file. | `{"key":"","name":""}` |
 | postgres.ssl.rootCertSecret.key | string | Key pointing to a certificate in the secret. | `""` |
 | postgres.ssl.rootCertSecret.name | string | Name of the secret. | `""` |

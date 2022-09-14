@@ -122,6 +122,17 @@ func AssertVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string, fn 
 	t.Fatalf("failed to find volume mount %q, found %v", name, names)
 }
 
+// AssertNoVolumeMount asserts that no volume mount exists of the given name in the given
+// slice of volumes.
+func AssertNoVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string) {
+	for _, v := range vols {
+		if v.Name == name {
+			t.Fatalf("did not expect to find volume %q", name)
+			return
+		}
+	}
+}
+
 // AssertContainer asserts that a container exists of the given name in the
 // given slice of containers. If it exists, it also runs fn against the named
 // container.
@@ -136,4 +147,28 @@ func AssertContainer(t testing.TB, cnts []corev1.Container, name string, fn func
 	}
 
 	t.Fatalf("failed to find container %q, found %v", name, names)
+}
+
+// AssertEnvVar asserts that an environment variable exists with the given name.
+// If it exists, it runs fn against the named environment variable.
+func AssertEnvVar(t testing.TB, envs []corev1.EnvVar, name string, fn func(t testing.TB, env corev1.EnvVar)) {
+	names := []string{}
+	for _, env := range envs {
+		if env.Name == name {
+			fn(t, env)
+			return
+		}
+		names = append(names, env.Name)
+	}
+	t.Fatalf("failed to find env var %q, found %v", name, names)
+}
+
+// AssertNoEnvVar asserts that an environment variable does not exist with the given name.
+func AssertNoEnvVar(t testing.TB, envs []corev1.EnvVar, name string) {
+	for _, env := range envs {
+		if env.Name == name {
+			t.Fatalf("did not expect to find env var %q", name)
+			return
+		}
+	}
 }

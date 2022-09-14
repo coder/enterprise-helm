@@ -381,7 +381,7 @@ postgres:
       key: ""
     # postgres.ssl.keySecret -- Secret containing a PEM encoded key file.
     keySecret:
-      # postgres.ssl.keytSecret.name -- Name of the secret.
+      # postgres.ssl.keySecret.name -- Name of the secret.
       name: ""
       # postgres.ssl.keySecret.key -- Key pointing to a certificate in the secret.
       key: ""
@@ -397,6 +397,12 @@ postgres:
   # - "awsiamrds" -- uses AWS IAM account in environment to authenticate using
   #   IAM to connect to an RDS instance.
   connector: "postgres"
+
+  # postgres.noPasswordEnv -- If enabled, passwordSecret will be specified as a volumeMount
+  # and the env `DB_PASSWORD_PATH` will be set instead to point to that location.
+  # The default behaviour is to set the environment variable `DB_PASSWORD` to the value
+  # of the postgres password secret.
+  noPasswordEnv: false
 
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:

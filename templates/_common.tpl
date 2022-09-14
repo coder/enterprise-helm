@@ -28,11 +28,16 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
 - name: DB_USER
   value: {{ .Values.postgres.user | quote }}
 {{- if ne .Values.postgres.passwordSecret "" }}
+{{- if .Values.postgres.noPasswordEnv }}
+- name: DB_PASSWORD_PATH
+  value: "/run/secrets/{{ .Values.postgres.passwordSecret }}/password"
+{{- else }}
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.postgres.passwordSecret | quote }}    
       key: password
+{{- end }}
 {{- end }}
 - name: DB_CONNECTOR
   value: {{ .Values.postgres.connector | quote }}
@@ -95,6 +100,11 @@ volumes:
     secret:
       secretName: {{ .Values.coderd.clientTLS.secretName | quote }}
 {{- end }}
+{{- if .Values.postgres.noPasswordEnv }}
+  - name: {{ .Values.postgres.passwordSecret | quote }}
+    secret:
+      secretName: {{ .Values.postgres.passwordSecret | quote }}
+{{- end }}
 {{- end }}
 
 # coder.volumeMounts adds a volume mounts stanza if a cert.secret is
@@ -136,6 +146,11 @@ volumeMounts:
 {{- if ne .Values.coderd.clientTLS.secretName "" }}
   - name: clientcert
     mountPath: /etc/ssl/certs/client
+    readOnly: true
+{{- end }}
+{{- if .Values.postgres.noPasswordEnv }}
+  - name: {{ .Values.postgres.passwordSecret | quote }}
+    mountPath: "/run/secrets/{{ .Values.postgres.passwordSecret }}"
     readOnly: true
 {{- end }}
 {{- end }}
