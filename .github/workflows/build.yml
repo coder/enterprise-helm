@@ -84,7 +84,7 @@ jobs:
         run: ./scripts/install_deps.sh
 
       - name: Start kind cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2
         with:
           node_image: "docker.io/kindest/node:${{ matrix.tag }}"
 
