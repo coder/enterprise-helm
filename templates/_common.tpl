@@ -45,6 +45,8 @@ storageClassName: {{ .Values.postgres.default.storageClassName | quote }}
   value: {{ .Values.postgres.sslMode | quote }}
 - name: DB_NAME
   value: {{ .Values.postgres.database | quote }}
+- name: DB_SEARCH_PATH
+  value: {{ .Values.postgres.searchPath | quote }}
 {{- if ne .Values.postgres.ssl.certSecret.name "" }}
 - name: DB_CERT
   value: "/etc/ssl/certs/pg/cert/{{ .Values.postgres.ssl.certSecret.key }}"

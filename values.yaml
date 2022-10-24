@@ -360,6 +360,11 @@ postgres:
   # postgres.database -- Name of the database that Coder will use.
   # You must create this database first.
   database: ""
+  # postgres.searchPath -- Optional. Schema for coder tables in the external
+  # PostgresSQL instance. This changes the 'search_path' client configuration 
+  # option (https://www.postgresql.org/docs/current/runtime-config-client.html).
+  # By default, the 'public' schema will be used.
+  searchPath: ""
   # postgres.passwordSecret -- Name of an existing secret in the
   # current namespace with the password of the PostgreSQL instance.
   # The password must be contained in the secret field `password`.
