@@ -271,6 +271,7 @@ type PostgresValues struct {
 	User           *string                `json:"user" yaml:"user"`
 	SSLMode        *string                `json:"sslMode" yaml:"sslMode"`
 	Database       *string                `json:"database" yaml:"database"`
+	SearchPath     *string                `json:"searchPath" yaml:"searchPath"`
 	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
 	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
 	SSL            *PostgresSSLValues     `json:"ssl" yaml:"ssl"`
