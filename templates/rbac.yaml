@@ -50,12 +50,24 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
 rules:
-  - apiGroups: ["", "apps", "networking.k8s.io"] # "" indicates the core API group
-    resources: ["persistentvolumeclaims", "pods", "deployments", "services", "secrets", "pods/exec","pods/log", "events", "networkpolicies", "serviceaccounts"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "pods", "services", "secrets", "serviceaccounts", "pods/exec"]
     verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
-  - apiGroups: ["metrics.k8s.io", "storage.k8s.io"]
-    resources: ["pods", "storageclasses"]
+  - apiGroups: [""]
+    resources: ["pods/log", "events"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
