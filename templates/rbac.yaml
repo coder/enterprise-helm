@@ -59,9 +59,11 @@ rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
     verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
+{{- if .Capabilities.APIVersions.Has "metrics.k8s.io/v1beta1" }}
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
+{{- end }}
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
