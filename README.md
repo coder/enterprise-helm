@@ -124,6 +124,7 @@ View [our docs](https://coder.com/docs/setup/installation) for detailed installa
 | postgres.noPasswordEnv | bool | If enabled, passwordSecret will be specified as a volumeMount and the env `DB_PASSWORD_PATH` will be set instead to point to that location. The default behaviour is to set the environment variable `DB_PASSWORD` to the value of the postgres password secret. | `false` |
 | postgres.passwordSecret | string | Name of an existing secret in the current namespace with the password of the PostgreSQL instance. The password must be contained in the secret field `password`. This should be set to an empty string if the database does not require a password to connect. | `""` |
 | postgres.port | string | Port of the external PostgreSQL instance. | `""` |
+| postgres.searchPath | string | Optional. Schema for coder tables in the external PostgresSQL instance. This changes the 'search_path' client configuration  option (https://www.postgresql.org/docs/current/runtime-config-client.html). By default, the 'public' schema will be used. | `""` |
 | postgres.ssl | object | Options for configuring the SSL cert, key, and root cert when connecting to Postgres. | `{"certSecret":{"key":"","name":""},"keySecret":{"key":"","name":""},"rootCertSecret":{"key":"","name":""}}` |
 | postgres.ssl.certSecret | object | Secret containing a PEM encoded cert file. | `{"key":"","name":""}` |
 | postgres.ssl.certSecret.key | string | Key pointing to a certificate in the secret. | `""` |
