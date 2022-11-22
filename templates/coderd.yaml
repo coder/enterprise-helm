@@ -291,7 +291,6 @@ spec:
   {{- if .Values.coderd.serviceSpec }}
   {{- toYaml .Values.coderd.serviceSpec | nindent 2 }}
   {{- end }}
-  sessionAffinity: ClientIP
   selector:
     coder.deployment: {{ include "coder.serviceName" . }}
   ports:
