@@ -51,8 +51,11 @@ metadata:
     app.kubernetes.io/component: {{ include "coder.serviceName" . }}
 rules:
   - apiGroups: [""]
-    resources: ["persistentvolumeclaims", "pods", "services", "secrets", "serviceaccounts", "pods/exec"]
+    resources: ["persistentvolumeclaims", "pods", "services", "secrets", "serviceaccounts"]
     verbs: ["create", "get", "list", "watch", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
   - apiGroups: [""]
     resources: ["pods/log", "events"]
     verbs: ["get", "list", "watch"]
