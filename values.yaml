@@ -3,6 +3,7 @@ coderd:
   # coderd.image -- Injected by Coder during release.
   image: ""
   # coderd.replicas -- The number of Kubernetes Pod replicas.
+  # Consider increasing replicas as you add more nodes and more users are accessing Coder.
   replicas: 1
   # coderd.imagePullSecret -- The secret used for pulling the coderd image from
   # a private registry.
@@ -196,13 +197,14 @@ coderd:
 
   # coderd.resources -- Kubernetes resource specification for coderd pods.
   # To unset a value, set it to "". To unset all values, set resources to nil.
+  # Consider increasing resources as more users are accessing Coder.
   resources:
     requests:
       cpu: "250m"
       memory: "512Mi"
     limits:
-      cpu: "250m"
-      memory: "512Mi"
+      cpu: "1000m"
+      memory: "1Gi"
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
