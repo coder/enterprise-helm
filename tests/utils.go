@@ -6,6 +6,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -57,6 +58,57 @@ func MustFindStatefulSet(t testing.TB, objs []runtime.Object, name string) *apps
 	}
 
 	t.Fatalf("failed to find statefulset %q, found %v", name, names)
+	return nil
+}
+
+// MustFindServiceAccount finds a service account in the given slice of objects
+// with the given name, or fails the test.
+func MustFindServiceAccount(t testing.TB, objs []runtime.Object, name string) *corev1.ServiceAccount {
+	names := []string{}
+	for _, obj := range objs {
+		if serviceAccount, ok := obj.(*corev1.ServiceAccount); ok {
+			if serviceAccount.Name == name {
+				return serviceAccount
+			}
+			names = append(names, serviceAccount.Name)
+		}
+	}
+
+	t.Fatalf("failed to find serviceaccount %q, found %v", name, names)
+	return nil
+}
+
+// MustFindRole finds a role in the given slice of objects
+// with the given name, or fails the test.
+func MustFindRole(t testing.TB, objs []runtime.Object, name string) *rbacv1.Role {
+	names := []string{}
+	for _, obj := range objs {
+		if role, ok := obj.(*rbacv1.Role); ok {
+			if role.Name == name {
+				return role
+			}
+			names = append(names, role.Name)
+		}
+	}
+
+	t.Fatalf("failed to find role %q, found %v", name, names)
+	return nil
+}
+
+// MustFindRoleBinding finds a role in the given slice of objects
+// with the given name, or fails the test.
+func MustFindRoleBinding(t testing.TB, objs []runtime.Object, name string) *rbacv1.RoleBinding {
+	names := []string{}
+	for _, obj := range objs {
+		if roleBinding, ok := obj.(*rbacv1.RoleBinding); ok {
+			if roleBinding.Name == name {
+				return roleBinding
+			}
+			names = append(names, roleBinding.Name)
+		}
+	}
+
+	t.Fatalf("failed to find rolebinding %q, found %v", name, names)
 	return nil
 }
 
@@ -122,6 +174,17 @@ func AssertVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string, fn 
 	t.Fatalf("failed to find volume mount %q, found %v", name, names)
 }
 
+// AssertNoVolumeMount asserts that no volume mount exists of the given name in the given
+// slice of volumes.
+func AssertNoVolumeMount(t testing.TB, vols []corev1.VolumeMount, name string) {
+	for _, v := range vols {
+		if v.Name == name {
+			t.Fatalf("did not expect to find volume %q", name)
+			return
+		}
+	}
+}
+
 // AssertContainer asserts that a container exists of the given name in the
 // given slice of containers. If it exists, it also runs fn against the named
 // container.
@@ -136,4 +199,28 @@ func AssertContainer(t testing.TB, cnts []corev1.Container, name string, fn func
 	}
 
 	t.Fatalf("failed to find container %q, found %v", name, names)
+}
+
+// AssertEnvVar asserts that an environment variable exists with the given name.
+// If it exists, it runs fn against the named environment variable.
+func AssertEnvVar(t testing.TB, envs []corev1.EnvVar, name string, fn func(t testing.TB, env corev1.EnvVar)) {
+	names := []string{}
+	for _, env := range envs {
+		if env.Name == name {
+			fn(t, env)
+			return
+		}
+		names = append(names, env.Name)
+	}
+	t.Fatalf("failed to find env var %q, found %v", name, names)
+}
+
+// AssertNoEnvVar asserts that an environment variable does not exist with the given name.
+func AssertNoEnvVar(t testing.TB, envs []corev1.EnvVar, name string) {
+	for _, env := range envs {
+		if env.Name == name {
+			t.Fatalf("did not expect to find env var %q", name)
+			return
+		}
+	}
 }

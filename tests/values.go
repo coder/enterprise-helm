@@ -79,6 +79,7 @@ type CoderValues struct {
 type CoderdValues struct {
 	Image                         *string                                    `json:"image" yaml:"image"`
 	Replicas                      *int                                       `json:"replicas" yaml:"replicas"`
+	ImagePullSecret               *string                                    `json:"imagePullSecret" yaml:"imagePullSecret"`
 	ServiceSpec                   *CoderdServiceSpecValues                   `json:"serviceSpec" yaml:"serviceSpec"`
 	ServiceNodePorts              *CoderdServiceNodePortsValues              `json:"serviceNodePorts" yaml:"serviceNodePorts"`
 	TrustProxyIP                  *bool                                      `json:"trustProxyIP" yaml:"trustProxyIP"`
@@ -91,6 +92,7 @@ type CoderdValues struct {
 	Readiness                     *CoderdHealthzValues                       `json:"readiness" yaml:"readiness"`
 	Liveness                      *CoderdHealthzValues                       `json:"liveness" yaml:"liveness"`
 	BuiltinProviderServiceAccount *CoderdBuiltinProviderServiceAccountValues `json:"builtinProviderServiceAccount" yaml:"builtinProviderServiceAccount"`
+	WorkspaceServiceAccount       *CoderdWorkspaceServiceAccountValues       `json:"workspaceServiceAccount" yaml:"workspaceServiceAccount"`
 	OIDC                          *CoderdOIDCValues                          `json:"oidc" yaml:"oidc"`
 	SuperAdmin                    *CoderdSuperAdminValues                    `json:"superAdmin" yaml:"superAdmin"`
 	Affinity                      *corev1.Affinity                           `json:"affinity" yaml:"affinity"`
@@ -103,6 +105,17 @@ type CoderdValues struct {
 	ClientTLS                     *CoderdClientTLSValues                     `json:"clientTLS" yaml:"clientTLS"`
 	AlternateHostnames            []string                                   `json:"alternateHostnames" yaml:"alternateHostnames"`
 	ServiceAnnotations            map[string]string                          `json:"serviceAnnotations" yaml:"serviceAnnotations"`
+	SCIM                          *CoderdSCIMValues                          `json:"scim" yaml:"scim"`
+}
+
+type CoderdSCIMValues struct {
+	Enable     bool                       `json:"enable" yaml:"enable"`
+	AuthSecret CoderdSCIMAuthSecretValues `json:"authSecret" yaml:"authSecret"`
+}
+
+type CoderdSCIMAuthSecretValues struct {
+	Name *string `json:"name" yaml:"name"`
+	Key  *string `json:"key" yaml:"key"`
 }
 
 type CoderdClientTLSValues struct {
@@ -167,6 +180,13 @@ type CoderdBuiltinProviderServiceAccountValues struct {
 	Migrate *bool `json:"migrate" yaml:"migrate"`
 }
 
+type CoderdWorkspaceServiceAccountValues struct {
+	// Annotations is the same type as metav1.ObjectMeta.Annotations
+	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+	// Labels is the same type as metav1.ObjectMeta.Labels
+	Labels map[string]string `json:"labels" yaml:"labels"`
+}
+
 // CoderdNetworkPolicyValues reflect values from coderd.networkPolicy.
 type CoderdNetworkPolicyValues struct {
 	Enable *bool `json:"enable" yaml:"enable"`
@@ -214,6 +234,7 @@ type IngressTLSValues struct {
 
 // LoggingValues reflect values from logging.
 type LoggingValues struct {
+	Verbose     *bool                `json:"verbose" yaml:"verbose"`
 	Human       *string              `json:"human" yaml:"human"`
 	Stackdriver *string              `json:"stackdriver" yaml:"stackdriver"`
 	JSON        *string              `json:"json" yaml:"json"`
@@ -250,10 +271,12 @@ type PostgresValues struct {
 	User           *string                `json:"user" yaml:"user"`
 	SSLMode        *string                `json:"sslMode" yaml:"sslMode"`
 	Database       *string                `json:"database" yaml:"database"`
+	SearchPath     *string                `json:"searchPath" yaml:"searchPath"`
 	PasswordSecret *string                `json:"passwordSecret" yaml:"passwordSecret"`
 	Default        *PostgresDefaultValues `json:"default" yaml:"default"`
 	SSL            *PostgresSSLValues     `json:"ssl" yaml:"ssl"`
 	Connector      *string                `json:"connector" yaml:"connector"`
+	NoPasswordEnv  *bool                  `json:"noPasswordEnv" yaml:"noPasswordEnv"`
 }
 
 type PostgresSSLValues struct {

@@ -5,6 +5,9 @@ coderd:
   # coderd.replicas -- The number of Kubernetes Pod replicas.
   # Consider increasing replicas as you add more nodes and more users are accessing Coder.
   replicas: 1
+  # coderd.imagePullSecret -- The secret used for pulling the coderd image from
+  # a private registry.
+  imagePullSecret: ""
   # coderd.annotations -- Apply annotations to the coderd deployment.
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   annotations: {}
@@ -205,17 +208,17 @@ coderd:
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
-      initialDelaySeconds: 30
-      failureThreshold: 30
-      periodSeconds: 10
-      timeoutSeconds: 3
+    initialDelaySeconds: 30
+    failureThreshold: 30
+    periodSeconds: 10
+    timeoutSeconds: 3
 
   # coderd.readiness -- Configure the readiness check for the coderd service.
   readiness:
-      initialDelaySeconds: 10
-      failureThreshold: 15
-      periodSeconds: 10
-      timeoutSeconds: 3
+    initialDelaySeconds: 10
+    failureThreshold: 15
+    periodSeconds: 10
+    timeoutSeconds: 3
 
   # coderd.builtinProviderServiceAccount -- Customize the built-in Kubernetes
   # provider service account.
@@ -226,10 +229,18 @@ coderd:
     # coderd.builtinProviderServiceAccount.labels -- Add labels to the service account
     # used for the built-in provider.
     labels: {}
-    # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace 
+    # coderd.builtinProviderServiceAccount.migrate -- Will migrate the built-in workspace
     # provider using the coded environment.
     migrate: true
-
+  # coderd.workspaceServiceAccount -- Customize the default service account used
+  # for workspaces.
+  workspaceServiceAccount:
+    # coderd.workspaceServiceAccount.annotations -- A KV mapping of annotations.
+    # See: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
+    # coderd.workspaceServiceAccount.labels -- Add labels to the service account
+    # used for workspaces.
+    labels: {}
   # Temporary options for opting in to the new OIDC refresh feature, which
   # allows Coder-issued API keys to inherit session timing limits and uses
   # refresh tokens to ensure continued access. These are purposefully not
@@ -292,6 +303,23 @@ coderd:
     # Helm. If false, no policies will be created for the Coder control plane.
     enable: true
 
+  # Controls the embedded SCIM server in coderd that can be used to
+  # automatically provision and deprovision users from third-party identity
+  # providers.
+  scim:
+    # coderd.scim.enable -- Enable SCIM support in coderd. SCIM allows you to
+    # automatically provision/deprovision users. If true, authSecret.name must
+    # be set.
+    enable: false
+    authSecret:
+      # coderd.scim.authSecret.name -- Name of a secret that should be used to
+      # determine the auth header used for the SCIM server. The secret should be
+      # contained in the field `secret`, or the manually specified one.
+      name: ""
+      # coderd.scim.authSecret.key -- The key of the secret that contains the
+      # SCIM auth header.
+      key: "secret"
+
 # ingress -- Configure an Ingress to route traffic to Coder services.
 ingress:
   # ingress.enable -- A boolean controlling whether to create an Ingress.
@@ -334,6 +362,11 @@ postgres:
   # postgres.database -- Name of the database that Coder will use.
   # You must create this database first.
   database: ""
+  # postgres.searchPath -- Optional. Schema for coder tables in the external
+  # PostgresSQL instance. This changes the 'search_path' client configuration 
+  # option (https://www.postgresql.org/docs/current/runtime-config-client.html).
+  # By default, the 'public' schema will be used.
+  searchPath: ""
   # postgres.passwordSecret -- Name of an existing secret in the
   # current namespace with the password of the PostgreSQL instance.
   # The password must be contained in the secret field `password`.
@@ -355,7 +388,7 @@ postgres:
       key: ""
     # postgres.ssl.keySecret -- Secret containing a PEM encoded key file.
     keySecret:
-      # postgres.ssl.keytSecret.name -- Name of the secret.
+      # postgres.ssl.keySecret.name -- Name of the secret.
       name: ""
       # postgres.ssl.keySecret.key -- Key pointing to a certificate in the secret.
       key: ""
@@ -371,6 +404,12 @@ postgres:
   # - "awsiamrds" -- uses AWS IAM account in environment to authenticate using
   #   IAM to connect to an RDS instance.
   connector: "postgres"
+
+  # postgres.noPasswordEnv -- If enabled, passwordSecret will be specified as a volumeMount
+  # and the env `DB_PASSWORD_PATH` will be set instead to point to that location.
+  # The default behaviour is to set the environment variable `DB_PASSWORD` to the value
+  # of the postgres password secret.
+  noPasswordEnv: false
 
   # postgres.default -- Configure a built-in PostgreSQL deployment.
   default:
@@ -433,6 +472,8 @@ services:
 
 # logging -- Configures the logging format and output of Coder.
 logging:
+  # logging.verbose -- Toggles coderd debug logging.
+  verbose: true
   # logging.human -- Location to send logs that are formatted for readability.
   # Set to an empty string to disable.
   human: /dev/stderr

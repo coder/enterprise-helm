@@ -40,6 +40,10 @@ spec:
     spec:
       securityContext: {{ toYaml .Values.coderd.podSecurityContext | nindent 8 }}
       restartPolicy: Always
+      {{- if .Values.coderd.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.coderd.imagePullSecret | quote }}
+      {{- end }}
       # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
       # 5 minutes
       terminationGracePeriodSeconds: 300
@@ -139,7 +143,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: VERBOSE
-              value: "true"
+              value: {{ .Values.logging.verbose | quote }}
             {{- if .Values.coderd.satellite.enable }}
             - name: CODER_SATELLITE_PRIVATE_KEY
               valueFrom:
@@ -181,6 +185,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.coderd.superAdmin.passwordSecret.name | quote }}
                   key: {{ .Values.coderd.superAdmin.passwordSecret.key | quote }}
+            {{- end }}
+            {{- if .Values.coderd.scim.enable }}
+            - name: SCIM_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.coderd.scim.authSecret.name | quote }}
+                  key: {{ .Values.coderd.scim.authSecret.key | quote }}
             {{- end }}
             - name: http_proxy
               value: {{ .Values.coderd.proxy.http | quote }}
