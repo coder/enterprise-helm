@@ -203,8 +203,8 @@ coderd:
       cpu: "250m"
       memory: "512Mi"
     limits:
-      cpu: "500m"
-      memory: "512Mi"
+      cpu: "1000m"
+      memory: "1Gi"
 
   # coderd.liveness -- Configure the liveness check for the coderd service.
   liveness:
